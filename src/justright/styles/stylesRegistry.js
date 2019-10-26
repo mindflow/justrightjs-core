@@ -78,15 +78,21 @@ export class StylesRegistry {
      * @param {string} name 
      * @param {Url} url 
      */
-    async load(name, url) {
+     load(name, url) {
         this.stylesQueueSize ++;
-        var response = await Client.get(url);
-        if(!response.ok){
-            throw "Unable to load styles for " + name + " at " + url;
-        }
-        var text = await response.text();
-        this.set(name,new Styles(text),url);
-        this.doCallback(this);
+        return new Promise((resolve) => {
+            Client.get(url).then((response) => {
+                if(!response.ok){
+                    throw "Unable to load styles for " + name + " at " + url;
+                }
+                response.text().then((text) => {
+                    this.set(name,new Styles(text),url);
+                    this.doCallback(this);
+                    resolve();
+                });
+            });
+        });
+
     }
 
     /**
@@ -137,13 +143,19 @@ export class StylesRegistry {
      * @param {string} name 
      * @param {Url} url 
      */
-    async privateLoad(name, url) {
+    privateLoad(name, url) {
         LOG.info("Loading styles " + name + " at " + url.toString());
-        var response = await Client.get(url);
-        if(!response.ok){
-            throw "Unable to load styles for " + name + " at " + url;
-        }
-        var text = await response.text();
-        this.set(name,new Styles(text),url);
+
+        return new Promise((resolve) => {
+            Client.get(url).then((response) => {
+                if(!response.ok){
+                    throw "Unable to load styles for " + name + " at " + url;
+                }
+                response.text().then((text) => {
+                    this.set(name,new Styles(text),url);
+                    resolve();
+                });
+            });
+        });
     }
 }

@@ -89,7 +89,7 @@ export class TemplateRegistry {
      * @param {string} name 
      * @param {Url} url 
      */
-    async load(name, url) {
+    load(name, url) {
         if(this.languagePrefix !== null) {
             url.getPathList().setLast(
                 this.languagePrefix + "." +
@@ -97,13 +97,18 @@ export class TemplateRegistry {
             );
         }
         this.templateQueueSize ++;
-        var response = await Client.get(url);
-        if(!response.ok){
-            throw "Unable to load template for " + name + " at " + url;
-        }
-        var text = await response.text();
-        this.set(name,new Template(text),url);
-        this.doCallback(this);
+        return new Promise((resolve) => {
+            Client.get(url).then((response) => {
+                if(!response.ok){
+                    throw "Unable to load template for " + name + " at " + url;
+                }
+                response.text().then((text) => {
+                    this.set(name,new Template(text),url);
+                    this.doCallback(this);
+                    resolve();
+                });
+            });
+        });
     }
 
     /**
@@ -154,7 +159,7 @@ export class TemplateRegistry {
      * @param {string} name 
      * @param {Url} url 
      */
-    async privateLoad(name, url) {
+    privateLoad(name, url) {
         if(this.languagePrefix !== null) {
             url.getPathList().setLast(
                 this.languagePrefix + "." +
@@ -162,11 +167,16 @@ export class TemplateRegistry {
             );
         }
         LOG.info("Loading template " + name + " at " + url.toString());
-        var response = await Client.get(url);
-        if(!response.ok){
-            throw "Unable to load template for " + name + " at " + url;
-        }
-        var text = await response.text();
-        this.set(name,new Template(text),url);
+        return new Promise((resolse) => {
+            Client.get(url).then((response) => {
+                if(!response.ok){
+                    throw "Unable to load template for " + name + " at " + url;
+                }
+                response.text().then((text) => {
+                    this.set(name,new Template(text),url);
+                    resolse();
+                });
+            });
+        });
     }
 }

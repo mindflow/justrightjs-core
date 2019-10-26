@@ -11,13 +11,13 @@
   "license": "MIT",
   "dependencies": {
     "coreutil_v1": "file:../coreutiljs",
-    "xmlparser_v1": "file:../xmlparserjs",
-    "mindi_v1": "file:../mindijs"
+    "mindi_v1": "file:../mindijs",
+    "xmlparser_v1": "file:../xmlparserjs"
   },
   "devDependencies": {
     "rollup": "^1.25.2",
     "rollup-plugin-multi-entry": "^2.1.0",
     "rollup-plugin-postprocess": "^1.0.2",
-    "rollup-plugin-uglify": "^6.0.3"
+    "rollup-plugin-uglify-es": "^0.0.1"
   }
 }
