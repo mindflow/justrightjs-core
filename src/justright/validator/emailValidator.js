@@ -1,15 +1,11 @@
-import { AbstractValidator } from "./abstractValidator.js";
+import { RegexValidator } from "./regexValidator.js";
 
 const EMAIL_FORMAT = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
-export class EmailValidator extends AbstractValidator {
+export class EmailValidator extends RegexValidator {
 
-	validate(value){
-		if(value && typeof value === "string" && value.match(EMAIL_FORMAT)){
-	    	this.valid();
-		} else {
-			this.invalid();
-		}
-	}
+    constructor(iscurrentlyValid = false) {
+        super(iscurrentlyValid, EMAIL_FORMAT);
+    }
 
 }

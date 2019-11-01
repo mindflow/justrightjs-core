@@ -1,13 +1,11 @@
-import { AbstractValidator } from "./abstractValidator.js";
+import { RegexValidator } from "./regexValidator.js";
 
-export class PasswordValidator extends AbstractValidator {
+const PASSWORD_FORMAT = /^(?=.*[A-Za-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
 
-	validate(value){
-		if(value === ""){
-	    	this.invalid();
-		} else {
-			this.valid();
-		}
-	}
+export class PasswordValidator extends RegexValidator {
+
+    constructor(iscurrentlyValid = false) {
+        super(iscurrentlyValid, PASSWORD_FORMAT);
+    }
 
 }

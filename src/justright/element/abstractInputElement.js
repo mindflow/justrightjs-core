@@ -63,4 +63,12 @@ export class AbstractInputElement extends BaseElement{
     selectAll() {
         this.element.select();
     }
+
+    enable() {
+        this.element.disabled = false;
+    }
+
+    disable() {
+        this.element.disabled = true;
+    }
 }
