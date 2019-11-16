@@ -3,7 +3,6 @@ import { TemplateRegistry } from "./template/templateRegistry.js";
 import { EventRegistry } from "./event/eventRegistry.js";
 import { UniqueIdRegistry } from "./component/uniqueIdRegistry.js";
 import { ComponentFactory } from "./component/componentFactory.js";
-import { DataBindRegistry } from "./dataBind/dataBindRegistry";
 import { State } from "./navigation/state.js";
 import { StylesRegistry } from "./styles/stylesRegistry.js";
 
@@ -23,7 +22,6 @@ export class JustrightConfig {
             .addSingleton(EventRegistry)
             .addSingleton(UniqueIdRegistry)
             .addSingleton(ComponentFactory)
-            .addSingleton(DataBindRegistry)
             .addSingleton(State)
     }
 

@@ -9,8 +9,12 @@ export class ProxyObjectFactory {
         return new Proxy(object, {
             set: (target, prop, value) => {
                 let success = (target[prop] = value);
-                if(target.__changed) {
-                    target.__changed();
+
+                let changedFunctionName = "__changed_" + prop;
+                let changedFunction = target[changedFunctionName];
+                if(changedFunction && typeof changedFunction === "function") {
+                    let boundChangedFunction = changedFunction.bind(target);
+                    boundChangedFunction();
                 }
                 return success === value;
             }

@@ -1,5 +1,7 @@
-import { PropertyAccessor, List } from "coreutil_v1";
+import { PropertyAccessor, List, Logger } from "coreutil_v1";
 import { AbstractInputElement } from "../element/abstractInputElement";
+
+const LOG = new Logger("InputElementDataBinding");
 
 export class InputElementDataBinding {
 
@@ -27,8 +29,9 @@ export class InputElementDataBinding {
      * @param {AbstractInputElement} field 
      */
     to(field) {
-        var puller = () => {
-            if (field.getValue) {
+        const puller = () => {
+            let modelValue = PropertyAccessor.getValue(this.model, field.getName());
+            if (field.getValue && modelValue !== field.getValue()) {
                 PropertyAccessor.setValue(this.model, field.getName(), field.getValue());
             }
             if(this.validator && this.validator.validate){
@@ -39,16 +42,25 @@ export class InputElementDataBinding {
         field.attachEvent("onkeyup", puller);
         puller.call();
 
-        var pusher = () => {
-            var value = PropertyAccessor.getValue(this.model, field.getName());
-            if (field.setChecked) {
-                field.setChecked(value == field.getValue());
-            } else if (field.setValue) {
-                field.setValue(value);
+        const pusher = () => {
+            var modelValue = PropertyAccessor.getValue(this.model, field.getName());
+            if(modelValue === field.getValue()) {
+                if (field.setChecked && !field.getChecked()) {
+                    field.setChecked(true);
+                }
+            } else {
+                if (field.setChecked && field.getChecked()) {
+                    field.setChecked(false);
+                } else if (field.setValue) {
+                    field.setValue(modelValue);
+                }
             }
+
         };
-        if(!this.model.__changed) {
-            this.model.__changed = () => {
+
+        let changedFunctionName = "__changed_" + field.getName().replace(".","_");
+        if(!this.model[changedFunctionName]) {
+            this.model[changedFunctionName] = () => {
                 this.push();
             }
         }
