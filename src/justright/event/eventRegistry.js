@@ -1,7 +1,7 @@
 /* jshint esversion: 6 */
 
-import {List,Map,ObjectFunction, Logger} from "coreutil_v1";
-import {Event} from "./event.js";
+import { List, Map, ObjectFunction, Logger } from "coreutil_v1";
+import { Event } from "./event.js";
 import { BaseElement } from "../element/baseElement.js";
 
 const LOG = new Logger("EventRegistry");
@@ -22,8 +22,8 @@ export class EventRegistry {
      * @param {string} componentIndex unique id of the component which owns the element
      */
     attach(element, eventType, eventName, componentIndex) {
-        var uniqueEventName = eventName + "_" + componentIndex;
-        var theEventRegistry = this;
+        const uniqueEventName = eventName + "_" + componentIndex;
+        const theEventRegistry = this;
         element.attachEvent(eventType, function(event) { theEventRegistry.trigger(uniqueEventName, eventName, event); });
     }
 
@@ -33,64 +33,59 @@ export class EventRegistry {
      * @param {ObjectFunction} listener the object which owns the handler function
      * @param {string} uniqueIndex a unique index for the event
      */
-    listen(eventName, objectFunction, uniqueIndex) {
-        eventName = eventName + "_" + uniqueIndex;
-        if(!this.listeners.exists(eventName)){
-            this.listeners.set(eventName,new List());
+    listen(eventName, listener, uniqueIndex) {
+        const uniqueEventName = eventName + "_" + uniqueIndex;
+        if (!this.listeners.exists(uniqueEventName)) {
+            this.listeners.set(uniqueEventName, new List());
         }
-        this.listeners.get(eventName).add(objectFunction);
+        this.listeners
+            .get(uniqueEventName)
+            .add(listener);
     }
 
-    listenBefore(eventName,handlerObject,handlerFunction) {
-        if(!this.beforeListeners.exists(eventName)) {
-            this.beforeListeners.set(eventName,new List());
+    listenBefore(eventName, handlerObject, handlerFunction) {
+        if (!this.beforeListeners.exists(eventName)) {
+            this.beforeListeners.set(eventName, new List());
         }
-        var objectFunction = new ObjectFunction(handlerObject,handlerFunction);
-        this.beforeListeners.get(eventName).add(objectFunction);
+        this.beforeListeners
+            .get(eventName)
+            .add(new ObjectFunction(handlerObject, handlerFunction));
     }
 
-    listenAfter(eventName,handlerObject,handlerFunction) {
-        if(!this.afterListeners.exists(eventName)){
+    listenAfter(eventName, handlerObject, handlerFunction) {
+        if (!this.afterListeners.exists(eventName)) {
             this.afterListeners.set(eventName,new List());
         }
-        this.afterListeners.get(eventName).add(new ObjectFunction(handlerObject,handlerFunction));
+        this.afterListeners
+            .get(eventName)
+            .add(new ObjectFunction(handlerObject, handlerFunction));
     }
 
     trigger(suffixedEventName, eventName, event) {
         this.handleBefore(eventName, event);
-        if(this.listeners.exists(suffixedEventName)) {
-            var currentListeners = new List();
-            this.listeners.get(suffixedEventName).forEach(function(value, parent){
-                currentListeners.add(value);
-                return true;
-            },this);
-            currentListeners.forEach(function(value, parent){
+        if (this.listeners.exists(suffixedEventName)) {
+            this.listeners.get(suffixedEventName).forEach((value, parent) => {
                 value.call(new Event(event));
                 return true;
-            },this);
+            }, this);
         }
         this.handleAfter(eventName, event);
     }
 
     handleBefore(eventName, event) {
-        this.handleGlobal(this.beforeListeners,eventName, event);
+        this.handleGlobal(this.beforeListeners, eventName, event);
     }
 
     handleAfter(eventName, event) {
-        this.handleGlobal(this.afterListeners,eventName, event);
+        this.handleGlobal(this.afterListeners, eventName, event);
     }
 
     handleGlobal(listeners, eventName, event) {
         if(listeners.exists(eventName)) {
-            var currentListeners = new List();
-            listeners.get(eventName).forEach(function(value,parent){
-                currentListeners.add(value);
-                return true;
-            },this);
-            currentListeners.forEach(function(value,parent){
+            listeners.get(eventName).forEach((value, parent) => {
                 value.call(new Event(event));
                 return true;
-            },this);
+            }, this);
         }
     }
 }

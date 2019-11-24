@@ -34,7 +34,7 @@ export class InputElementDataBinding {
             if (field.getValue && modelValue !== field.getValue()) {
                 PropertyAccessor.setValue(this.model, field.getName(), field.getValue());
             }
-            if(this.validator && this.validator.validate){
+            if (this.validator && this.validator.validate){
                 this.validator.validate(field.getValue());
             }
         };
@@ -44,7 +44,7 @@ export class InputElementDataBinding {
 
         const pusher = () => {
             var modelValue = PropertyAccessor.getValue(this.model, field.getName());
-            if(modelValue === field.getValue()) {
+            if (modelValue === field.getValue()) {
                 if (field.setChecked && !field.getChecked()) {
                     field.setChecked(true);
                 }
@@ -59,7 +59,7 @@ export class InputElementDataBinding {
         };
 
         let changedFunctionName = "__changed_" + field.getName().replace(".","_");
-        if(!this.model[changedFunctionName]) {
+        if (!this.model[changedFunctionName]) {
             this.model[changedFunctionName] = () => {
                 this.push();
             }
