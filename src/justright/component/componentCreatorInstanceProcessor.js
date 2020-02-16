@@ -7,7 +7,11 @@ const LOG = new Logger("ComponentCreatorInstanceProcessor");
  */
 export class ComponentCreatorInstanceProcessor {
 
-    processInstance(instance) {
+    constructor() {
+        LOG.info("Creating");
+    }
+
+    process(instance) {
         if(instance.createComponent) {
             instance.createComponent();
         }

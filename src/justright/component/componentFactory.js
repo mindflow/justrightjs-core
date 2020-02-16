@@ -7,6 +7,7 @@ import { DomTree } from "xmlparser_v1";
 import { Logger } from "coreutil_v1";
 import { StylesRegistry } from "../styles/stylesRegistry";
 import { CanvasStyles } from "../canvas/canvasStyles";
+import { InjectionPoint } from "mindi_v1";
 
 const LOG = new Logger("ComponentFactory");
 
@@ -15,16 +16,16 @@ export class ComponentFactory {
     constructor() {
 
         /** @type {EventRegistry} */
-        this.eventRegistry = EventRegistry;
+        this.eventRegistry = InjectionPoint.instance(EventRegistry);
 
         /** @type {StylesRegistry} */
-        this.stylesRegistry = StylesRegistry;
+        this.stylesRegistry = InjectionPoint.instance(StylesRegistry);
 
         /** @type {TemplateRegistry} */
-        this.templateRegistry = TemplateRegistry;
+        this.templateRegistry = InjectionPoint.instance(TemplateRegistry);
 
         /** @type {UniqueIdRegistry} */
-        this.uniqueIdRegistry = UniqueIdRegistry;
+        this.uniqueIdRegistry = InjectionPoint.instance(UniqueIdRegistry);
     }
 
     /**

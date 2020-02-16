@@ -21,14 +21,14 @@ export class StylesLoader {
 
     /**
      * 
-     * @param {Config} config 
+     * @param {Config} config
      * @returns {Promise}
      */
     load(config) {
         let stylesMap = new Map();
-        config.getConfigElements().forEach((key, entry, parent) => {
-            if(entry.getClassReference().STYLES_URL && entry.getClassReference().COMPONENT_NAME) {
-                stylesMap.set(entry.getClassReference().COMPONENT_NAME, entry.getClassReference().STYLES_URL);
+        config.getConfigEntries().forEach((key, configEntry, parent) => {
+            if(configEntry.getClassReference().STYLES_URL && configEntry.getClassReference().COMPONENT_NAME) {
+                stylesMap.set(configEntry.getClassReference().COMPONENT_NAME, configEntry.getClassReference().STYLES_URL);
             }
             return true;
         }, this); 

@@ -1,9 +1,9 @@
-import { Config, Injector } from "mindi_v1";
+import { Logger } from "coreutil_v1";
+import { Config, InjectionPoint } from "mindi_v1";
 import { StylesRegistry } from "../styles/stylesRegistry.js";
 import { TemplateRegistry } from "../template/templateRegistry.js";
 import { TemplatesLoader } from "../template/templatesLoader.js";
 import { StylesLoader } from "../styles/stylesLoader.js";
-import { Logger } from "coreutil_v1";
 
 const LOG = new Logger("ComponentConfigProcessor")
 
@@ -18,27 +18,26 @@ export class ComponentConfigProcessor {
         /**
          * @type {TemplateRegistry}
          */
-        this.templateRegistry = TemplateRegistry;
+        this.templateRegistry = InjectionPoint.instance(TemplateRegistry);
 
         /**
          * @type {StylesRegistry}
          */
-        this.stylesRegistry = StylesRegistry;
+        this.stylesRegistry = InjectionPoint.instance(StylesRegistry);
 
     }
 
     /**
      * 
-     * @param {injector} injector 
      */
-    postInject(injector){
+    postConfig(){
         this.templatesLoader = new TemplatesLoader(this.templateRegistry);
         this.stylesLoader = new StylesLoader(this.stylesRegistry);
     }
 
     /**
      * 
-     * @param {Config} config 
+     * @param {Config} config
      * @returns {Promise}
      */
     processConfig(config) {

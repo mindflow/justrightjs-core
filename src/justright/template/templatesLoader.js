@@ -21,14 +21,14 @@ export class TemplatesLoader {
 
     /**
      * 
-     * @param {Config} config 
+     * @param {Config} config
      * @returns {Promise}
      */
     load(config) {
         let templateMap = new Map();
-        config.getConfigElements().forEach((key, entry, parent) => {
-            if(entry.getClassReference().TEMPLATE_URL && entry.getClassReference().COMPONENT_NAME) {
-                templateMap.set(entry.getClassReference().COMPONENT_NAME, entry.getClassReference().TEMPLATE_URL);
+        config.getConfigEntries().forEach((key, configEntry, parent) => {
+            if(configEntry.getClassReference().TEMPLATE_URL && configEntry.getClassReference().COMPONENT_NAME) {
+                templateMap.set(configEntry.getClassReference().COMPONENT_NAME, configEntry.getClassReference().TEMPLATE_URL);
             }
             return true;
         }, this); 
