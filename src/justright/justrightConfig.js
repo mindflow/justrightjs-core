@@ -7,7 +7,6 @@ import { ComponentFactory } from "./component/componentFactory.js";
 import { State } from "./navigation/state.js";
 import { StylesRegistry } from "./styles/stylesRegistry.js";
 
-
 const LOG = new Logger("JustrightConfig");
 
 export class JustrightConfig {
