@@ -1,4 +1,4 @@
-import { Map, ObjectFunction, ObjectMapper, Logger } from "coreutil_v1";
+import { Map, ObjectFunction, Logger } from "coreutil_v1";
 import { HttpResponseHandler } from "./httpResponseHandler";
 import { Client } from "../client/client.js";
 
@@ -24,6 +24,15 @@ export class HttpCallBuilder {
 
         /** @type {ObjectFunction} */
         this.errorCallback = null;
+
+        /** @type {number} */
+        this.connectionTimeoutValue = 4000;
+
+        /** @type {number} */
+        this.responseTimeoutValue = 4000;
+
+        /** @type {function} */
+        this.errorMapperFunction = null;
     }
 
     /**
@@ -53,16 +62,28 @@ export class HttpCallBuilder {
      * 
      * @param {object} object 
      * @param {function} callback 
+     * @param {function} errorMapperFunction mapper function to pass the result object to
      */
-    errorMapping(object, callback) {
+    errorMapping(object, callback, errorMapperFunction = null) {
         if(object && callback) {
+            if (errorMapperFunction) {
+                this.errorMapperFunction = errorMapperFunction;
+            }
             this.errorCallback = new ObjectFunction(object, callback);
         }
         return this;
     }
 
+    connectionTimeout(connectionTimeoutValue) {
+        this.connectionTimeoutValue = connectionTimeoutValue;
+    }
+
+    responseTimeout(responseTimeoutValue) {
+        this.responseTimeoutValue = responseTimeoutValue;
+    }
+
     get() {
-        Client.get(this.url).then((response) => {
+        Client.get(this.url, this.connectionTimeoutValue, this.responseTimeoutValue).then((response) => {
             this.processResponse(response);
         }, (error) => {
             this.processError(error);
@@ -70,7 +91,7 @@ export class HttpCallBuilder {
     }
 
     post() {
-        Client.post(this.url, this.paramter).then((response) => {
+        Client.post(this.url, this.paramter, this.connectionTimeoutValue, this.responseTimeoutValue).then((response) => {
             this.processResponse(response);
         }, (error) => {
             this.processError(error);
@@ -78,7 +99,7 @@ export class HttpCallBuilder {
     }
 
     put() {
-        Client.put(this.url, this.paramter).then((response) => {
+        Client.put(this.url, this.paramter, this.connectionTimeoutValue, this.responseTimeoutValue).then((response) => {
             this.processResponse(response);
         }, (error) => {
             this.processError(error);
@@ -86,7 +107,7 @@ export class HttpCallBuilder {
     }
 
     patch() {
-        Client.patch(this.url, this.paramter).then((response) => {
+        Client.patch(this.url, this.paramter, this.connectionTimeoutValue, this.responseTimeoutValue).then((response) => {
             this.processResponse(response);
         }, (error) => {
             this.processError(error);
@@ -94,7 +115,7 @@ export class HttpCallBuilder {
     }
 
     delete() {
-        Client.delete(this.url).then((response) => {
+        Client.delete(this.url, this.connectionTimeoutValue, this.responseTimeoutValue).then((response) => {
             this.processResponse(response);
         }, (error) => {
             this.processError(error);
@@ -104,6 +125,9 @@ export class HttpCallBuilder {
     processError(error) {
         LOG.error(error);
         if(this.errorCallback) {
+            if(this.errorMapperFunction) {
+                error = this.errorMapperFunction.call(this, error);
+            }
             this.errorCallback.call(error);
         }
     }

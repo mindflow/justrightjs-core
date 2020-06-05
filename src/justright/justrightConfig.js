@@ -16,13 +16,13 @@ export class JustrightConfig {
     }
 
     constructor() {
-        this.typeConfigList = new List()
-            .add(SingletonConfig.unnamed(TemplateRegistry))
-            .add(SingletonConfig.unnamed(StylesRegistry))
-            .add(SingletonConfig.unnamed(EventRegistry))
-            .add(SingletonConfig.unnamed(UniqueIdRegistry))
-            .add(SingletonConfig.unnamed(ComponentFactory))
-            .add(SingletonConfig.unnamed(State));
+        this.typeConfigList = new List([
+            SingletonConfig.unnamed(TemplateRegistry),
+            SingletonConfig.unnamed(StylesRegistry),
+            SingletonConfig.unnamed(EventRegistry),
+            SingletonConfig.unnamed(UniqueIdRegistry),
+            SingletonConfig.unnamed(ComponentFactory),
+            SingletonConfig.unnamed(State)]);
     }
 
     getTypeConfigList() {

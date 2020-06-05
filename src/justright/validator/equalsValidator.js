@@ -2,9 +2,10 @@ import { AbstractValidator } from "./abstractValidator.js";
 
 export class EqualsValidator extends AbstractValidator {
 
-    constructor(iscurrentlyValid = false, value = null) {
+    constructor(mandatory = false, iscurrentlyValid = false, value = null) {
 		super(iscurrentlyValid);
-        this.value = value;
+		this.value = value;
+		this.mandatory = mandatory;
     }
 
     setValue(value) {
@@ -12,7 +13,9 @@ export class EqualsValidator extends AbstractValidator {
     }
 
 	validate(value){
-		if(value && value === this.value){
+		if (!value && this.mandatory) {
+			this.invalid();
+		} else if(value === this.value){
 	    	this.valid();
 		} else {
 			this.invalid();

@@ -4,8 +4,8 @@ const PASSWORD_FORMAT = /^(?=.*[A-Za-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
 
 export class PasswordValidator extends RegexValidator {
 
-    constructor(iscurrentlyValid = false) {
-        super(iscurrentlyValid, PASSWORD_FORMAT);
+    constructor(mandatory = false, iscurrentlyValid = false) {
+        super(mandatory, iscurrentlyValid, PASSWORD_FORMAT);
     }
 
 }

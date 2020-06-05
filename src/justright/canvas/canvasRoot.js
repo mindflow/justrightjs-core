@@ -41,4 +41,18 @@ export class CanvasRoot {
     static addBodyElement(element) {
         ContainerBridge.addBodyElement(element.getMappedElement());
     }
+
+    /** 
+     * @param {BaseElement} element
+     */
+    static prependHeaderElement(element) {
+        ContainerBridge.prependHeaderElement(element.getMappedElement());
+    }
+
+    /** 
+     * @param {BaseElement} element
+     */
+    static prependBodyElement(element) {
+        ContainerBridge.prependBodyElement(element.getMappedElement());
+    }
 }

@@ -1,6 +1,6 @@
 /* jshint esversion: 6 */
 
-import { List, Map, ObjectFunction, Logger } from "coreutil_v1";
+import { Map, ObjectFunction, Logger } from "coreutil_v1";
 import { Event } from "./event.js";
 import { BaseElement } from "../element/baseElement.js";
 
@@ -15,6 +15,7 @@ export class EventRegistry {
     }
 
     /**
+     * Connects elements with the event registry so that events triggered on the element gets distributed to all listeners
      * 
      * @param {BaseElement} element the element which is the source of the event and which can be attached to
      * @param {string} eventType the event type as it is defined by the containing trigger (example "onclick")
@@ -35,36 +36,65 @@ export class EventRegistry {
      */
     listen(eventName, listener, uniqueIndex) {
         const uniqueEventName = eventName + "_" + uniqueIndex;
-        if (!this.listeners.exists(uniqueEventName)) {
-            this.listeners.set(uniqueEventName, new List());
-        }
-        this.listeners
-            .get(uniqueEventName)
-            .add(listener);
+        this.initMap(this.listeners, uniqueEventName);
+        /** @type {Map} */
+        const listenerMap = this.listeners.get(uniqueEventName);
+        this.checkExistingListener(listenerMap, listener.getObject().constructor.name);
+        listenerMap.set(listener.getObject().constructor.name, listener);
     }
 
-    listenBefore(eventName, handlerObject, handlerFunction) {
-        if (!this.beforeListeners.exists(eventName)) {
-            this.beforeListeners.set(eventName, new List());
-        }
-        this.beforeListeners
-            .get(eventName)
-            .add(new ObjectFunction(handlerObject, handlerFunction));
+    /**
+     * 
+     * @param {string} eventName the event name as it will be referred to in the EventRegistry (example "//event:clicked")
+     * @param {ObjectFunction} listener the object which owns the handler function
+     */
+    listenBefore(eventName, listener) {
+        this.initMap(this.beforeListeners, eventName);
+        /** @type {Map} */
+        const listenerMap = this.beforeListeners.get(eventName);
+        this.checkExistingListener(listenerMap, listener.getObject().constructor.name);
+        listenerMap.set(listener.getObject().constructor.name, listener);
     }
 
-    listenAfter(eventName, handlerObject, handlerFunction) {
-        if (!this.afterListeners.exists(eventName)) {
-            this.afterListeners.set(eventName,new List());
+    /**
+     * 
+     * @param {string} eventName the event name as it will be referred to in the EventRegistry (example "//event:clicked")
+     * @param {ObjectFunction} listener the object which owns the handler function
+     */
+    listenAfter(eventName, listener) {
+        this.initMap(this.afterListeners, eventName);
+        /** @type {Map} */
+        const listenerMap = this.afterListeners.get(eventName);
+        this.checkExistingListener(listenerMap, listener.getObject().constructor.name);
+        listenerMap.set(listener.getObject().constructor.name, listener);
+    }
+
+    /**
+     * 
+     * @param {Map} map 
+     * @param {string} key 
+     */
+    checkExistingListener(map, key) {
+        if (map.contains(key)) {
+            throw Error("Avoid using eventlisteners in multiple objects of same type. Manage such eventlisteners in a single parent object");
         }
-        this.afterListeners
-            .get(eventName)
-            .add(new ObjectFunction(handlerObject, handlerFunction));
+    }
+
+    /**
+     * 
+     * @param {Map} map 
+     * @param {string} key 
+     */
+    initMap(map, key) {
+        if (!map.exists(key)) {
+            map.set(key,new Map());
+        }
     }
 
     trigger(suffixedEventName, eventName, event) {
         this.handleBefore(eventName, event);
         if (this.listeners.exists(suffixedEventName)) {
-            this.listeners.get(suffixedEventName).forEach((value, parent) => {
+            this.listeners.get(suffixedEventName).forEach((key, value, parent) => {
                 value.call(new Event(event));
                 return true;
             }, this);
@@ -82,7 +112,7 @@ export class EventRegistry {
 
     handleGlobal(listeners, eventName, event) {
         if(listeners.exists(eventName)) {
-            listeners.get(eventName).forEach((value, parent) => {
+            listeners.get(eventName).forEach((key, value, parent) => {
                 value.call(new Event(event));
                 return true;
             }, this);

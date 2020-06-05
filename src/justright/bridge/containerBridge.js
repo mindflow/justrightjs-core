@@ -42,8 +42,8 @@ export class ContainerBridge {
      * @param {string} url 
      * @param {object} params 
      */
-    static fetch(url, params) {
-        return window.fetch(url, params);
+    static fetch(url, params, connectionTimeout = 1000, responseTimeout = 4000) {
+        return ContainerBridge.timeout(connectionTimeout, window.fetch(url, params));
     }
 
     // Storage bridge
@@ -94,5 +94,24 @@ export class ContainerBridge {
         let body = document.getElementsByTagName("body")[0];
         body.append(element);
     }
+
+    static prependHeaderElement(element) {
+        let header = document.getElementsByTagName("head")[0];
+        header.prepend(element);
+    }
+
+    static prependBodyElement(element) {
+        let body = document.getElementsByTagName("body")[0];
+        body.prepend(element);
+    }
+
+    static timeout(milliseconds, promise) {
+        return new Promise(function(resolve, reject) {
+          setTimeout(function() {
+            reject(new Error("timeout"))
+          }, milliseconds)
+          promise.then(resolve, reject)
+        });
+      }
 
 }

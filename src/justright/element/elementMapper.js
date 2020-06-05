@@ -8,6 +8,7 @@ import {TextareaInputElement} from "./textareaInputElement.js";
 import {TextnodeElement} from "./textnodeElement.js";
 import {SimpleElement} from "./simpleElement.js";
 import { BaseElement } from "./baseElement.js";
+import { FormElement } from "./formElement.js";
 
 export class ElementMapper {
 
@@ -21,6 +22,7 @@ export class ElementMapper {
         if (ElementMapper.mapsToRadio(input)){ return new RadioInputElement(input, parent); }
         if (ElementMapper.mapsToCheckbox(input)){ return new CheckboxInputElement(input, parent); }
         if (ElementMapper.mapsToSubmit(input)){ return new TextInputElement(input, parent); }
+        if (ElementMapper.mapsToForm(input)){ return new FormElement(input, parent); }
         if (ElementMapper.mapsToTextarea(input)){ return new TextareaInputElement(input, parent); }
         if (ElementMapper.mapsToText(input)){ return new TextInputElement(input, parent); }
         if (ElementMapper.mapsToTextnode(input)){ return new TextnodeElement(input, parent); }
@@ -42,6 +44,11 @@ export class ElementMapper {
     static mapsToSubmit(input){
         return (input instanceof HTMLInputElement && input.type === "submit") ||
             (input instanceof XmlElement && input.getName() === "input" && input.getAttribute("type").getValue() === "submit");
+    }
+
+    static mapsToForm(input){
+        return (input instanceof HTMLFormElement) ||
+            (input instanceof XmlElement && input.getName() === "form");
     }
 
     static mapsToText(input){
