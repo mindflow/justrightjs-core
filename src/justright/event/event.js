@@ -11,6 +11,10 @@ export class Event{
         }
     }
 
+    stopPropagation(){
+        this.event.stopPropagation();
+    }
+
     preventDefault(){
         this.event.preventDefault();
     }

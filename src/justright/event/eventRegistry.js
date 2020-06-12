@@ -39,7 +39,6 @@ export class EventRegistry {
         this.initMap(this.listeners, uniqueEventName);
         /** @type {Map} */
         const listenerMap = this.listeners.get(uniqueEventName);
-        this.checkExistingListener(listenerMap, listener.getObject().constructor.name);
         listenerMap.set(listener.getObject().constructor.name, listener);
     }
 
@@ -52,7 +51,6 @@ export class EventRegistry {
         this.initMap(this.beforeListeners, eventName);
         /** @type {Map} */
         const listenerMap = this.beforeListeners.get(eventName);
-        this.checkExistingListener(listenerMap, listener.getObject().constructor.name);
         listenerMap.set(listener.getObject().constructor.name, listener);
     }
 
@@ -65,19 +63,7 @@ export class EventRegistry {
         this.initMap(this.afterListeners, eventName);
         /** @type {Map} */
         const listenerMap = this.afterListeners.get(eventName);
-        this.checkExistingListener(listenerMap, listener.getObject().constructor.name);
         listenerMap.set(listener.getObject().constructor.name, listener);
-    }
-
-    /**
-     * 
-     * @param {Map} map 
-     * @param {string} key 
-     */
-    checkExistingListener(map, key) {
-        if (map.contains(key)) {
-            throw Error("Avoid using eventlisteners in multiple objects of same type. Manage such eventlisteners in a single parent object");
-        }
     }
 
     /**

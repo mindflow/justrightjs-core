@@ -1,5 +1,5 @@
 import { Logger, List } from "coreutil_v1"
-import { SingletonConfig } from "mindi_v1"
+import { SingletonConfig, PrototypeConfig } from "mindi_v1"
 import { TemplateRegistry } from "./template/templateRegistry.js";
 import { EventRegistry } from "./event/eventRegistry.js";
 import { UniqueIdRegistry } from "./component/uniqueIdRegistry.js";
@@ -19,11 +19,11 @@ export class JustrightConfig {
         this.typeConfigList = new List([
             SingletonConfig.unnamed(TemplateRegistry),
             SingletonConfig.unnamed(StylesRegistry),
-            SingletonConfig.unnamed(EventRegistry),
             SingletonConfig.unnamed(UniqueIdRegistry),
             SingletonConfig.unnamed(ComponentFactory),
-            SingletonConfig.unnamed(State)]);
-    }
+            SingletonConfig.unnamed(State),
+            PrototypeConfig.unnamed(EventRegistry)]);
+        }
 
     getTypeConfigList() {
         return this.typeConfigList;

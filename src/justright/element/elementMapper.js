@@ -33,17 +33,17 @@ export class ElementMapper {
 
     static mapsToRadio(input){
         return (input instanceof HTMLInputElement && input.type === "radio") ||
-            (input instanceof XmlElement && input.getName() === "input" && input.getAttribute("type").getValue() === "radio");
+            (input instanceof XmlElement && input.getName() === "input" && input.getAttribute("type") && input.getAttribute("type").getValue() === "radio");
     }
 
     static mapsToCheckbox(input){
         return (input instanceof HTMLInputElement && input.type === "checkbox") ||
-            (input instanceof XmlElement && input.getName() === "input" && input.getAttribute("type").getValue() === "checkbox");
+            (input instanceof XmlElement && input.getName() === "input" && input.getAttribute("type") && input.getAttribute("type").getValue() === "checkbox");
     }
 
     static mapsToSubmit(input){
         return (input instanceof HTMLInputElement && input.type === "submit") ||
-            (input instanceof XmlElement && input.getName() === "input" && input.getAttribute("type").getValue() === "submit");
+            (input instanceof XmlElement && input.getName() === "input" && input.getAttribute("type") && input.getAttribute("type").getValue() === "submit");
     }
 
     static mapsToForm(input){
@@ -60,6 +60,7 @@ export class ElementMapper {
             if (input.type === "time") { return true; }
         }
         if(input instanceof XmlElement && input.getName() === "input") {
+            if(!input.getAttribute("type")) { return true; }
             if(input.getAttribute("type").getValue() === "text") { return true; }
             if(input.getAttribute("type").getValue() === "password") { return true; }
             if(input.getAttribute("type").getValue() === "email") { return true; }

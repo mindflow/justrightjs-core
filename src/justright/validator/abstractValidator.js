@@ -19,6 +19,10 @@ export class AbstractValidator {
 
 	valid() {
         this.iscurrentlyValid = true;
+        if(!this.validListenerList) {
+            LOG.warn("No validation listeners");
+            return;
+        }
         this.validListenerList.forEach((value, parent) => {
             value.call();
             return true;
@@ -27,6 +31,10 @@ export class AbstractValidator {
 
 	invalid() {
         this.iscurrentlyValid = false;
+        if(!this.invalidListenerList) {
+            LOG.warn("No invalidation listeners");
+            return;
+        }
         this.invalidListenerList.forEach((value, parent) => {
             value.call();
             return true;

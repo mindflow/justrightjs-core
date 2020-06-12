@@ -44,13 +44,9 @@ export class InputElementDataBinding {
 
         const pusher = () => {
             var modelValue = PropertyAccessor.getValue(this.model, field.getName());
-            if (modelValue === field.getValue()) {
-                if (field.setChecked && !field.getChecked()) {
-                    field.setChecked(true);
-                }
-            } else {
-                if (field.setChecked && field.getChecked()) {
-                    field.setChecked(false);
+            if (modelValue !== field.getValue()) {
+                if (field.setChecked) {
+                    field.setChecked(modelValue);
                 } else if (field.setValue) {
                     field.setValue(modelValue);
                 }
