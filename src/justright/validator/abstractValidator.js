@@ -41,6 +41,14 @@ export class AbstractValidator {
         }, this);
 	}
 
+	validSilent() {
+        this.iscurrentlyValid = true;
+	}
+
+	invalidSilent() {
+        this.iscurrentlyValid = false;
+	}
+
 	/**
 	 * 
 	 * @param {ObjectFunction} validListener 

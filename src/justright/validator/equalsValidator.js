@@ -29,4 +29,14 @@ export class EqualsValidator extends AbstractValidator {
 		}
 	}
 
+	validateSilent(value){
+		if (!value && this.mandatory) {
+			this.invalidSilent();
+		} else if(value === this.comparedValueFunction.call()){
+	    	this.validSilent();
+		} else {
+			this.invalidSilent();
+		}
+	}
+
 }

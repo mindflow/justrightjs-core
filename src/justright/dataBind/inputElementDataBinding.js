@@ -51,7 +51,9 @@ export class InputElementDataBinding {
                     field.setValue(modelValue);
                 }
             }
-
+            if (this.validator && this.validator.validateSilent && field.getValue){
+                this.validator.validateSilent(field.getValue());
+            }
         };
 
         let changedFunctionName = "__changed_" + field.getName().replace(".","_");

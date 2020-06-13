@@ -20,4 +20,16 @@ export class RegexValidator extends AbstractValidator {
 		}
 	}
 
+	validateSilent(value){
+		if (value && typeof value === "string" && value.match(this.regex)){
+	    	this.validSilent();
+		} else {
+			if(!value && !this.mandatory) {
+				this.validSilent();
+			} else {
+				this.invalidSilent();
+			}
+		}
+	}
+
 }

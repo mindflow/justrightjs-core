@@ -10,4 +10,12 @@ export class RequiredValidator extends AbstractValidator {
 		}
 	}
 
+	validateSilent(value){
+		if(value === ""){
+	    	this.invalidSilent();
+		} else {
+			this.validSilent();
+		}
+	}
+
 }
