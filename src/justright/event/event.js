@@ -55,4 +55,8 @@ export class Event{
         return this.event.keyCode;
     }
 
+    isKeyCode(code) {
+        return this.event.keyCode === code;
+    }
+
 }

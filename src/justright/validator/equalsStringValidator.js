@@ -1,7 +1,7 @@
 import { AbstractValidator } from "./abstractValidator.js";
-import { ObjectFunction } from "coreutil_v1";
+import { ObjectFunction, PropertyAccessor } from "coreutil_v1";
 
-export class EqualsValidator extends AbstractValidator {
+export class EqualsStringValidator extends AbstractValidator {
 
 	/**
 	 * 
@@ -9,20 +9,20 @@ export class EqualsValidator extends AbstractValidator {
 	 * @param {boolean} iscurrentlyValid 
 	 * @param {ObjectFunction} comparedValueFunction 
 	 */
-    constructor(mandatory = false, iscurrentlyValid = false, comparedValueFunction = null) {
+    constructor(mandatory = false, iscurrentlyValid = false, controlValue = null) {
 		super(iscurrentlyValid);
 
 		/** @type {boolean} */
 		this.mandatory = mandatory;
 
-		/** @type {ObjectFunction} */
-		this.comparedValueFunction = comparedValueFunction;
+        /** @type {string} */
+        this.controlValue = controlValue;
 	}
 
 	validate(value){
 		if (!value && this.mandatory) {
 			this.invalid();
-		} else if(value === this.comparedValueFunction.call()){
+		} else if(value === controlValue){
 	    	this.valid();
 		} else {
 			this.invalid();
@@ -32,7 +32,7 @@ export class EqualsValidator extends AbstractValidator {
 	validateSilent(value){
 		if (!value && this.mandatory) {
 			this.invalidSilent();
-		} else if(value === this.comparedValueFunction.call()){
+		} else if(value === controlValue){
 	    	this.validSilent();
 		} else {
 			this.invalidSilent();
