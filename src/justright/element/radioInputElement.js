@@ -1,7 +1,7 @@
 /* jshint esversion: 6 */
 
-import {XmlElement} from "xmlparser_v1";
-import {AbstractInputElement} from "./abstractInputElement.js";
+import { XmlElement } from "xmlparser_v1";
+import { AbstractInputElement } from "./abstractInputElement.js";
 import { BaseElement } from "./baseElement.js";
 
 export class RadioInputElement extends AbstractInputElement{

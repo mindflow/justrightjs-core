@@ -5,20 +5,44 @@ const LOG = new Logger("AbstractValidator");
 export class AbstractValidator {
 
     /**
-     * @param {boolean} iscurrentlyValid
+     * @param {boolean} isCurrentlyValid
      */
-    constructor(iscurrentlyValid = false) {
+    constructor(currentlyValid = false) {
         this.validListenerList = new List();
         this.invalidListenerList = new List();
-        this.currentlyValid = iscurrentlyValid;
+        this.currentlyValid = currentlyValid;
+        this.enabled = true;
+    }
+
+    enable() {
+        this.enabled = true;
+        if (this.isValid()) {
+            this.valid();
+        } else {
+            this.invalid();
+        }
+    }
+
+    disable() {
+        let wasValid = this.currentlyValid;
+        // Fake valid
+        this.valid();
+        this.enabled = false;
+        this.currentlyValid = wasValid;
     }
 
     isValid() {
-        return this.iscurrentlyValid;
+        if (!this.enabled) {
+            return true;
+        }
+        return this.currentlyValid;
     }
 
 	valid() {
-        this.iscurrentlyValid = true;
+        if (!this.enabled) {
+            return;
+        }
+        this.currentlyValid = true;
         if(!this.validListenerList) {
             LOG.warn("No validation listeners");
             return;
@@ -30,7 +54,10 @@ export class AbstractValidator {
 	}
 
 	invalid() {
-        this.iscurrentlyValid = false;
+        if (!this.enabled) {
+            return;
+        }
+        this.currentlyValid = false;
         if(!this.invalidListenerList) {
             LOG.warn("No invalidation listeners");
             return;
@@ -42,11 +69,11 @@ export class AbstractValidator {
 	}
 
 	validSilent() {
-        this.iscurrentlyValid = true;
+        this.currentlyValid = true;
 	}
 
 	invalidSilent() {
-        this.iscurrentlyValid = false;
+        this.currentlyValid = false;
 	}
 
 	/**

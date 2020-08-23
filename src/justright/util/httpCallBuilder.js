@@ -33,6 +33,9 @@ export class HttpCallBuilder {
 
         /** @type {function} */
         this.errorMapperFunction = null;
+
+        /** @type {String} */
+        this.authorization = null;
     }
 
     /**
@@ -74,6 +77,15 @@ export class HttpCallBuilder {
         return this;
     }
 
+    /**
+     * 
+     * @param {string} authorization 
+     */
+    authorizationHeader(authorization) {
+        this.authorization = "Bearer " + authorization;
+        return this;
+    }
+
     connectionTimeout(connectionTimeoutValue) {
         this.connectionTimeoutValue = connectionTimeoutValue;
     }
@@ -91,7 +103,7 @@ export class HttpCallBuilder {
     }
 
     post() {
-        Client.post(this.url, this.paramter, this.connectionTimeoutValue, this.responseTimeoutValue).then((response) => {
+        Client.post(this.url, this.paramter, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization).then((response) => {
             this.processResponse(response);
         }, (error) => {
             this.processError(error);
@@ -99,7 +111,7 @@ export class HttpCallBuilder {
     }
 
     put() {
-        Client.put(this.url, this.paramter, this.connectionTimeoutValue, this.responseTimeoutValue).then((response) => {
+        Client.put(this.url, this.paramter, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization).then((response) => {
             this.processResponse(response);
         }, (error) => {
             this.processError(error);
@@ -107,7 +119,7 @@ export class HttpCallBuilder {
     }
 
     patch() {
-        Client.patch(this.url, this.paramter, this.connectionTimeoutValue, this.responseTimeoutValue).then((response) => {
+        Client.patch(this.url, this.paramter, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization).then((response) => {
             this.processResponse(response);
         }, (error) => {
             this.processError(error);
@@ -140,19 +152,23 @@ export class HttpCallBuilder {
         /** @type {HttpResponseHandler} */
         var responseHandler = this.httpCallbackMap.get(response.status);
         if(responseHandler) {
-            response.json().then(
-                (object) => {
-                    var mapperFunction = responseHandler.getMapperFunction();
-                    if(mapperFunction) {
-                        responseHandler.getObjectFunction().call(mapperFunction(object));
-                    } else {
-                        responseHandler.getObjectFunction().call(object);
-                    }
-                },
-                (failReason) => {
+            if(responseHandler.getMapperFunction()) {
+                response.json().then(
+                    (object) => {
+                        var mapperFunction = responseHandler.getMapperFunction();
+                        if(mapperFunction) {
+                            responseHandler.getObjectFunction().call(mapperFunction(object));
+                        } else {
+                            responseHandler.getObjectFunction().call(object);
+                        }
+                    },
+                    (failReason) => {
 
-                }
-            );
+                    }
+                );
+            } else {
+                responseHandler.getObjectFunction().call();
+            }
         }
     }
 }

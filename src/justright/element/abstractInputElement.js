@@ -54,6 +54,7 @@ export class AbstractInputElement extends BaseElement{
 
     setValue(value){
         this.element.value = value;
+        this.element.dispatchEvent(new InputEvent('change'));
     }
 
     focus() {

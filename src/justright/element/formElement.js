@@ -1,6 +1,6 @@
 /* jshint esversion: 6 */
 
-import {XmlElement} from "xmlparser_v1";
+import { XmlElement } from "xmlparser_v1";
 import { BaseElement } from "./baseElement.js";
 
 export class FormElement extends BaseElement{
