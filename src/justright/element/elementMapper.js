@@ -9,6 +9,7 @@ import {TextnodeElement} from "./textnodeElement.js";
 import {SimpleElement} from "./simpleElement.js";
 import { BaseElement } from "./baseElement.js";
 import { FormElement } from "./formElement.js";
+import { VideoElement } from "./videoElement.js";
 
 export class ElementMapper {
 
@@ -25,6 +26,7 @@ export class ElementMapper {
         if (ElementMapper.mapsToForm(input)){ return new FormElement(input, parent); }
         if (ElementMapper.mapsToTextarea(input)){ return new TextareaInputElement(input, parent); }
         if (ElementMapper.mapsToText(input)){ return new TextInputElement(input, parent); }
+        if (ElementMapper.mapsToVideo(input)){ return new VideoElement(input, parent); }
         if (ElementMapper.mapsToTextnode(input)){ return new TextnodeElement(input, parent); }
         if (ElementMapper.mapsToSimple(input)){ return new SimpleElement(input, parent); }
         console.log("Mapping to simple by default " + input);
@@ -73,6 +75,11 @@ export class ElementMapper {
     static mapsToTextnode(input){
         return (input instanceof Node && input.nodeType === "TEXT_NODE") ||
             (input instanceof XmlCdata);
+    }
+
+    static mapsToVideo(input){
+        return (input instanceof HTMLVideoElement) ||
+            (input instanceof XmlElement && input.getName() === "video");
     }
 
     static mapsToTextarea(input){
