@@ -7,11 +7,11 @@ export class AbstractValidator {
     /**
      * @param {boolean} isCurrentlyValid
      */
-    constructor(currentlyValid = false) {
+    constructor(currentlyValid = false, enabled = true) {
         this.validListenerList = new List();
         this.invalidListenerList = new List();
         this.currentlyValid = currentlyValid;
-        this.enabled = true;
+        this.enabled = enabled;
     }
 
     enable() {
