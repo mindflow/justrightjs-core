@@ -1,6 +1,6 @@
 import { RegexValidator } from "./regexValidator.js";
 
-const PHONE_FORMAT = /^\+[0-9]{2}[0-9]{6}[0-9]*$/;
+const PHONE_FORMAT = /^\+[0-9]{2}\s?([0-9]\s?)*$/;
 
 export class PhoneValidator extends RegexValidator {
 
