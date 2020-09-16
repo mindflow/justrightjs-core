@@ -175,9 +175,9 @@ export class BaseElement {
             this.element.parentNode.replaceChild(input.getMappedElement(),this.element);
             return;
         }
-        if(input && typeof input.getRootElement === "function") {
-            this.element.parentNode.replaceChild(input.getRootElement().getMappedElement(),this.element);
-            this.element = input.getRootElement().getMappedElement();
+        if(input && input.rootElement !== null) {
+            this.element.parentNode.replaceChild(input.rootElement.getMappedElement(),this.element);
+            this.element = input.rootElement.getMappedElement();
             return;
         }
         if(typeof input == "string") {
@@ -221,8 +221,8 @@ export class BaseElement {
             this.element.appendChild(input.getMappedElement());
             return;
         }
-        if (input && typeof input.getRootElement === "function") {
-            this.element.appendChild(input.getRootElement().getMappedElement());
+        if (input && input.rootElement) {
+            this.element.appendChild(input.rootElement.getMappedElement());
             return;
         }
         if (typeof input == "string") {
@@ -247,8 +247,8 @@ export class BaseElement {
             this.element.insertBefore(input.getMappedElement(),this.element.firstChild);
             return;
         }
-        if (input && typeof input.getRootElement === "function") {
-            this.element.insertBefore(input.getRootElement().getMappedElement(),this.element.firstChild);
+        if (input && input.rootElement) {
+            this.element.insertBefore(input.rootElement.getMappedElement(),this.element.firstChild);
             return;
         }
         if (typeof input == "string") {

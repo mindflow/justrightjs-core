@@ -5,18 +5,18 @@ export class CanvasRoot {
 
     static replaceComponent(id, component) {
         var bodyElement = ContainerBridge.getElementById(id);
-        bodyElement.parentNode.replaceChild(component.getRootElement().getMappedElement(), bodyElement);
+        bodyElement.parentNode.replaceChild(component.rootElement.getMappedElement(), bodyElement);
     }
 
     static setComponent(id, component) {
         var bodyElement = ContainerBridge.getElementById(id);
         bodyElement.innerHTML = '';
-        bodyElement.appendChild(component.getRootElement().getMappedElement(), bodyElement);
+        bodyElement.appendChild(component.rootElement.getMappedElement(), bodyElement);
     }
 
     static addChildComponent(id, component) {
         var bodyElement = ContainerBridge.getElementById(id);
-        bodyElement.appendChild(component.getRootElement().getMappedElement());
+        bodyElement.appendChild(component.rootElement.getMappedElement());
     }
 
     static addChildElement(id, element) {

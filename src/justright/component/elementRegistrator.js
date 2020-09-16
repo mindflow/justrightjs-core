@@ -25,16 +25,8 @@ export class ElementRegistrator {
         this.elementMap = new Map();
     }
 
-    getRootElement() {
-        return this.rootElement;
-    }
-
     getElementMap() {
         return this.elementMap;
-    }
-
-    getComponentIndex() {
-        return this.componentIndex;
     }
 
     /**

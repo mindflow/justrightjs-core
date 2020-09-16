@@ -44,7 +44,7 @@ export class ComponentFactory {
 
         this.mountStyles(name);
 
-        return new Component(elementRegistrator.getComponentIndex(), elementRegistrator.getRootElement(), elementRegistrator.getElementMap());
+        return new Component(elementRegistrator.componentIndex, elementRegistrator.rootElement, elementRegistrator.getElementMap());
     }
 
     mountStyles(name) {

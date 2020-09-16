@@ -24,17 +24,6 @@ export class Component {
     /**
      * @returns {BaseElement}
      */
-    getRootElement() {
-        return this.rootElement;
-    }
-
-    getComponentIndex(){
-        return this.componentIndex;
-    }
-
-    /**
-     * @returns {BaseElement}
-     */
     get(id) {
         return this.elementMap.get(id);
     }
