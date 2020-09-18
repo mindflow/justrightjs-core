@@ -26,9 +26,9 @@ export class StylesLoader {
      */
     load(config) {
         let stylesMap = new Map();
-        config.getConfigEntries().forEach((key, configEntry, parent) => {
-            if(configEntry.getClassReference().STYLES_URL && configEntry.getClassReference().COMPONENT_NAME) {
-                stylesMap.set(configEntry.getClassReference().COMPONENT_NAME, configEntry.getClassReference().STYLES_URL);
+        config.configEntries.forEach((key, configEntry, parent) => {
+            if(configEntry.classReference.STYLES_URL && configEntry.classReference.COMPONENT_NAME) {
+                stylesMap.set(configEntry.classReference.COMPONENT_NAME, configEntry.classReference.STYLES_URL);
             }
             return true;
         }, this); 

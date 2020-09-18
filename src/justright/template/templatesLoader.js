@@ -26,9 +26,9 @@ export class TemplatesLoader {
      */
     load(config) {
         let templateMap = new Map();
-        config.getConfigEntries().forEach((key, configEntry, parent) => {
-            if(configEntry.getClassReference().TEMPLATE_URL && configEntry.getClassReference().COMPONENT_NAME) {
-                templateMap.set(configEntry.getClassReference().COMPONENT_NAME, configEntry.getClassReference().TEMPLATE_URL);
+        config.configEntries.forEach((key, configEntry, parent) => {
+            if(configEntry.classReference.TEMPLATE_URL && configEntry.classReference.COMPONENT_NAME) {
+                templateMap.set(configEntry.classReference.COMPONENT_NAME, configEntry.classReference.TEMPLATE_URL);
             }
             return true;
         }, this); 
