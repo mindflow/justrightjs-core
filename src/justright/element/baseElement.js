@@ -63,15 +63,15 @@ export class BaseElement {
      */
     createFromXmlElement(xmlElement, parentElement) {
         let element = null;
-        if(xmlElement.getNamespace()){
-            element = ContainerBridge.createElementNS(xmlElement.getNamespaceUri(),xmlElement.getFullName());
+        if(xmlElement.namespace){
+            element = ContainerBridge.createElementNS(xmlElement.namespaceUri,xmlElement.fullName);
         }else{
-            element = ContainerBridge.createElement(xmlElement.getName());
+            element = ContainerBridge.createElement(xmlElement.name);
         }
-        if(parentElement && parentElement.getMappedElement() !== null) {
-            parentElement.getMappedElement().appendChild(element);
+        if(parentElement && parentElement.mappedElement !== null) {
+            parentElement.mappedElement.appendChild(element);
         }
-        xmlElement.getAttributes().forEach(function(attributeKey,attribute){
+        xmlElement.attributes.forEach(function(attributeKey,attribute){
             element.setAttribute(attributeKey,attribute.value);
             return true;
         });
@@ -101,39 +101,39 @@ export class BaseElement {
      *
      * @return {HTMLElement}
      */
-    getMappedElement() {
+    get mappedElement() {
         return this.element;
     }
 
-    getFullName() {
+    get fullName() {
         return this.element.tagName;
     }
 
-    getTop() {
+    get top() {
         return this.element.getBoundingClientRect().top;
     }
 
-    getBottom() {
+    get bottom() {
         return this.element.getBoundingClientRect().bottom;
     }
 
-    getLeft() {
+    get left() {
         return this.element.getBoundingClientRect().left;
     }
 
-    getRight() {
+    get right() {
         return this.element.getBoundingClientRect().right;
     }
 
-    getWidth() {
+    get width() {
         return this.element.offsetWidth;
     }
 
-    getHeight() {
+    get height() {
         return this.element.offsetHeight;
     }
 
-    getAttributes() {
+    get attributes() {
         this.loadAttributes();
         return this.attributeMap;
     }
@@ -171,25 +171,25 @@ export class BaseElement {
             console.error("The element has no parent, can not swap it for value");
             return;
         }
-        if(input.getMappedElement) {
-            this.element.parentNode.replaceChild(input.getMappedElement(),this.element);
+        if(input.mappedElement) {
+            this.element.parentNode.replaceChild(input.mappedElement, this.element);
             return;
         }
         if(input && input.rootElement !== null) {
-            this.element.parentNode.replaceChild(input.rootElement.getMappedElement(),this.element);
-            this.element = input.rootElement.getMappedElement();
+            this.element.parentNode.replaceChild(input.rootElement.mappedElement, this.element);
+            this.element = input.rootElement.mappedElement;
             return;
         }
         if(typeof input == "string") {
-            this.element.parentNode.replaceChild(ContainerBridge.createTextNode(input),this.element);
+            this.element.parentNode.replaceChild(ContainerBridge.createTextNode(input), this.element);
             return;
         }
         if(input instanceof Text) {
-            this.element.parentNode.replaceChild(input,this.element);
+            this.element.parentNode.replaceChild(input, this.element);
             return;
         }
         if(input instanceof Element) {
-            this.element.parentNode.replaceChild(input,this.element);
+            this.element.parentNode.replaceChild(input, this.element);
             return;
         }
     }
@@ -217,12 +217,12 @@ export class BaseElement {
     }
 
     addChild(input) {
-        if (input.getMappedElement) {
-            this.element.appendChild(input.getMappedElement());
+        if (input.mappedElement !== undefined && input.mappedElement !== null){
+            this.element.appendChild(input.mappedElement);
             return;
         }
         if (input && input.rootElement) {
-            this.element.appendChild(input.rootElement.getMappedElement());
+            this.element.appendChild(input.rootElement.mappedElement);
             return;
         }
         if (typeof input == "string") {
@@ -243,12 +243,12 @@ export class BaseElement {
         if(this.element.firstChild === null) {
             this.addChild(input);
         }
-        if (input.getMappedElement) {
-            this.element.insertBefore(input.getMappedElement(),this.element.firstChild);
+        if (input.mappedElement !== undefined && input.mappedElement !== null) {
+            this.element.insertBefore(input.mappedElement,this.element.firstChild);
             return;
         }
         if (input && input.rootElement) {
-            this.element.insertBefore(input.rootElement.getMappedElement(),this.element.firstChild);
+            this.element.insertBefore(input.rootElement.mappedElement,this.element.firstChild);
             return;
         }
         if (typeof input == "string") {

@@ -26,8 +26,8 @@ export class TextnodeElement {
      */
     createFromXmlCdata(cdataElement, parentElement) {
         let element = document.createTextNode(cdataElement.value);
-        if(parentElement !== null && parentElement.getMappedElement() !== null) {
-            parentElement.getMappedElement().appendChild(element);
+        if(parentElement !== null && parentElement.mappedElement !== null) {
+            parentElement.mappedElement.appendChild(element);
         }
         return element;
     }
@@ -40,7 +40,7 @@ export class TextnodeElement {
         return this.element;
     }
 
-    getMappedElement() {
+    get mappedElement() {
         return this.element;
     }
 

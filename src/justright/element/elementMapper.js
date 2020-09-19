@@ -35,22 +35,22 @@ export class ElementMapper {
 
     static mapsToRadio(input){
         return (input instanceof HTMLInputElement && input.type === "radio") ||
-            (input instanceof XmlElement && input.getName() === "input" && input.getAttribute("type") && input.getAttribute("type").value === "radio");
+            (input instanceof XmlElement && input.name === "input" && input.getAttribute("type") && input.getAttribute("type").value === "radio");
     }
 
     static mapsToCheckbox(input){
         return (input instanceof HTMLInputElement && input.type === "checkbox") ||
-            (input instanceof XmlElement && input.getName() === "input" && input.getAttribute("type") && input.getAttribute("type").value === "checkbox");
+            (input instanceof XmlElement && input.name === "input" && input.getAttribute("type") && input.getAttribute("type").value === "checkbox");
     }
 
     static mapsToSubmit(input){
         return (input instanceof HTMLInputElement && input.type === "submit") ||
-            (input instanceof XmlElement && input.getName() === "input" && input.getAttribute("type") && input.getAttribute("type").value === "submit");
+            (input instanceof XmlElement && input.name === "input" && input.getAttribute("type") && input.getAttribute("type").value === "submit");
     }
 
     static mapsToForm(input){
         return (input instanceof HTMLFormElement) ||
-            (input instanceof XmlElement && input.getName() === "form");
+            (input instanceof XmlElement && input.name === "form");
     }
 
     static mapsToText(input){
@@ -61,7 +61,7 @@ export class ElementMapper {
             if (input.type === "date") { return true; }
             if (input.type === "time") { return true; }
         }
-        if(input instanceof XmlElement && input.getName() === "input") {
+        if(input instanceof XmlElement && input.name === "input") {
             if(!input.getAttribute("type")) { return true; }
             if(input.getAttribute("type").value === "text") { return true; }
             if(input.getAttribute("type").value === "password") { return true; }
@@ -79,12 +79,12 @@ export class ElementMapper {
 
     static mapsToVideo(input){
         return (input instanceof HTMLVideoElement) ||
-            (input instanceof XmlElement && input.getName() === "video");
+            (input instanceof XmlElement && input.name === "video");
     }
 
     static mapsToTextarea(input){
         return (input instanceof HTMLTextAreaElement) ||
-            (input instanceof XmlElement && input.getName() === "textarea");
+            (input instanceof XmlElement && input.name === "textarea");
     }
 
     static mapsToSimple(input){

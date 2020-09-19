@@ -8,11 +8,11 @@ export class Attribute {
         return this.attribute.value;
     }
 
-    getName() {
+    get name() {
         return this.attribute.name;
     }
 
-    getNamespace() {
+    get namespace() {
         return this.attribute.name;
     }
 }

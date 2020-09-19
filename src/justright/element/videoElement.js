@@ -12,7 +12,7 @@ export class VideoElement extends BaseElement {
         super(element, parent);
     }
 
-    getMappedElement() {
+    get mappedElement() {
         return this.element;
     }
 

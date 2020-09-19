@@ -25,7 +25,7 @@ export class AbstractInputElement extends BaseElement{
      *
      * @return {string}
      */
-    getName() {
+    get name() {
         return this.element.name;
     }
 
@@ -34,7 +34,7 @@ export class AbstractInputElement extends BaseElement{
      *
      * @param {string} value
      */
-    setName(value) {
+    set name(value) {
         this.element.name = value;
     }
 

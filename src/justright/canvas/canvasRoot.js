@@ -5,23 +5,23 @@ export class CanvasRoot {
 
     static replaceComponent(id, component) {
         var bodyElement = ContainerBridge.getElementById(id);
-        bodyElement.parentNode.replaceChild(component.rootElement.getMappedElement(), bodyElement);
+        bodyElement.parentNode.replaceChild(component.rootElement.mappedElement, bodyElement);
     }
 
     static setComponent(id, component) {
         var bodyElement = ContainerBridge.getElementById(id);
         bodyElement.innerHTML = '';
-        bodyElement.appendChild(component.rootElement.getMappedElement(), bodyElement);
+        bodyElement.appendChild(component.rootElement.mappedElement, bodyElement);
     }
 
     static addChildComponent(id, component) {
         var bodyElement = ContainerBridge.getElementById(id);
-        bodyElement.appendChild(component.rootElement.getMappedElement());
+        bodyElement.appendChild(component.rootElement.mappedElement);
     }
 
     static addChildElement(id, element) {
         var bodyElement = ContainerBridge.getElementById(id);
-        bodyElement.appendChild(element.getMappedElement());
+        bodyElement.appendChild(element.mappedElement);
     }
 
     static removeElement(id) {
@@ -32,27 +32,27 @@ export class CanvasRoot {
      * @param {BaseElement} element
      */
     static addHeaderElement(element) {
-        ContainerBridge.addHeaderElement(element.getMappedElement());
+        ContainerBridge.addHeaderElement(element.mappedElement);
     }
 
     /** 
      * @param {BaseElement} element
      */
     static addBodyElement(element) {
-        ContainerBridge.addBodyElement(element.getMappedElement());
+        ContainerBridge.addBodyElement(element.mappedElement);
     }
 
     /** 
      * @param {BaseElement} element
      */
     static prependHeaderElement(element) {
-        ContainerBridge.prependHeaderElement(element.getMappedElement());
+        ContainerBridge.prependHeaderElement(element.mappedElement);
     }
 
     /** 
      * @param {BaseElement} element
      */
     static prependBodyElement(element) {
-        ContainerBridge.prependBodyElement(element.getMappedElement());
+        ContainerBridge.prependBodyElement(element.mappedElement);
     }
 }
