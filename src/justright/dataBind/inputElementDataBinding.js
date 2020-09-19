@@ -31,11 +31,11 @@ export class InputElementDataBinding {
     to(field) {
         const puller = () => {
             let modelValue = PropertyAccessor.getValue(this.model, field.getName());
-            if (field.getValue && modelValue !== field.getValue()) {
-                PropertyAccessor.setValue(this.model, field.getName(), field.getValue());
+            if (modelValue !== field.value) {
+                PropertyAccessor.setValue(this.model, field.getName(), field.value);
             }
             if (this.validator && this.validator.validate){
-                this.validator.validate(field.getValue());
+                this.validator.validate(field.value);
             }
         };
         field.attachEvent("onchange", puller);
@@ -44,15 +44,15 @@ export class InputElementDataBinding {
 
         const pusher = () => {
             var modelValue = PropertyAccessor.getValue(this.model, field.getName());
-            if (modelValue !== field.getValue()) {
+            if (modelValue !== field.value) {
                 if (field.setChecked) {
                     field.setChecked(modelValue);
-                } else if (field.setValue) {
-                    field.setValue(modelValue);
+                } else {
+                    field.value = modelValue;
                 }
             }
-            if (this.validator && this.validator.validateSilent && field.getValue){
-                this.validator.validateSilent(field.getValue());
+            if (this.validator && this.validator.validateSilent && field.value){
+                this.validator.validateSilent(field.value);
             }
         };
 

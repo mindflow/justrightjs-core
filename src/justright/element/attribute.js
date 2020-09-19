@@ -4,7 +4,7 @@ export class Attribute {
         this.attribute = attribute;
     }
 
-    getValue() {
+    get value() {
         return this.attribute.value;
     }
 

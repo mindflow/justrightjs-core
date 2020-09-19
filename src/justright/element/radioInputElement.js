@@ -23,8 +23,4 @@ export class RadioInputElement extends AbstractInputElement{
     isChecked(){
         return this.element.checked;
     }
-
-    getValue() {
-        return super.getValue();
-    }
 }

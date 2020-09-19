@@ -1,4 +1,4 @@
-import {XmlCdata} from "xmlparser_v1";
+import { XmlCdata } from "xmlparser_v1";
 import { BaseElement } from "./baseElement.js";
 import { ContainerBridge } from "../bridge/containerBridge.js";
 
@@ -19,19 +19,24 @@ export class TextnodeElement {
         }
     }
 
+    /**
+     * 
+     * @param {XmlCdata} cdataElement 
+     * @param {BaseElement} parentElement 
+     */
     createFromXmlCdata(cdataElement, parentElement) {
-        let element = document.createTextNode(cdataElement.getValue());
+        let element = document.createTextNode(cdataElement.value);
         if(parentElement !== null && parentElement.getMappedElement() !== null) {
             parentElement.getMappedElement().appendChild(element);
         }
         return element;
     }
 
-    setValue(value) {
+    set value(value) {
         this.element = value;
     }
 
-    getValue() {
+    get value() {
         return this.element;
     }
 

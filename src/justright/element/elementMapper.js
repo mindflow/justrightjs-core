@@ -35,17 +35,17 @@ export class ElementMapper {
 
     static mapsToRadio(input){
         return (input instanceof HTMLInputElement && input.type === "radio") ||
-            (input instanceof XmlElement && input.getName() === "input" && input.getAttribute("type") && input.getAttribute("type").getValue() === "radio");
+            (input instanceof XmlElement && input.getName() === "input" && input.getAttribute("type") && input.getAttribute("type").value === "radio");
     }
 
     static mapsToCheckbox(input){
         return (input instanceof HTMLInputElement && input.type === "checkbox") ||
-            (input instanceof XmlElement && input.getName() === "input" && input.getAttribute("type") && input.getAttribute("type").getValue() === "checkbox");
+            (input instanceof XmlElement && input.getName() === "input" && input.getAttribute("type") && input.getAttribute("type").value === "checkbox");
     }
 
     static mapsToSubmit(input){
         return (input instanceof HTMLInputElement && input.type === "submit") ||
-            (input instanceof XmlElement && input.getName() === "input" && input.getAttribute("type") && input.getAttribute("type").getValue() === "submit");
+            (input instanceof XmlElement && input.getName() === "input" && input.getAttribute("type") && input.getAttribute("type").value === "submit");
     }
 
     static mapsToForm(input){
@@ -63,11 +63,11 @@ export class ElementMapper {
         }
         if(input instanceof XmlElement && input.getName() === "input") {
             if(!input.getAttribute("type")) { return true; }
-            if(input.getAttribute("type").getValue() === "text") { return true; }
-            if(input.getAttribute("type").getValue() === "password") { return true; }
-            if(input.getAttribute("type").getValue() === "email") { return true; }
-            if(input.getAttribute("type").getValue() === "date") { return true; }
-            if(input.getAttribute("type").getValue() === "time") { return true; }
+            if(input.getAttribute("type").value === "text") { return true; }
+            if(input.getAttribute("type").value === "password") { return true; }
+            if(input.getAttribute("type").value === "email") { return true; }
+            if(input.getAttribute("type").value === "date") { return true; }
+            if(input.getAttribute("type").value === "time") { return true; }
         }
         return false;
     }

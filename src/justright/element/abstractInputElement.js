@@ -41,8 +41,13 @@ export class AbstractInputElement extends BaseElement{
     /**
      * Returns the value given any processing rules
      */
-    getValue(){
+    get value(){
         return this.getBackingValue();
+    }
+
+    set value(value){
+        this.element.value = value;
+        this.element.dispatchEvent(new InputEvent('change'));
     }
 
     /**
@@ -50,11 +55,6 @@ export class AbstractInputElement extends BaseElement{
      */
     getBackingValue(){
         return this.element.value;
-    }
-
-    setValue(value){
-        this.element.value = value;
-        this.element.dispatchEvent(new InputEvent('change'));
     }
 
     focus() {

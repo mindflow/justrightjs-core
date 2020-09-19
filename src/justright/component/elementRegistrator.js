@@ -55,8 +55,8 @@ export class ElementRegistrator {
         var eventRegistry = this.eventRegistry;
         var componentIndex = this.componentIndex;
         element.getAttributes().forEach(function (attributeKey,attribute,parent){
-            if(attribute !== null && attribute !== undefined && attribute.getValue().startsWith("//event:")) {
-                var eventName = attribute.getValue();
+            if(attribute !== null && attribute !== undefined && attribute.value.startsWith("//event:")) {
+                var eventName = attribute.value;
                 var eventType = attribute.getName();
                 eventRegistry.attach(element,eventType,eventName,componentIndex);
             }

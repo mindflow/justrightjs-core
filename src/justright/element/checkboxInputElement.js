@@ -24,7 +24,7 @@ export class CheckboxInputElement extends AbstractInputElement{
         return this.element.checked;
     }
 
-    getValue() {
+    get value() {
         if(this.isChecked()) {
             return true;
         }

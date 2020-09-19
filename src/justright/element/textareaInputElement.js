@@ -26,12 +26,12 @@ export class TextareaInputElement extends AbstractInputElement{
 
     addChild(input) {
         super.addChild(input);
-        this.setValue(this.getInnerHTML());
+        this.value = this.getInnerHTML();
     }
 
     prependChild(input) {
         super.prependChild(input);
-        this.setValue(this.getInnerHTML());
+        this.value = this.getInnerHTML();
     }
 
 }

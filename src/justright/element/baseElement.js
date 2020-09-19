@@ -71,8 +71,8 @@ export class BaseElement {
         if(parentElement && parentElement.getMappedElement() !== null) {
             parentElement.getMappedElement().appendChild(element);
         }
-        xmlElement.getAttributes().forEach(function(key,value){
-            element.setAttribute(key,value.getValue());
+        xmlElement.getAttributes().forEach(function(attributeKey,attribute){
+            element.setAttribute(attributeKey,attribute.value);
             return true;
         });
         return element;
