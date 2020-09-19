@@ -16,22 +16,22 @@ export class TextareaInputElement extends AbstractInputElement{
         super(element, parent);
     }
 
-    getInnerHTML(){
+    get innerHTML(){
         return this.element.innerHTML;
     }
 
-    setInnerHTML(value){
+    set innerHTML(value){
         this.element.innerHTML = value;
     }
 
     addChild(input) {
         super.addChild(input);
-        this.value = this.getInnerHTML();
+        this.value = this.innerHTML;
     }
 
     prependChild(input) {
         super.prependChild(input);
-        this.value = this.getInnerHTML();
+        this.value = this.innerHTML;
     }
 
 }

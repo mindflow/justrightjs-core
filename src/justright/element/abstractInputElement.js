@@ -42,7 +42,7 @@ export class AbstractInputElement extends BaseElement{
      * Returns the value given any processing rules
      */
     get value(){
-        return this.getBackingValue();
+        return this.backingValue;
     }
 
     set value(value){
@@ -53,7 +53,7 @@ export class AbstractInputElement extends BaseElement{
     /**
      * Returns the source value
      */
-    getBackingValue(){
+    get backingValue(){
         return this.element.value;
     }
 

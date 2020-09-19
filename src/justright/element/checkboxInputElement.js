@@ -16,7 +16,7 @@ export class CheckboxInputElement extends AbstractInputElement{
         super(element, parent);
     }
 
-    setChecked(value){
+    set checked(value){
         this.element.checked = value;
     }
 
@@ -25,9 +25,10 @@ export class CheckboxInputElement extends AbstractInputElement{
     }
 
     get value() {
-        if(this.isChecked()) {
-            return true;
-        }
-        return false;
+        return this.isChecked();
+    }
+
+    set value(value) {
+        this.element.checked = (value === true || value === "true");
     }
 }

@@ -15,11 +15,11 @@ export class SimpleElement extends BaseElement{
         super(element, parent);
     }
 
-    getInnerHTML(){
+    get innerHTML(){
         return this.element.innerHTML;
     }
 
-    setInnerHTML(value){
+    set innerHTML(value){
         this.element.innerHTML = value;
     }
 

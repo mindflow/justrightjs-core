@@ -45,11 +45,7 @@ export class InputElementDataBinding {
         const pusher = () => {
             var modelValue = PropertyAccessor.getValue(this.model, field.name);
             if (modelValue !== field.value) {
-                if (field.setChecked) {
-                    field.setChecked(modelValue);
-                } else {
-                    field.value = modelValue;
-                }
+                field.value = modelValue;
             }
             if (this.validator && this.validator.validateSilent && field.value){
                 this.validator.validateSilent(field.value);
