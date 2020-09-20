@@ -14,25 +14,4 @@ export class HttpResponseHandler {
         this.mapperFunction = mapperFunction;
     }
 
-    /**
-     * @returns {number}
-     */
-    getCode() {
-        return this.code;
-    }
-
-    /**
-     * @returns {ObjectFunction}
-     */
-    getObjectFunction() {
-        return this.objectFunction
-    }
-
-    /**
-     * @returns {class}
-     */
-    getMapperFunction() {
-        return this.mapperFunction;
-    }
-
 }

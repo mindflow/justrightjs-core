@@ -152,14 +152,14 @@ export class HttpCallBuilder {
         /** @type {HttpResponseHandler} */
         var responseHandler = this.httpCallbackMap.get(response.status);
         if(responseHandler) {
-            if(responseHandler.getMapperFunction()) {
+            if(responseHandler.mapperFunction) {
                 response.json().then(
                     (object) => {
-                        var mapperFunction = responseHandler.getMapperFunction();
+                        var mapperFunction = responseHandler.mapperFunction;
                         if(mapperFunction) {
-                            responseHandler.getObjectFunction().call(mapperFunction(object));
+                            responseHandler.objectFunction.call(mapperFunction(object));
                         } else {
-                            responseHandler.getObjectFunction().call(object);
+                            responseHandler.objectFunction.call(object);
                         }
                     },
                     (failReason) => {
@@ -167,7 +167,7 @@ export class HttpCallBuilder {
                     }
                 );
             } else {
-                responseHandler.getObjectFunction().call();
+                responseHandler.objectFunction.call();
             }
         }
     }
