@@ -81,27 +81,27 @@ export class ContainerBridge {
     }
 
     static removeElement(id) {
-        let element = document.getElementById(id);
+        const element = document.getElementById(id);
         element.parentNode.removeChild(element);
     }
 
     static addHeaderElement(element) {
-        let header = document.getElementsByTagName("head")[0];
+        const header = document.getElementsByTagName("head")[0];
         header.append(element);
     }
 
     static addBodyElement(element) {
-        let body = document.getElementsByTagName("body")[0];
+        const body = document.getElementsByTagName("body")[0];
         body.append(element);
     }
 
     static prependHeaderElement(element) {
-        let header = document.getElementsByTagName("head")[0];
+        const header = document.getElementsByTagName("head")[0];
         header.prepend(element);
     }
 
     static prependBodyElement(element) {
-        let body = document.getElementsByTagName("body")[0];
+        const body = document.getElementsByTagName("body")[0];
         body.prepend(element);
     }
 
