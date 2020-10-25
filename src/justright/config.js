@@ -7,9 +7,9 @@ import { ComponentFactory } from "./component/componentFactory.js";
 import { State } from "./navigation/state.js";
 import { StylesRegistry } from "./styles/stylesRegistry.js";
 
-const LOG = new Logger("JustrightConfig");
+const LOG = new Logger("Config");
 
-export class JustrightConfig {
+export class Config {
 
     static getInstance() {
         return justrightConfig;
@@ -31,4 +31,4 @@ export class JustrightConfig {
 
 }
 
-const justrightConfig = new JustrightConfig();
+const justrightConfig = new Config();
