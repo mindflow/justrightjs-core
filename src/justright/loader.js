@@ -8,6 +8,7 @@ export class Loader {
     constructor(rootPath, modulePath) {
         this.rootPath = rootPath;
         this.modulePath = modulePath;
+        this.defaultInstance = null;
     }
 
     matches(){ 
@@ -18,8 +19,24 @@ export class Loader {
         return url.getPathList().size() > 0 && "/" +  url.getPath(0) === this.rootPath;
     }
 
-    loadModule() {
-        return import(this.modulePath);
+    importModule() {
+        const instancePromise = new Promise((resolve, reject) => {
+            if (null != this.defaultInstance) {
+                resolve();
+                return;
+            }
+            import(this.modulePath).then((module) => {
+                this.defaultInstance = new module.default();
+                resolve();
+            }).catch((reason) => {
+                reject(reason);
+            });
+        });
+        return instancePromise;
+    }
+
+    defaultInstance() {
+        return this.defaultInstance;
     }
 
 }

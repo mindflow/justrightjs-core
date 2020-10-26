@@ -9,42 +9,57 @@ import { Config } from "./config.js";
 
 const LOG = new Logger("Application");
 
-const SHARED_INSTANCE_PROCESSORS_LIST = new List([ InstancePostConfigTrigger ]);
-const SHARED_CONFIG_PROCESSORS_LIST = new List([ ComponentConfigProcessor ]);
-const CONFIG = new MindiConfig();
+let APPLICATION_INSTANCE = null;
 
 export class Application {
+
+    static create(site) { APPLICATION_INSTANCE = new Application(site); }
+    static get instance() { return APPLICATION_INSTANCE; }
 
     /** 
      * @param {Site} site
      */
     constructor(site) {
 
+        /** @type {Site} */
         this.site = site;
+
+        /** @type {List} */
+        this.instanceProcessors = new List([ InstancePostConfigTrigger ]);
+
+        /** @type {List} */
+        this.configProcessors = new List([ ComponentConfigProcessor ]);
+
+        /** @type {MindiConfig} */
+        this.config = new MindiConfig();
+
+        /** @type {List} */
         this.runningWorkers = new List();
+
+        /** @type {List} */
         this.instansiatedLoaders = new List();
 
         /** @type {Loader} */
         const loader = this.getMatchingLoader();
 
-        /** @type {Promise} */
-        const modulePromise = loader.loadModule();
-
-        CONFIG
+        this.config
             .addAllTypeConfig(Config.getInstance().getTypeConfigList())
-            .addAllTypeConfig(site.typeConfigList)
-            .addAllConfigProcessor(SHARED_CONFIG_PROCESSORS_LIST)
-            .addAllInstanceProcessor(SHARED_INSTANCE_PROCESSORS_LIST);
+            .addAllTypeConfig(this.site.typeConfigList)
+            .addAllConfigProcessor(this.configProcessors)
+            .addAllInstanceProcessor(this.instanceProcessors);
 
-        modulePromise.then((module) => {
-            const mainObject = new module.default();
-            CONFIG.addAllTypeConfig(mainObject.typeConfigList);
-            CONFIG.finalize().then(() => {
+        this.runLoader(loader);
+    }
+
+    runLoader(loader) {
+        loader.importModule().then((module) => {
+            this.config.addAllTypeConfig(loader.defaultInstance.typeConfigList);
+            this.config.finalize().then(() => {
                 
                 // Let mindi load the loader
-                MindiInjector.inject(mainObject, CONFIG);
+                MindiInjector.inject(loader.defaultInstance, this.config);
     
-                this.instansiatedLoaders.add(mainObject);
+                this.instansiatedLoaders.add(loader.defaultInstance);
                 this.startWorkers();
             });
         });
@@ -56,34 +71,34 @@ export class Application {
         }
         this.site.workers.forEach((value,parent) => {
             const instance = new value();
-            MindiInjector.inject(instance, CONFIG);
+            MindiInjector.inject(instance, this.config);
             this.runningWorkers.add(instance);
             return true;
         }, this);
     }
 
     getExistingInstasiatedLoader() {
-        let loader = null;
+        let foundLoader = null;
         this.instansiatedLoaders.forEach((value,parent) => {
             if (value.matches()) {
-                loader = value;
+                foundLoader = value;
                 return false;
             }
             return true;
         }, this);
-        return loader;
+        return foundLoader;
     }
 
     getMatchingLoader() {
-        let loader = null;
+        let foundLoader = null;
         this.site.loaderList.forEach((value,parent) => {
             if (value.matches()) {
-                loader = value;
+                foundLoader = value;
                 return false;
             }
             return true;
         }, this);
-        return loader;
+        return foundLoader;
     }
 
     /**
@@ -91,7 +106,7 @@ export class Application {
      */
     windowDiConfig() {
         window.diConfig = () => {
-            LOG.info(CONFIG.configEntries);
+            LOG.info(this.config.configEntries);
         }
     }
 
@@ -100,7 +115,7 @@ export class Application {
      */
     windowTemplateRegistry() {
         window.templateRegistry = () => {
-            LOG.info(ConfigAccessor.instanceHolder(TemplateRegistry.name, CONFIG).getInstance());
+            LOG.info(ConfigAccessor.instanceHolder(TemplateRegistry.name, this.config).getInstance());
         }
     }
 
@@ -109,14 +124,8 @@ export class Application {
      */
     windowStyleRegistry() {
         window.styleRegistry = () => {
-            LOG.info(ConfigAccessor.instanceHolder(StylesRegistry.name, CONFIG).getInstance());
+            LOG.info(ConfigAccessor.instanceHolder(StylesRegistry.name, this.config).getInstance());
         }
     }
 
 }
-
-
-
-
-
-
