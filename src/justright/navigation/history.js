@@ -1,16 +1,21 @@
+import { ContainerBridge } from "../bridge/containerBridge";
 import { Url } from "../util/url";
 
 export class History {
 
-    static pushUrl(url,title,stateObject) {
-        window.history.pushState(stateObject, title, url.toString());
+    static replaceUrl(url, title, stateObject) {
+        ContainerBridge.replaceUrl(url.toString(), title, stateObject);
+    }
+
+    static pushUrl(url, title, stateObject) {
+        ContainerBridge.pushUrl(url.toString(), title, stateObject);
     }
 
     static getUrl() {
-        return new Url(window.location.href);
+        return new Url(ContainerBridge.currentUrl());
     }
 
     static loadUrl(url) {
-        window.location = url.toString();
+        ContainerBridge.loadUrl(url.toString());
     }
 }

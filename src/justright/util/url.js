@@ -1,5 +1,3 @@
-/* jshint esversion: 6 */
-
 import {List,Map} from "coreutil_v1";
 
 export class Url{
@@ -57,8 +55,21 @@ export class Url{
         return this.pathList;
     }
 
-    getPath(index){
+    getPathPart(index){
         return this.pathList.get(index);
+    }
+
+    getPath(){
+        let path = "/";
+        let first = true;
+        this.pathList.forEach((value => {
+            if (!first) {
+                path = path + "/";
+            }
+            path = path + value;
+            first = false;
+        }),this);
+        return path;
     }
 
     clearPathList(){

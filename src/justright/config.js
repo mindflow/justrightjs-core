@@ -4,7 +4,6 @@ import { TemplateRegistry } from "./template/templateRegistry.js";
 import { EventRegistry } from "./event/eventRegistry.js";
 import { UniqueIdRegistry } from "./component/uniqueIdRegistry.js";
 import { ComponentFactory } from "./component/componentFactory.js";
-import { State } from "./navigation/state.js";
 import { StylesRegistry } from "./styles/stylesRegistry.js";
 
 const LOG = new Logger("Config");
@@ -21,7 +20,6 @@ export class Config {
             SingletonConfig.unnamed(StylesRegistry),
             SingletonConfig.unnamed(UniqueIdRegistry),
             SingletonConfig.unnamed(ComponentFactory),
-            SingletonConfig.unnamed(State),
             PrototypeConfig.unnamed(EventRegistry)]);
         }
 
