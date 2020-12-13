@@ -1,5 +1,5 @@
 import { Logger } from "coreutil_v1";
-import { Config, InjectionPoint } from "mindi_v1";
+import { Config, InjectionPoint, TypeConfig } from "mindi_v1";
 import { StylesRegistry } from "../styles/stylesRegistry.js";
 import { TemplateRegistry } from "../template/templateRegistry.js";
 import { TemplatesLoader } from "../template/templatesLoader.js";
@@ -40,11 +40,12 @@ export class ComponentConfigProcessor {
      * @param {Config} config
      * @returns {Promise}
      */
-    processConfig(config) {
+    processConfig(config, unconfiguredConfigEntries) {
+
         return Promise.all(
             [ 
-                this.templatesLoader.load(config), 
-                this.stylesLoader.load(config) 
+                this.templatesLoader.load(unconfiguredConfigEntries), 
+                this.stylesLoader.load(unconfiguredConfigEntries) 
             ]
         );
     }

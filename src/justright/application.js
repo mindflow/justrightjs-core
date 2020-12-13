@@ -1,7 +1,7 @@
 import { List, Logger } from  "coreutil_v1";
 import { MindiInjector, MindiConfig, InstancePostConfigTrigger, ConfigAccessor } from "mindi_v1";
 import { ComponentConfigProcessor } from "./component/componentConfigProcessor.js";
-import { ModuleLoader } from "./moduleLoader.js";
+import { ModuleLoader } from "./loader/moduleLoader.js";
 import { TemplateRegistry } from "./template/templateRegistry.js";
 import { StylesRegistry } from "./styles/stylesRegistry.js";
 import { Config } from "./config.js";
@@ -35,14 +35,8 @@ export class Application {
     }
 
     run() {
-        this.prepareMatchingModule().then(() => {
-            this.getMatchingModuleLoader().load();
-            this.startWorkers();
-        });
-    }
-
-    prepareMatchingModule() {
-        return this.getMatchingModuleLoader().importModule();
+        this.getMatchingModuleLoader().load();
+        this.startWorkers();
     }
 
     executeMatchingModule() {
@@ -90,7 +84,7 @@ export class Application {
      */
     windowTemplateRegistry() {
         window.templateRegistry = () => {
-            LOG.info(ConfigAccessor.instanceHolder(TemplateRegistry.name, this.config).getInstance());
+            LOG.info(ConfigAccessor.instanceHolder(TemplateRegistry.name, this.config).instance);
         }
     }
 
@@ -99,7 +93,7 @@ export class Application {
      */
     windowStyleRegistry() {
         window.styleRegistry = () => {
-            LOG.info(ConfigAccessor.instanceHolder(StylesRegistry.name, this.config).getInstance());
+            LOG.info(ConfigAccessor.instanceHolder(StylesRegistry.name, this.config).instance);
         }
     }
 

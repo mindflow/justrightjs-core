@@ -21,12 +21,12 @@ export class StylesLoader {
 
     /**
      * 
-     * @param {Config} config
+     * @param {Map} configEntries
      * @returns {Promise}
      */
-    load(config) {
+    load(configEntries) {
         let stylesMap = new Map();
-        config.configEntries.forEach((key, configEntry, parent) => {
+        configEntries.forEach((key, configEntry, parent) => {
             if(configEntry.classReference.STYLES_URL && configEntry.classReference.COMPONENT_NAME) {
                 stylesMap.set(configEntry.classReference.COMPONENT_NAME, configEntry.classReference.STYLES_URL);
             }

@@ -1,5 +1,5 @@
 import { Logger, Map } from "coreutil_v1";
-import { Config } from "mindi_v1";
+import { Config, TypeConfig } from "mindi_v1";
 import { TemplateRegistry } from "./templateRegistry.js";
 
 const LOG = new Logger("TemplatePostConfig");
@@ -21,12 +21,12 @@ export class TemplatesLoader {
 
     /**
      * 
-     * @param {Config} config
+     * @param {Map} configEntries
      * @returns {Promise}
      */
-    load(config) {
+    load(configEntries) {
         let templateMap = new Map();
-        config.configEntries.forEach((key, configEntry, parent) => {
+        configEntries.forEach((key, configEntry, parent) => {
             if(configEntry.classReference.TEMPLATE_URL && configEntry.classReference.COMPONENT_NAME) {
                 templateMap.set(configEntry.classReference.COMPONENT_NAME, configEntry.classReference.TEMPLATE_URL);
             }

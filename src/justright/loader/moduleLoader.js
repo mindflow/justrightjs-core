@@ -1,5 +1,6 @@
 import { Logger } from "coreutil_v1"
-import { History } from "./navigation/history.js";
+import { History } from "../navigation/history.js";
+import { LoaderFilter } from "./loaderFilter.js";
 
 const LOG = new Logger("ModuleLoader");
 
@@ -10,9 +11,9 @@ export class ModuleLoader {
      * @param {RegExp} matchPath 
      * @param {String} rootPath 
      * @param {String} modulePath 
-     * @param {Array} requiredScopeArray 
+     * @param {Array<LoaderFilter>} loaderFilters 
      */
-    constructor(matchPath, rootPath, modulePath, requiredScopeArray = []) {
+    constructor(matchPath, rootPath, modulePath, loaderFilters = []) {
         
         /**
          * @type {RegExp}
@@ -30,9 +31,9 @@ export class ModuleLoader {
         this.modulePath = modulePath;
 
         /**
-         * @type {String}
+         * @type {Array<LoaderFilter>}
          */
-        this.requiredScopeArray = requiredScopeArray;
+        this.loaderFilters = loaderFilters;
 
         /**
          * @type {Object}
@@ -58,6 +59,9 @@ export class ModuleLoader {
     }
 
     load(rootPath) {
+        if (!this.filtersPass()) {
+            return;
+        }
         const parent = this;
         if (!parent.defaultInstance) {
             parent.importModule().then(() => {
@@ -66,6 +70,18 @@ export class ModuleLoader {
         } else {
             parent.defaultInstance.load(rootPath);
         }
+    }
+
+    filtersPass() {
+        let pass = true;
+        if (this.loaderFilters) {
+            this.loaderFilters.forEach((element) => {
+                if(!element.process()) {
+                    pass = false;
+                }
+            })
+        }
+        return pass;
     }
 
     importModule() {
