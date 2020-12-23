@@ -1,8 +1,8 @@
 import { Map, List, Logger } from "coreutil_v1";
-import { CanvasRoot } from "./canvasRoot";
-import { HTML } from "../html/html";
-import { BaseElement } from "../element/baseElement";
-import { TextnodeElement } from "../element/textnodeElement";
+import { CanvasRoot } from "./canvasRoot.js";
+import { HTML } from "../html/html.js";
+import { BaseElement } from "../element/baseElement.js";
+import { TextnodeElement } from "../element/textnodeElement.js";
 
 const LOG = new Logger("CanvasStyles");
 

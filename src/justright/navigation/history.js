@@ -1,4 +1,4 @@
-import { ContainerBridge } from "../bridge/containerBridge";
+import { ContainerBridge } from "bridge_v1";
 import { Url } from "../util/url";
 
 export class History {

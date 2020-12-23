@@ -3,7 +3,7 @@
 import { XmlElement } from "xmlparser_v1";
 import { Map, Logger, List } from "coreutil_v1";
 import { Attribute } from "./attribute.js";
-import { ContainerBridge } from "../bridge/containerBridge.js";
+import { ContainerBridge } from "bridge_v1";
 
 const LOG = new Logger("BaseElement");
 

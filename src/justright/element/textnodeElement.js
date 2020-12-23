@@ -1,6 +1,6 @@
 import { XmlCdata } from "xmlparser_v1";
 import { BaseElement } from "./baseElement.js";
-import { ContainerBridge } from "../bridge/containerBridge.js";
+import { ContainerBridge } from "bridge_v1";
 
 export class TextnodeElement {
 

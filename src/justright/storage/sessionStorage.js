@@ -1,4 +1,4 @@
-import { ContainerBridge } from "../bridge/containerBridge.js"
+import { ContainerBridge } from "bridge_v1";
 
 export class SessionStorage {
 
