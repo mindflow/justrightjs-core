@@ -14,7 +14,7 @@
     "coreutil_v1": "file:../coreutiljs",
     "mindi_v1": "file:../mindijs",
     "xmlparser_v1": "file:../xmlparserjs",
-    "bridge_v1": "file:../bridgejs/webbrowser-bridge"
+    "containerbridge_v1": "file:../containerbridgejs/webbrowserbridge"
   },
   "devDependencies": {
     "rollup": "^1.25.2",

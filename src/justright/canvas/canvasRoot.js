@@ -1,58 +1,58 @@
-import { ContainerBridge } from "bridge_v1";
+import { ContainerFunctions } from "containerbridge_v1";
 import { BaseElement } from "../element/baseElement";
 
 export class CanvasRoot {
 
     static replaceComponent(id, component) {
-        var bodyElement = ContainerBridge.getElementById(id);
+        var bodyElement = ContainerFunctions.getElementById(id);
         bodyElement.parentNode.replaceChild(component.rootElement.mappedElement, bodyElement);
     }
 
     static setComponent(id, component) {
-        var bodyElement = ContainerBridge.getElementById(id);
+        var bodyElement = ContainerFunctions.getElementById(id);
         bodyElement.innerHTML = '';
         bodyElement.appendChild(component.rootElement.mappedElement, bodyElement);
     }
 
     static addChildComponent(id, component) {
-        var bodyElement = ContainerBridge.getElementById(id);
+        var bodyElement = ContainerFunctions.getElementById(id);
         bodyElement.appendChild(component.rootElement.mappedElement);
     }
 
     static addChildElement(id, element) {
-        var bodyElement = ContainerBridge.getElementById(id);
+        var bodyElement = ContainerFunctions.getElementById(id);
         bodyElement.appendChild(element.mappedElement);
     }
 
     static removeElement(id) {
-        ContainerBridge.removeElement(id);
+        ContainerFunctions.removeElement(id);
     }
 
     /** 
      * @param {BaseElement} element
      */
     static addHeaderElement(element) {
-        ContainerBridge.addHeaderElement(element.mappedElement);
+        ContainerFunctions.addHeaderElement(element.mappedElement);
     }
 
     /** 
      * @param {BaseElement} element
      */
     static addBodyElement(element) {
-        ContainerBridge.addBodyElement(element.mappedElement);
+        ContainerFunctions.addBodyElement(element.mappedElement);
     }
 
     /** 
      * @param {BaseElement} element
      */
     static prependHeaderElement(element) {
-        ContainerBridge.prependHeaderElement(element.mappedElement);
+        ContainerFunctions.prependHeaderElement(element.mappedElement);
     }
 
     /** 
      * @param {BaseElement} element
      */
     static prependBodyElement(element) {
-        ContainerBridge.prependBodyElement(element.mappedElement);
+        ContainerFunctions.prependBodyElement(element.mappedElement);
     }
 }

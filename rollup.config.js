@@ -4,7 +4,7 @@ import uglify from 'rollup-plugin-uglify-es';
 
 export default [{
     input: "src/**/*.js",
-    external: [ 'coreutil_v1','xmlparser_v1','mindi_v1', 'bridge_v1' ],
+    external: [ 'coreutil_v1','xmlparser_v1','mindi_v1','containerbridge_v1' ],
     output: {
         name: 'justright_core_v1',
         file: "dist/jsm/justright_core_v1.js",
@@ -20,7 +20,7 @@ export default [{
     ]
 },{
     input: "src/**/*.js",
-    external: [ 'coreutil_v1','xmlparser_v1','mindi_v1', 'bridge_v1' ],
+    external: [ 'coreutil_v1','xmlparser_v1','mindi_v1','containerbridge_v1' ],
     output: {
         name: 'justright_core_v1',
         file: "dist/cjs/justright_core_v1.js",

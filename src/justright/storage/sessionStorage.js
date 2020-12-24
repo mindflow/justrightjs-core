@@ -1,21 +1,21 @@
-import { ContainerBridge } from "bridge_v1";
+import { ContainerFunctions } from "containerbridge_v1";
 
 export class SessionStorage {
 
     static setSessionAttribute(key, value) {
-        ContainerBridge.setSessionAttribute(key,value);
+        ContainerFunctions.setSessionAttribute(key,value);
     }
 
     static hasSessionAttribute(key) {
-        return ContainerBridge.hasSessionAttribute(key);
+        return ContainerFunctions.hasSessionAttribute(key);
     }
 
     static getSessionAttribute(key) {
-        return ContainerBridge.getSessionAttribute(key);
+        return ContainerFunctions.getSessionAttribute(key);
     }
 
     static removeSessionAttribute(key) {
-        return ContainerBridge.removeSessionAttribute(key);
+        return ContainerFunctions.removeSessionAttribute(key);
     }
 
 }

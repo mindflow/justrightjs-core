@@ -1,4 +1,4 @@
-import { ContainerBridge } from "bridge_v1";
+import { ContainerFunctions } from "containerbridge_v1";
 
 export class Client {
 
@@ -13,7 +13,7 @@ export class Client {
             mode: 'cors', // no-cors, cors, *same-origin
             redirect: 'follow' // manual, *follow, error
         }
-        return ContainerBridge.fetch(url.toString(),params, connectionTimeout, responseTimeout);
+        return ContainerFunctions.fetch(url.toString(),params, connectionTimeout, responseTimeout);
     }
 
     /**
@@ -31,7 +31,7 @@ export class Client {
             mode: "cors", // no-cors, cors, *same-origin
             redirect: "follow", // manual, *follow, error
         }
-        return ContainerBridge.fetch(url.toString(), params, connectionTimeout, responseTimeout);
+        return ContainerFunctions.fetch(url.toString(), params, connectionTimeout, responseTimeout);
     }
 
     /**
@@ -49,7 +49,7 @@ export class Client {
             redirect: 'follow', // manual, *follow, error
             headers: headers
         }
-        return ContainerBridge.fetch(url.toString(), params, connectionTimeout, responseTimeout);
+        return ContainerFunctions.fetch(url.toString(), params, connectionTimeout, responseTimeout);
     }
 
     /**
@@ -67,7 +67,7 @@ export class Client {
             redirect: 'follow', // manual, *follow, error
             headers: headers
         }
-        return ContainerBridge.fetch(url.toString(), params, connectionTimeout, responseTimeout);
+        return ContainerFunctions.fetch(url.toString(), params, connectionTimeout, responseTimeout);
     }
 
     /**
@@ -81,7 +81,7 @@ export class Client {
             mode: 'cors', // no-cors, cors, *same-origin
             redirect: 'follow' // manual, *follow, error
         }
-        return ContainerBridge.fetch(url.toString(), params, connectionTimeout, responseTimeout);
+        return ContainerFunctions.fetch(url.toString(), params, connectionTimeout, responseTimeout);
     }
 
     static getHeader(authorization = null) {

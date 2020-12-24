@@ -1,6 +1,6 @@
 import { XmlCdata } from "xmlparser_v1";
+import { ContainerFunctions } from "containerbridge_v1";
 import { BaseElement } from "./baseElement.js";
-import { ContainerBridge } from "bridge_v1";
 
 export class TextnodeElement {
 
@@ -15,7 +15,7 @@ export class TextnodeElement {
             this.element = this.createFromXmlCdata(value, parent);
         }
         if(typeof value === "string"){
-            this.element = ContainerBridge.createTextNode(value);
+            this.element = ContainerFunctions.createTextNode(value);
         }
     }
 
