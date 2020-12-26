@@ -1,5 +1,8 @@
 import { ObjectFunction } from "coreutil_v1";
 
+/**
+ * Object Function which is called if the filter function returns true
+ */
 export class EventFilteredObjectFunction extends ObjectFunction {
 
     /**
