@@ -46,8 +46,9 @@ export class DiModuleLoader extends ModuleLoader {
             return super.importModule().then(() => {
                 this.config.addAllTypeConfig(parent.defaultInstance.typeConfigList);
                 this.config.finalize().then(() => {
-                    MindiInjector.inject(parent.defaultInstance, this.config);
-                    resolve();
+                    MindiInjector.inject(parent.defaultInstance, this.config).then(() => {
+                        resolve();
+                    });
                 });
             });
         });
