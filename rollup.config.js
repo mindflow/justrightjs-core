@@ -15,8 +15,22 @@ export default [{
         multiEntry(),
         postprocess([
             [/(?<=import\s*(.*)\s*from\s*)['"]((?!.*[.]js).*)['"];/, '\'./$2.js\'']
+        ])
+    ]
+},{
+    input: "src/**/*.js",
+    external: [ 'coreutil_v1','xmlparser_v1','mindi_v1','containerbridge_v1' ],
+    output: {
+        name: 'justright_core_v1',
+        file: "dist/jsm/justright_core_v1.min.js",
+        format: "es"
+    },
+    plugins: [
+        multiEntry(),
+        postprocess([
+            [/(?<=import\s*(.*)\s*from\s*)['"]((?!.*[.]js).*)['"];/, '\'./$2.js\'']
         ]),
-        //uglify()
+        //uglify() unknown bug
     ]
 },{
     input: "src/**/*.js",
@@ -28,7 +42,6 @@ export default [{
         format: "cjs"
     },
     plugins: [
-        multiEntry(),
-        //uglify()
+        multiEntry()
     ]
 }];
