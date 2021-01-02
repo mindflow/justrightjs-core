@@ -11,15 +11,15 @@
   "author": "Toby Nilsen",
   "license": "MIT",
   "dependencies": {
+    "containerbridge_v1": "file:../containerbridgejs/webbrowserbridge",
     "coreutil_v1": "file:../coreutiljs",
     "mindi_v1": "file:../mindijs",
-    "xmlparser_v1": "file:../xmlparserjs",
-    "containerbridge_v1": "file:../containerbridgejs/webbrowserbridge"
+    "xmlparser_v1": "file:../xmlparserjs"
   },
   "devDependencies": {
-    "rollup": "^1.25.2",
-    "rollup-plugin-multi-entry": "^2.1.0",
-    "rollup-plugin-postprocess": "^1.0.2",
-    "rollup-plugin-uglify-es": "^0.0.1"
+    "rollup": "^2.35.1",
+    "@rollup/plugin-multi-entry": "^4.0.0",
+    "@rollup/plugin-replace": "^2.3.4",
+    "rollup-plugin-terser": "^7.0.2"
   }
 }
