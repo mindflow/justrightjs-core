@@ -1,5 +1,5 @@
 import multi from '@rollup/plugin-multi-entry';
-import replace from '@rollup/plugin-replace';
+import webes from 'plugin-webes';
 import { terser } from "rollup-plugin-terser";
 
 export default [{
@@ -13,16 +13,12 @@ export default [{
     },
     plugins: [
         multi(),
-        replace({
-            'coreutil_v1': 'coreutilv1',
-            'xmlparser_v1': 'xmlparserv1',
-            'mindi_v1': 'mindiv1',
-            'containerbridge_v1': 'containerbridgev1',
-
-            'coreutilv1': './coreutil_v1.js',
-            'xmlparserv1': './xmlparser_v1.js',
-            'mindiv1': './mindi_v1.js',
-            'containerbridgev1': './containerbridge_v1.js'
+		webes({
+            'coreutil_v1': './coreutil_v1.js',
+            'xmlparser_v1': './xmlparser_v1.js',
+            'mindi_v1': './mindi_v1.js',
+            'containerbridge_v1': './containerbridge_v1.js',
+            replaceStage: 'renderChunk'
         })
     ]
 },{
@@ -35,11 +31,12 @@ export default [{
     },
     plugins: [
         multi(),
-        replace({
-            coreutil_v1: 'coreutil_v1',
-            xmlparser_v1: 'xmlparser_v1',
-            mindi_v1: 'mindi_v1',
-            containerbridge_v1: 'containerbridge_v1'
+        webes({
+            'coreutil_v1': './coreutil_v1.js',
+            'xmlparser_v1': './xmlparser_v1.js',
+            'mindi_v1': './mindi_v1.js',
+            'containerbridge_v1': './containerbridge_v1.js',
+            replaceStage: 'renderChunk'
         }),
         terser()
     ]
