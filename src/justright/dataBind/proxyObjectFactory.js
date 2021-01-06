@@ -3,7 +3,9 @@ export class ProxyObjectFactory {
     /**
      * Creates a proxy for an object which allows databinding from the object to the form element
      * 
-     * @param {Object} object 
+     * @template T
+     * @param {T} object 
+     * @returns {T}
      */
     static createProxyObject(object) {
         return new Proxy(object, {
