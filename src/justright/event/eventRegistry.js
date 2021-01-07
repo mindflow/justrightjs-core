@@ -9,8 +9,14 @@ const LOG = new Logger("EventRegistry");
 export class EventRegistry {
 
     constructor() {
+
+        /** @type {Map<Map<ObjectFunction>} */
         this.listeners = new Map();
+
+        /** @type {Map<ObjectFunction>} */
         this.beforeListeners = new Map();
+
+        /** @type {Map<ObjectFunction>} */
         this.afterListeners = new Map();
     }
 
@@ -37,9 +43,9 @@ export class EventRegistry {
     listen(eventName, listener, uniqueIndex) {
         const uniqueEventName = eventName + "_" + uniqueIndex;
         this.initMap(this.listeners, uniqueEventName);
-        /** @type {Map} */
+        /** @type {Map<ObjectFunction>} */
         const listenerMap = this.listeners.get(uniqueEventName);
-        listenerMap.set(listener.getObject().constructor.name, listener);
+        listenerMap.set(listener.object.constructor.name, listener);
     }
 
     /**
@@ -51,7 +57,7 @@ export class EventRegistry {
         this.initMap(this.beforeListeners, eventName);
         /** @type {Map} */
         const listenerMap = this.beforeListeners.get(eventName);
-        listenerMap.set(listener.getObject().constructor.name, listener);
+        listenerMap.set(listener.object.constructor.name, listener);
     }
 
     /**
@@ -63,7 +69,7 @@ export class EventRegistry {
         this.initMap(this.afterListeners, eventName);
         /** @type {Map} */
         const listenerMap = this.afterListeners.get(eventName);
-        listenerMap.set(listener.getObject().constructor.name, listener);
+        listenerMap.set(listener.object.constructor.name, listener);
     }
 
     /**
