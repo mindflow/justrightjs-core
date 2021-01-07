@@ -24,9 +24,9 @@ export class EventRegistry {
      * Connects elements with the event registry so that events triggered on the element gets distributed to all listeners
      * 
      * @param {BaseElement} element the element which is the source of the event and which can be attached to
-     * @param {string} eventType the event type as it is defined by the containing trigger (example "onclick")
-     * @param {string} eventName the event name as it will be referred to in the EventRegistry (example "//event:clicked")
-     * @param {string} componentIndex unique id of the component which owns the element
+     * @param {String} eventType the event type as it is defined by the containing trigger (example "onclick")
+     * @param {String} eventName the event name as it will be referred to in the EventRegistry (example "//event:clicked")
+     * @param {String} componentIndex unique id of the component which owns the element
      */
     attach(element, eventType, eventName, componentIndex) {
         const uniqueEventName = eventName + "_" + componentIndex;
@@ -36,9 +36,9 @@ export class EventRegistry {
 
     /**
      * 
-     * @param {string} eventName the event name as it will be referred to in the EventRegistry (example "//event:clicked")
+     * @param {String} eventName the event name as it will be referred to in the EventRegistry (example "//event:clicked")
      * @param {ObjectFunction} listener the object which owns the handler function
-     * @param {string} uniqueIndex a unique index for the event
+     * @param {String} uniqueIndex a unique index for the event
      */
     listen(eventName, listener, uniqueIndex) {
         const uniqueEventName = eventName + "_" + uniqueIndex;
@@ -50,19 +50,19 @@ export class EventRegistry {
 
     /**
      * 
-     * @param {string} eventName the event name as it will be referred to in the EventRegistry (example "//event:clicked")
+     * @param {String} eventName the event name as it will be referred to in the EventRegistry (example "//event:clicked")
      * @param {ObjectFunction} listener the object which owns the handler function
      */
     listenBefore(eventName, listener) {
         this.initMap(this.beforeListeners, eventName);
-        /** @type {Map} */
+        /** @type {Map<ObjectFunction>} */
         const listenerMap = this.beforeListeners.get(eventName);
         listenerMap.set(listener.object.constructor.name, listener);
     }
 
     /**
      * 
-     * @param {string} eventName the event name as it will be referred to in the EventRegistry (example "//event:clicked")
+     * @param {String} eventName the event name as it will be referred to in the EventRegistry (example "//event:clicked")
      * @param {ObjectFunction} listener the object which owns the handler function
      */
     listenAfter(eventName, listener) {
@@ -74,8 +74,8 @@ export class EventRegistry {
 
     /**
      * 
-     * @param {Map} map 
-     * @param {string} key 
+     * @param {Map<Map<ObjectFunction>} map 
+     * @param {String} key 
      */
     initMap(map, key) {
         if (!map.exists(key)) {

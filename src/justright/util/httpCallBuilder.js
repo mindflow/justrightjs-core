@@ -52,28 +52,24 @@ export class HttpCallBuilder {
     /**
      * 
      * @param {Number} code 
-     * @param {object} object 
-     * @param {function} callback 
+     * @param {ObjectFunction} responseListener 
      * @param {function} mapperFunction mapper function to pass the result object to
      */
-    responseMapping(code, object, callback, mapperFunction) {
-        this.httpCallbackMap.set(code, new HttpResponseHandler(code, new ObjectFunction(object, callback), mapperFunction));
+    responseMapping(code, responseListener, mapperFunction) {
+        this.httpCallbackMap.set(code, new HttpResponseHandler(code, responseListener, mapperFunction));
         return this;
     }
 
     /**
      * 
-     * @param {object} object 
-     * @param {function} callback 
+     * @param {ObjectFunction} responseListener 
      * @param {function} errorMapperFunction mapper function to pass the result object to
      */
-    errorMapping(object, callback, errorMapperFunction = null) {
-        if(object && callback) {
-            if (errorMapperFunction) {
-                this.errorMapperFunction = errorMapperFunction;
-            }
-            this.errorCallback = new ObjectFunction(object, callback);
+    errorMapping(responseListener, errorMapperFunction = null) {
+        if (errorMapperFunction) {
+            this.errorMapperFunction = errorMapperFunction;
         }
+        this.errorCallback = responseListener;
         return this;
     }
 
