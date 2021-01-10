@@ -2,7 +2,7 @@
 
 import { XmlElement } from "xmlparser_v1";
 import { Map, Logger, List } from "coreutil_v1";
-import { ContainerFunctions } from "containerbridge_v1";
+import { ContainerElement } from "containerbridge_v1";
 import { Attribute } from "./attribute.js";
 
 const LOG = new Logger("BaseElement");
@@ -30,7 +30,7 @@ export class BaseElement {
             return;
         }
         if(typeof value === "string"){
-            this.element = ContainerFunctions.createElement(value);
+            this.element = ContainerElement.createElement(value);
             return;
         }
         if(value instanceof HTMLElement){
@@ -64,9 +64,9 @@ export class BaseElement {
     createFromXmlElement(xmlElement, parentElement) {
         let element = null;
         if(xmlElement.namespace){
-            element = ContainerFunctions.createElementNS(xmlElement.namespaceUri,xmlElement.fullName);
+            element = ContainerElement.createElementNS(xmlElement.namespaceUri,xmlElement.fullName);
         }else{
-            element = ContainerFunctions.createElement(xmlElement.name);
+            element = ContainerElement.createElement(xmlElement.name);
         }
         if(parentElement && parentElement.mappedElement !== null) {
             parentElement.mappedElement.appendChild(element);
@@ -181,7 +181,7 @@ export class BaseElement {
             return;
         }
         if(typeof input == "string") {
-            this.element.parentNode.replaceChild(ContainerFunctions.createTextNode(input), this.element);
+            this.element.parentNode.replaceChild(ContainerElement.createTextNode(input), this.element);
             return;
         }
         if(input instanceof Text) {
@@ -226,7 +226,7 @@ export class BaseElement {
             return;
         }
         if (typeof input == "string") {
-            this.element.appendChild(ContainerFunctions.createTextNode(input));
+            this.element.appendChild(ContainerElement.createTextNode(input));
             return;
         }
         if (input instanceof Text) {
@@ -252,7 +252,7 @@ export class BaseElement {
             return;
         }
         if (typeof input == "string") {
-            this.element.insertBefore(ContainerFunctions.createTextNode(input),this.element.firstChild);
+            this.element.insertBefore(ContainerElement.createTextNode(input),this.element.firstChild);
             return;
         }
         if (input instanceof Text) {
