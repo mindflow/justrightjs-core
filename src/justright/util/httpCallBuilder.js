@@ -1,5 +1,4 @@
-import { Map, ObjectFunction, Logger } from "coreutil_v1";
-import { HttpResponseHandler } from "./httpResponseHandler";
+import { Map, Logger } from "coreutil_v1";
 import { Client } from "../client/client.js";
 
 const LOG = new Logger("HttpCallBuilder");
@@ -9,67 +8,74 @@ export class HttpCallBuilder {
     /**
      * 
      * @param {string} url 
-     * @param {object} parameter 
+     * @param {object} payload 
      */
-    constructor(url, paramter) {
+    constructor(url, payload) {
 
         /** @type {String} */
         this.url = url;
 
         /** @type {Object} */
-        this.paramter = paramter;
+        this.payload = payload;
+
+        /** @type {String} */
+        this.authorization = null;
+
 
         /** @type {Map} */
-        this.httpCallbackMap = new Map();
+        this.successMappingMap = new Map();
 
-        /** @type {ObjectFunction} */
-        this.errorCallback = null;
+        /** @type {Map} */
+        this.failMappingMap = new Map();
+
+        /** @type {function} */
+        this.errorMappingFunction = (error) => { return error; };
+
 
         /** @type {number} */
         this.connectionTimeoutValue = 4000;
 
         /** @type {number} */
         this.responseTimeoutValue = 4000;
-
-        /** @type {function} */
-        this.errorMapperFunction = null;
-
-        /** @type {String} */
-        this.authorization = null;
     }
 
     /**
      * 
      * @param {Client} client 
      * @param {string} url 
-     * @param {object} parameter 
+     * @param {object} payload 
      * @returns {HttpCallBuilder}
      */
-    static newInstance(client, url, parameter) {
-        return new HttpCallBuilder(client, url, parameter);
+    static newInstance(client, url, payload) {
+        return new HttpCallBuilder(client, url, payload);
     }
 
     /**
      * 
      * @param {Number} code 
-     * @param {ObjectFunction} responseListener 
      * @param {function} mapperFunction mapper function to pass the result object to
      */
-    responseMapping(code, responseListener, mapperFunction) {
-        this.httpCallbackMap.set(code, new HttpResponseHandler(code, responseListener, mapperFunction));
+    successMapping(code, mapperFunction = () => { return null; }) {
+        this.successMappingMap.set(code, mapperFunction);
         return this;
     }
 
     /**
      * 
-     * @param {ObjectFunction} responseListener 
-     * @param {function} errorMapperFunction mapper function to pass the result object to
+     * @param {Number} code 
+     * @param {function} mapperFunction mapper function to pass the result object to
      */
-    errorMapping(responseListener, errorMapperFunction = null) {
-        if (errorMapperFunction) {
-            this.errorMapperFunction = errorMapperFunction;
-        }
-        this.errorCallback = responseListener;
+    failMapping(code, mapperFunction = () => { return null; }) {
+        this.failMappingMap.set(code, mapperFunction);
+        return this;
+    }
+
+    /**
+     * 
+     * @param {function} mapperFunction mapper function to pass the result object to
+     */
+    errorMapping(mapperFunction) {
+        this.errorMappingFunction = mapperFunction;
         return this;
     }
 
@@ -90,81 +96,105 @@ export class HttpCallBuilder {
         this.responseTimeoutValue = responseTimeoutValue;
     }
 
+    /**
+     * @returns {Promise}
+     */
     get() {
-        Client.get(this.url, this.connectionTimeoutValue, this.responseTimeoutValue).then((response) => {
-            this.processResponse(response);
-        }, (error) => {
-            this.processError(error);
-        });
+        return this.asTypeMappedPromise(
+            Client.get(this.url, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization)
+        );
     }
 
+    /**
+     * @returns {Promise}
+     */
     post() {
-        Client.post(this.url, this.paramter, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization).then((response) => {
-            this.processResponse(response);
-        }, (error) => {
-            this.processError(error);
-        });
+        return this.asTypeMappedPromise(
+            Client.post(this.url, this.payload, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization)
+        );
     }
 
+    /**
+     * @returns {Promise}
+     */
     put() {
-        Client.put(this.url, this.paramter, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization).then((response) => {
-            this.processResponse(response);
-        }, (error) => {
-            this.processError(error);
-        });
+        return this.asTypeMappedPromise(
+            Client.put(this.url, this.payload, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization)
+        );
     }
 
+    /**
+     * @returns {Promise}
+     */
     patch() {
-        Client.patch(this.url, this.paramter, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization).then((response) => {
-            this.processResponse(response);
-        }, (error) => {
-            this.processError(error);
-        });
+        return this.asTypeMappedPromise(
+            Client.patch(this.url, this.payload, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization)
+        );
     }
 
+    /**
+     * @returns {Promise}
+     */
     delete() {
-        Client.delete(this.url, this.connectionTimeoutValue, this.responseTimeoutValue).then((response) => {
-            this.processResponse(response);
-        }, (error) => {
-            this.processError(error);
-        });
-    }
-
-    processError(error) {
-        LOG.error(error);
-        if(this.errorCallback) {
-            if(this.errorMapperFunction) {
-                error = this.errorMapperFunction.call(this, error);
-            }
-            this.errorCallback.call(error);
-        }
+        return this.asTypeMappedPromise(
+            Client.delete(this.url, this.connectionTimeoutValue, this.responseTimeoutValue)
+        );
     }
 
     /**
      * 
-     * @param {Response} response 
+     * @param {Promise} fetchPromise 
      */
-    processResponse(response) {
-        /** @type {HttpResponseHandler} */
-        var responseHandler = this.httpCallbackMap.get(response.status);
-        if(responseHandler) {
-            if(responseHandler.mapperFunction) {
-                response.json().then(
-                    (object) => {
-                        var mapperFunction = responseHandler.mapperFunction;
-                        if(mapperFunction) {
-                            responseHandler.objectFunction.call(mapperFunction(object));
-                        } else {
-                            responseHandler.objectFunction.call(object);
-                        }
-                    },
-                    (failReason) => {
-
-                    }
-                );
-            } else {
-                responseHandler.objectFunction.call();
-            }
-        }
+    asTypeMappedPromise(fetchPromise) {
+        return new Promise((resolve,reject) => {
+            fetchPromise.then((fetchResponse) => {
+                this.handleFetchResponse(fetchResponse, resolve, reject);
+            }).catch((error) => {
+                // API did not execute
+                reject(this.errorMappingFunction(error));
+            });
+        });
     }
+
+    /**
+     * 
+     * @param {Response} fetchResponse 
+     * @param {function} resolve 
+     * @param {function} reject 
+     */
+    handleFetchResponse(fetchResponse, resolve, reject) {
+        const successResponseMapper = this.successMappingMap.get(fetchResponse.status);
+        const failResponseMapper = this.failMappingMap.get(fetchResponse.status);
+
+        // Empty response
+        if (204 === fetchResponse.status || fetchResponse.headers.get("Content-Length") === "0") {
+            if (successResponseMapper) {
+                resolve(successResponseMapper(null)); 
+                return;
+            }
+            if(failResponseMapper) {
+                reject(failResponseMapper(null)); 
+                return;
+            }
+            reject(new Error("Missing mapper for return status: " + fetchResponse.status));
+            return;
+        }
+
+        // Assuming json response        
+        fetchResponse.json().then((responseJson) => {
+            if(successResponseMapper) { 
+                resolve(successResponseMapper(responseJson)); 
+                return;
+            }
+            if(failResponseMapper) {
+                reject(failResponseMapper(responseJson)); 
+                return;
+            }
+            reject(this.errorMappingFunction(responseJson));
+        }).catch((error) => {
+            // Response did not provide json
+            reject(this.errorMappingFunction(error));
+        });
+    }
+
 }

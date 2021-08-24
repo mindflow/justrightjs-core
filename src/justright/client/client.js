@@ -7,8 +7,10 @@ export class Client {
      * @param {string} url 
      * @returns {Promise<Response>}
      */
-    static get(url, connectionTimeout = 4000, responseTimeout = 4000){
+    static get(url, connectionTimeout = 4000, responseTimeout = 4000, authorization = null){
+        let headers = Client.getHeader(authorization);
         var params =  {
+            headers: headers,
             method: 'GET',
             mode: 'cors', // no-cors, cors, *same-origin
             redirect: 'follow' // manual, *follow, error
