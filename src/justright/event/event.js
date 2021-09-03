@@ -51,6 +51,13 @@ export class Event{
         return ElementMapper.map(this.event.target);
     }
 
+    getTargetValue(){
+        if(this.getTarget()) { 
+            return this.getTarget().value;
+        }
+        return null;
+    }
+
     getKeyCode() {
         return this.event.keyCode;
     }
