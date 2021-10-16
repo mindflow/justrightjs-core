@@ -1,6 +1,6 @@
 import { Logger } from "coreutil_v1"
 import { History } from "../navigation/history.js";
-import { LoaderFilter } from "./loaderFilter.js";
+import { LoaderInterceptor } from "./loaderInterceptor.js"
 
 const LOG = new Logger("ModuleLoader");
 
@@ -11,9 +11,9 @@ export class ModuleLoader {
      * @param {RegExp} matchPath 
      * @param {String} rootPath 
      * @param {String} modulePath 
-     * @param {Array<LoaderFilter>} loaderFilters 
+     * @param {Array<LoaderInterceptor>} loaderInterceptors
      */
-    constructor(matchPath, rootPath, modulePath, loaderFilters = []) {
+    constructor(matchPath, rootPath, modulePath, loaderInterceptors = []) {
         
         /**
          * @type {RegExp}
@@ -31,9 +31,9 @@ export class ModuleLoader {
         this.modulePath = modulePath;
 
         /**
-         * @type {Array<LoaderFilter>}
+         * @type {Array<LoaderInterceptor>}
          */
-        this.loaderFilters = loaderFilters;
+        this.loaderInterceptors = loaderInterceptors;
 
         /**
          * @type {Object}
@@ -74,8 +74,8 @@ export class ModuleLoader {
 
     filtersPass() {
         let pass = true;
-        if (this.loaderFilters) {
-            this.loaderFilters.forEach((element) => {
+        if (this.loaderInterceptors) {
+            this.loaderInterceptors.forEach((element) => {
                 if(!element.process()) {
                     pass = false;
                 }
@@ -99,6 +99,10 @@ export class ModuleLoader {
         });
     }
 
+    /**
+     * 
+     * @returns Object
+     */
     defaultInstance() {
         return this.defaultInstance;
     }

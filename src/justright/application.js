@@ -39,10 +39,6 @@ export class Application {
         this.startWorkers();
     }
 
-    executeMatchingModule() {
-        this.getMatchingModuleLoader().defaultInstance.load();
-    }
-
     startWorkers() {
         if (this.runningWorkers.size() > 0) {
             return;
