@@ -1,5 +1,4 @@
 import { Map, Logger } from "coreutil_v1";
-import { Client } from "../client/client.js";
 
 const LOG = new Logger("HttpCallBuilder");
 
@@ -41,13 +40,12 @@ export class HttpCallBuilder {
 
     /**
      * 
-     * @param {Client} client 
      * @param {string} url 
      * @param {object} payload 
      * @returns {HttpCallBuilder}
      */
-    static newInstance(client, url, payload) {
-        return new HttpCallBuilder(client, url, payload);
+    static newInstance(url, payload) {
+        return new HttpCallBuilder(url, payload);
     }
 
     /**
