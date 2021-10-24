@@ -1,4 +1,6 @@
 import { Map, Logger } from "coreutil_v1";
+import { Client } from "../client/client.js";
+
 
 const LOG = new Logger("HttpCallBuilder");
 
