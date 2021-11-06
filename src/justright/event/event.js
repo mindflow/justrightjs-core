@@ -1,6 +1,7 @@
 /* jshint esversion: 6 */
 
 import { ElementMapper } from "../element/elementMapper.js";
+import { SimpleElement } from "../element/simpleElement.js";
 
 export class Event{
 
@@ -47,8 +48,36 @@ export class Event{
         return this.event.clientY;
     }
 
+    /**
+     * 
+     * @returns {SimpleElement}
+     */
     getTarget(){
-        return ElementMapper.map(this.event.target);
+        if (this.event && this.event.target) {
+            return ElementMapper.map(this.event.target);
+        }
+    }
+
+    /**
+     * 
+     * @returns {SimpleElement}
+     */
+    getRelatedTarget(){
+        if (this.event && this.event.relatedTarget) {
+            return ElementMapper.map(this.event.relatedTarget);
+        }
+        return null;
+    }
+
+    /**
+     * 
+     * @returns {string}
+     */
+     getRelatedTargetAttribute(attributeName){
+        if (this.event.relatedTarget) {
+            return ElementMapper.map(this.event.relatedTarget).getAttributeValue(attributeName);
+        }
+        return null;
     }
 
     getTargetValue(){

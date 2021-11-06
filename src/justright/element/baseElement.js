@@ -83,13 +83,14 @@ export class BaseElement {
      *
      * @param {string} eventType
      * @param {function} functionParam
+     * @param {boolean} capture
      */
-    attachEvent(eventType, functionParam) {
+    attachEvent(eventType, functionParam, capture = false) {
         if(!this.eventsAttached.contains(eventType)) {
             if(eventType.startsWith("on")) {
                 eventType = eventType.substr(2);
             }
-            this.element.addEventListener(eventType, functionParam);
+            this.element.addEventListener(eventType, functionParam, capture);
             this.eventsAttached.add(eventType);
         } else {
             LOG.warn("Event '" + eventType + "' allready attached for " + this.element.name);

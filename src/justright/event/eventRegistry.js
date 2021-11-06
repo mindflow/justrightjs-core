@@ -27,11 +27,12 @@ export class EventRegistry {
      * @param {String} eventType the event type as it is defined by the containing trigger (example "onclick")
      * @param {String} eventName the event name as it will be referred to in the EventRegistry (example "//event:clicked")
      * @param {String} componentIndex unique id of the component which owns the element
+     * @param {boolean} capture 
      */
-    attach(element, eventType, eventName, componentIndex) {
+    attach(element, eventType, eventName, componentIndex, capture = false) {
         const uniqueEventName = eventName + "_" + componentIndex;
         const theEventRegistry = this;
-        element.attachEvent(eventType, function(event) { theEventRegistry.trigger(uniqueEventName, eventName, event); });
+        element.attachEvent(eventType, function(event) { theEventRegistry.trigger(uniqueEventName, eventName, event); }, capture);
     }
 
     /**
