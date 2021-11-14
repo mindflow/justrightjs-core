@@ -1,5 +1,3 @@
-/* jshint esversion: 6 */
-
 import { Map, ObjectFunction, Logger } from "coreutil_v1";
 import { Event } from "./event.js";
 import { BaseElement } from "../element/baseElement.js";
@@ -12,12 +10,6 @@ export class EventRegistry {
 
         /** @type {Map<Map<ObjectFunction>} */
         this.listeners = new Map();
-
-        /** @type {Map<ObjectFunction>} */
-        this.beforeListeners = new Map();
-
-        /** @type {Map<ObjectFunction>} */
-        this.afterListeners = new Map();
     }
 
     /**
@@ -32,7 +24,9 @@ export class EventRegistry {
     attach(element, eventType, eventName, componentIndex, capture = false) {
         const uniqueEventName = eventName + "_" + componentIndex;
         const theEventRegistry = this;
-        element.attachEvent(eventType, function(event) { theEventRegistry.trigger(uniqueEventName, eventName, event); }, capture);
+        element.attachEvent(eventType, function(event) {
+            theEventRegistry.trigger(uniqueEventName, event); 
+        }, capture);
     }
 
     /**
@@ -42,70 +36,25 @@ export class EventRegistry {
      * @param {String} uniqueIndex a unique index for the event
      */
     listen(eventName, listener, uniqueIndex) {
-        const uniqueEventName = eventName + "_" + uniqueIndex;
-        this.initMap(this.listeners, uniqueEventName);
-        /** @type {Map<ObjectFunction>} */
-        const listenerMap = this.listeners.get(uniqueEventName);
-        listenerMap.set(listener.object.constructor.name, listener);
+        this.initMap(eventName + "_" + uniqueIndex)
+            .set(listener.object.constructor.name, listener);
     }
 
     /**
      * 
-     * @param {String} eventName the event name as it will be referred to in the EventRegistry (example "//event:clicked")
-     * @param {ObjectFunction} listener the object which owns the handler function
-     */
-    listenBefore(eventName, listener) {
-        this.initMap(this.beforeListeners, eventName);
-        /** @type {Map<ObjectFunction>} */
-        const listenerMap = this.beforeListeners.get(eventName);
-        listenerMap.set(listener.object.constructor.name, listener);
-    }
-
-    /**
-     * 
-     * @param {String} eventName the event name as it will be referred to in the EventRegistry (example "//event:clicked")
-     * @param {ObjectFunction} listener the object which owns the handler function
-     */
-    listenAfter(eventName, listener) {
-        this.initMap(this.afterListeners, eventName);
-        /** @type {Map} */
-        const listenerMap = this.afterListeners.get(eventName);
-        listenerMap.set(listener.object.constructor.name, listener);
-    }
-
-    /**
-     * 
-     * @param {Map<Map<ObjectFunction>} map 
      * @param {String} key 
+     * @returns {Map<ObjectFunction>}
      */
-    initMap(map, key) {
-        if (!map.exists(key)) {
-            map.set(key,new Map());
+    initMap(key) {
+        if (!this.listeners.exists(key)) {
+            this.listeners.set(key,new Map());
         }
+        return this.listeners.get(key);
     }
 
-    trigger(suffixedEventName, eventName, event) {
-        this.handleBefore(eventName, event);
+    trigger(suffixedEventName, event) {
         if (this.listeners.exists(suffixedEventName)) {
             this.listeners.get(suffixedEventName).forEach((key, value, parent) => {
-                value.call(new Event(event));
-                return true;
-            }, this);
-        }
-        this.handleAfter(eventName, event);
-    }
-
-    handleBefore(eventName, event) {
-        this.handleGlobal(this.beforeListeners, eventName, event);
-    }
-
-    handleAfter(eventName, event) {
-        this.handleGlobal(this.afterListeners, eventName, event);
-    }
-
-    handleGlobal(listeners, eventName, event) {
-        if(listeners.exists(eventName)) {
-            listeners.get(eventName).forEach((key, value, parent) => {
                 value.call(new Event(event));
                 return true;
             }, this);

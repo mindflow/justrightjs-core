@@ -1,9 +1,8 @@
-/* jshint esversion: 6 */
-
 import { XmlElement } from "xmlparser_v1";
 import { Map, Logger, List } from "coreutil_v1";
 import { ContainerElement } from "containerbridge_v1";
 import { Attribute } from "./attribute.js";
+import { Event } from "../event/event.js";
 
 const LOG = new Logger("BaseElement");
 
@@ -15,8 +14,8 @@ export class BaseElement {
     /**
      * Constructor
      *
-     * @param {XmlElement|string|HTMLElement} value
-     * @param {BaseElement} parent
+     * @param {XmlElement|string|any} value Value to be converted to Container UI Element (HTMLElement in the case of Web Browser)
+     * @param {BaseElement} parent the parent BaseElement
      */
     constructor(value, parent) {
         
@@ -33,7 +32,7 @@ export class BaseElement {
             this.element = ContainerElement.createElement(value);
             return;
         }
-        if(value instanceof HTMLElement){
+        if(ContainerElement.isUIElement(value)){
             this.element = value;
             return;
         }
@@ -42,11 +41,11 @@ export class BaseElement {
     }
 
     loadAttributes() {
-        if(this.element.attributes === null || this.element.attributes === undefined) {
+        if (this.element.attributes === null || this.element.attributes === undefined) {
             this.attributeMap = new Map();
             return;
         }
-        if(this.attributeMap === null || this.attributeMap === undefined) {
+        if (this.attributeMap === null || this.attributeMap === undefined) {
             this.attributeMap = new Map();
             for (var i = 0; i < this.element.attributes.length; i++) {
                 this.attributeMap.set(this.element.attributes[i].name,new Attribute(this.element.attributes[i]));
@@ -64,15 +63,15 @@ export class BaseElement {
     createFromXmlElement(xmlElement, parentElement) {
         let element = null;
         if(xmlElement.namespace){
-            element = ContainerElement.createElementNS(xmlElement.namespaceUri,xmlElement.fullName);
+            element = ContainerElement.createElementNS(xmlElement.namespaceUri, xmlElement.fullName);
         }else{
             element = ContainerElement.createElement(xmlElement.name);
         }
         if(parentElement && parentElement.mappedElement !== null) {
-            parentElement.mappedElement.appendChild(element);
+            ContainerElement.appendChild(parentElement.mappedElement, element);
         }
-        xmlElement.attributes.forEach(function(attributeKey,attribute){
-            element.setAttribute(attributeKey,attribute.value);
+        xmlElement.attributes.forEach((attributeKey, attribute) => {
+            ContainerElement.setAttribute(element, attributeKey, attribute.value);
             return true;
         });
         return element;
@@ -90,11 +89,17 @@ export class BaseElement {
             if(eventType.startsWith("on")) {
                 eventType = eventType.substr(2);
             }
-            this.element.addEventListener(eventType, functionParam, capture);
+            ContainerElement.addEventListener(this.element, eventType, functionParam, capture);
             this.eventsAttached.add(eventType);
         } else {
             LOG.warn("Event '" + eventType + "' allready attached for " + this.element.name);
         }
+    }
+
+    listenTo(eventType, listener, capture) {
+        ContainerElement.addEventListener(this.element, eventType, (event) => {
+            listener.call(new Event(event));
+        }, capture);
     }
 
     /**
@@ -140,11 +145,11 @@ export class BaseElement {
     }
 
     setAttributeValue(key,value) {
-        this.element.setAttribute(key,value);
+        ContainerElement.setAttribute(this.element, key,value);
     }
 
     getAttributeValue(key) {
-        return this.element.getAttribute(key);
+        return ContainerElement.getAttribute(this.element, key);
     }
 
     containsAttribute(key) {

@@ -27,7 +27,7 @@ export class TextnodeElement {
     createFromXmlCdata(cdataElement, parentElement) {
         let element = document.createTextNode(cdataElement.value);
         if(parentElement !== null && parentElement.mappedElement !== null) {
-            parentElement.mappedElement.appendChild(element);
+            ContainerElement.appendChild(parentElement.mappedElement, element);
         }
         return element;
     }

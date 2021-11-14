@@ -1,5 +1,7 @@
-import { ContainerElement } from "containerbridge_v1";
+import { ContainerElement, ContainerWindow } from "containerbridge_v1";
+import { ObjectFunction } from "coreutil_v1";
 import { BaseElement } from "../element/baseElement.js";
+import { Event } from "../event/event.js";
 
 export class CanvasRoot {
 
@@ -32,14 +34,14 @@ export class CanvasRoot {
      * @param {BaseElement} element
      */
     static addHeaderElement(element) {
-        ContainerElement.addElement("head", element.mappedElement);
+        ContainerElement.appendRootMetaChild(element.mappedElement);
     }
 
     /** 
      * @param {BaseElement} element
      */
     static addBodyElement(element) {
-        ContainerElement.addElement("body", element.mappedElement);
+        ContainerElement.appendRootUiChild(element.mappedElement);
     }
 
     /** 
@@ -54,5 +56,18 @@ export class CanvasRoot {
      */
     static prependBodyElement(element) {
         ContainerElement.prependElement("body", element.mappedElement);
+    }
+
+    /** 
+     * @param {ObjectFunction} listener
+     * @param {BaseElement} element
+     */
+    static listenToFocusEscape(listener, element) {
+        const callIfNotContains = new ObjectFunction(null, (event) => {
+            if (!ContainerElement.contains(element.element, event.getTarget().element)) {
+                listener.call(event);
+            }
+        });
+        ContainerWindow.addEventListener("click", callIfNotContains, Event);
     }
 }
