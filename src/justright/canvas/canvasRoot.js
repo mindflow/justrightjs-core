@@ -5,6 +5,8 @@ import { Event } from "../event/event.js";
 
 export class CanvasRoot {
 
+    static shouldSwallowNextFocusEscape = false;
+
     static replaceComponent(id, component) {
         var bodyElement = ContainerElement.getElementById(id);
         bodyElement.parentNode.replaceChild(component.rootElement.mappedElement, bodyElement);
@@ -63,11 +65,23 @@ export class CanvasRoot {
      * @param {BaseElement} element
      */
     static listenToFocusEscape(listener, element) {
+        
         const callIfNotContains = new ObjectFunction(null, (event) => {
-            if (!ContainerElement.contains(element.element, event.getTarget().element)) {
-                listener.call(event);
+            if (ContainerElement.contains(element.element, event.getTarget().element)) {
+                return;
             }
+            if (CanvasRoot.shouldSwallowNextFocusEscape) {
+                return;
+            }
+            listener.call(event);
         });
         ContainerWindow.addEventListener("click", callIfNotContains, Event);
+    }
+
+    static swallowFocusEscape(forMilliseconds) {
+        CanvasRoot.shouldSwallowNextFocusEscape = true;
+        setTimeout(() => {
+            CanvasRoot.shouldSwallowNextFocusEscape = false;
+        }, forMilliseconds);
     }
 }
