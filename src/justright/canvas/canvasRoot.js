@@ -1,5 +1,6 @@
 import { ContainerElement, ContainerWindow } from "containerbridge_v1";
 import { ObjectFunction } from "coreutil_v1";
+import { Component } from "../component/component.js";
 import { BaseElement } from "../element/baseElement.js";
 import { Event } from "../event/event.js";
 
@@ -7,27 +8,51 @@ export class CanvasRoot {
 
     static shouldSwallowNextFocusEscape = false;
 
+    /**
+     * 
+     * @param {String} id 
+     * @param {Component} component 
+     */
     static replaceComponent(id, component) {
-        var bodyElement = ContainerElement.getElementById(id);
+        const bodyElement = ContainerElement.getElementById(id);
         bodyElement.parentNode.replaceChild(component.rootElement.mappedElement, bodyElement);
     }
 
+    /**
+     * 
+     * @param {String} id 
+     * @param {Component} component 
+     */
     static setComponent(id, component) {
-        var bodyElement = ContainerElement.getElementById(id);
+        const bodyElement = ContainerElement.getElementById(id);
         bodyElement.innerHTML = '';
         bodyElement.appendChild(component.rootElement.mappedElement, bodyElement);
     }
 
+    /**
+     * 
+     * @param {String} id 
+     * @param {Component} component 
+     */
     static addChildComponent(id, component) {
-        var bodyElement = ContainerElement.getElementById(id);
+        const bodyElement = ContainerElement.getElementById(id);
         bodyElement.appendChild(component.rootElement.mappedElement);
     }
 
+    /**
+     * 
+     * @param {String} id 
+     * @param {Component} component 
+     */
     static addChildElement(id, element) {
-        var bodyElement = ContainerElement.getElementById(id);
+        const bodyElement = ContainerElement.getElementById(id);
         bodyElement.appendChild(element.mappedElement);
     }
 
+    /**
+     * 
+     * @param {String} id 
+     */
     static removeElement(id) {
         ContainerElement.removeElement(id);
     }
@@ -61,13 +86,16 @@ export class CanvasRoot {
     }
 
     /** 
+     * Remember to swallowFocusEscape for initial triggering events
+     * which are external to focusRoot
+     * 
      * @param {ObjectFunction} listener
-     * @param {BaseElement} element
+     * @param {BaseElement} focusRoot
      */
-    static listenToFocusEscape(listener, element) {
+    static listenToFocusEscape(listener, focusRoot) {
         
         const callIfNotContains = new ObjectFunction(null, (event) => {
-            if (ContainerElement.contains(element.element, event.getTarget().element)) {
+            if (ContainerElement.contains(focusRoot.element, event.getTarget().element)) {
                 return;
             }
             if (CanvasRoot.shouldSwallowNextFocusEscape) {
@@ -78,6 +106,15 @@ export class CanvasRoot {
         ContainerWindow.addEventListener("click", callIfNotContains, Event);
     }
 
+    /**
+     * When an element is congigured to be hidden by FocusEscape,
+     * and was shown by an event triggered from an external element,
+     * then FocusEscape gets triggered right after the element is
+     * shown. Therefore this function allows this event to be 
+     * swallowed to avoid this behavior
+     * 
+     * @param {number} forMilliseconds 
+     */
     static swallowFocusEscape(forMilliseconds) {
         CanvasRoot.shouldSwallowNextFocusEscape = true;
         setTimeout(() => {

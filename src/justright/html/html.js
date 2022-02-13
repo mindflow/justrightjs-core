@@ -10,20 +10,27 @@ export class HTML{
         return ElementMapper.map(xmlElement);
     }
 
-    static applyStyles(element,classValue,styleValue){
-        if(classValue !== null){
-            element.setAttributeValue("class",classValue);
+    static applyStyles(element, classValue, styleValue){
+        if(classValue){
+            element.setAttributeValue("class", classValue);
         }
-        if(styleValue !== null){
-            element.setAttributeValue("style",styleValue);
+        if(styleValue){
+            element.setAttributeValue("style", styleValue);
         }
     }
 
-    static a(name,href,classValue,styleValue){
+    static a(value, href, classValue, styleValue){
         var element = HTML.custom("a");
-        element.addChild(name);
+        element.addChild(value);
         element.setAttributeValue("href",href);
-        HTML.applyStyles(element,classValue,styleValue);
+        HTML.applyStyles(element, classValue, styleValue);
+        return element;
+    }
+
+    static i(value, classValue, styleValue){
+        var element = HTML.custom("i");
+        element.addChild(value);
+        HTML.applyStyles(element, classValue, styleValue);
         return element;
     }
 }

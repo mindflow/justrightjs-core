@@ -35,7 +35,7 @@ export class Application {
     }
 
     run() {
-        this.getMatchingModuleLoader().load();
+        this.getMatchingModuleLoader().handle();
         this.startWorkers();
     }
 

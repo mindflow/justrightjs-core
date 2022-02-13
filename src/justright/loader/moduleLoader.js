@@ -9,21 +9,15 @@ export class ModuleLoader {
     /**
      * 
      * @param {RegExp} matchPath 
-     * @param {String} rootPath 
      * @param {String} modulePath 
      * @param {Array<LoaderInterceptor>} loaderInterceptors
      */
-    constructor(matchPath, rootPath, modulePath, loaderInterceptors = []) {
+    constructor(matchPath, modulePath, loaderInterceptors = []) {
         
         /**
          * @type {RegExp}
          */
         this.matchPath = matchPath;
-
-        /**
-         * @type {String}
-         */
-        this.rootPath = rootPath;
 
         /**
          * @type {String}
@@ -58,30 +52,43 @@ export class ModuleLoader {
         return this.matchPath.test(url.getPath());
     }
 
-    load(rootPath) {
-        if (!this.filtersPass()) {
-            return;
-        }
-        const parent = this;
-        if (!parent.defaultInstance) {
-            parent.importModule().then(() => {
-                parent.defaultInstance.load(rootPath);
+    go() {
+        this.download().then(() => {
+            this.filtersPass().then(() => {
+                this.defaultInstance.go();
+            }).catch((reason) => {
+                LOG.warn("Filter rejected " + reason);
             });
-        } else {
-            parent.defaultInstance.load(rootPath);
+        });
+    }
+
+    handle() {
+        this.download().then(() => {
+            this.filtersPass().then(() => {
+                this.defaultInstance.handle();
+            }).catch((reason) => {
+                LOG.warn("Filter rejected " + reason);
+            });
+        });
+    }
+
+    download() {
+        if (!this.defaultInstance) {
+            return this.importModule();
         }
+        return Promise.resolve();
     }
 
     filtersPass() {
-        let pass = true;
-        if (this.loaderInterceptors) {
-            this.loaderInterceptors.forEach((element) => {
-                if(!element.process()) {
-                    pass = false;
-                }
-            })
+        const interceptors = this.loaderInterceptors;
+        if (interceptors && interceptors.length > 0) {
+            let filterPromiseChain = interceptors[0].process();
+            for (let i = 1; i < interceptors.length; i++) {
+                filterPromiseChain = filterPromiseChain.then(interceptors[i]);
+            }
+            return filterPromiseChain;
         }
-        return pass;
+        return Promise.resolve();
     }
 
     importModule() {
