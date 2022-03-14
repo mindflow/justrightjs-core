@@ -36,22 +36,31 @@ export class Application extends ModuleRunner {
         /** @type {Main} */
         this.activeMain = null;
 
-        this.config
-            .addAllTypeConfig(Config.getInstance().getTypeConfigList())
-            .addAllConfigProcessor(new List([ ComponentConfigProcessor ]))
-            .addAllInstanceProcessor(new List([ InstancePostConfigTrigger ]));
+        this.defaultConfig = Config.getInstance().getTypeConfigList();
+
+        this.defaultConfigProcessors = new List([ ComponentConfigProcessor ]);
+
+        this.defaultInstanceProcessors = new List([ InstancePostConfigTrigger ])
+
+        this.customConfig = new List();
+
     }
 
     /**
      * 
      * @param {List<SingletonConfig | PrototypeConfig>} typeConfigList 
      */
-    addAllTypeConfig(typeConfigList) {
-        this.config.addAllTypeConfig(typeConfigList);
+    set customTypeConfig(typeConfigList) {
+        this.customConfig = typeConfigList;
     }
 
     run() {
         LOG.info("Running Application");
+        this.config
+            .addAllTypeConfig(this.defaultConfig)
+            .addAllTypeConfig(this.customConfig)
+            .addAllConfigProcessor(this.defaultConfigProcessors)
+            .addAllInstanceProcessor(this.defaultInstanceProcessors);
         Navigation.moduleRunner = this;
         ContainerUrl.addUserNavigateListener(
             new ObjectFunction(this, this.update),
@@ -84,6 +93,8 @@ export class Application extends ModuleRunner {
         return this.getMatchingModuleLoader(url).load().then((main) => {
             this.activeMain = main;
             main.load(url, null);
+        }).catch((error) => {
+            LOG.error(error);
         });
     }
 

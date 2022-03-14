@@ -29,10 +29,13 @@ export class DiModuleLoader extends ModuleLoader {
     load() {
         return this.importModule().then((main) => {
             return this.interceptorsPass().then(() => {
-                return main;
+                return MindiInjector.inject(main, this.config);
             }).catch((reason) => {
                 LOG.warn("Filter rejected " + reason);
+                throw reason;
             });
+        }).catch((reason) => {
+            throw reason;
         });
     }
 
@@ -43,17 +46,27 @@ export class DiModuleLoader extends ModuleLoader {
      */
     importModule() {
         return new Promise((resolve, reject) => {
-            return super.importModule().then((defaultInstance) => {
-                this.config.addAllTypeConfig(defaultInstance.typeConfigList);
+            return super.importModule().then((main) => {
+                this.config.addAllTypeConfig(main.typeConfigList);
                 this.config.finalize().then(() => {
+
                     new List(this.loaderInterceptors).promiseChain((loaderInterceptor) => {
                         return MindiInjector.inject(loaderInterceptor, this.config);
                     }).then(() => {
-                        MindiInjector.inject(defaultInstance, this.config).then(() => {
-                            resolve(defaultInstance);
-                        });
+                        resolve(main);
+                    }).catch((error) => {
+                        // Failed to inject
+                        reject(error);
                     });
+
+                }).catch((error) => {
+                    // Failed to finalize config
+                    reject(error);
                 });
+
+            }).catch((error) => {
+                // Failed to import module
+                reject(error);
             });
         });
     }
