@@ -78,7 +78,7 @@ export class Application extends ModuleRunner {
     update(event) {
         const url = History.getUrl();
         if (this.activeMain && StringUtils.nonNullEquals(this.activeMain.path, url.getPath())) {
-            this.activeMain.update();
+            this.activeMain.update(url);
             return;
         }
         this.runModule(url);
