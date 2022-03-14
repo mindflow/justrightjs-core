@@ -2,7 +2,7 @@ import { List, Logger } from "coreutil_v1"
 import { MindiConfig, MindiInjector } from "mindi_v1";
 import { ModuleLoader } from "./moduleLoader.js";
 import { LoaderInterceptor } from "./loaderInterceptor.js"
-import { History } from "../navigation/history.js";
+import { Main } from "../main.js";
 
 const LOG = new Logger("DiModuleLoader");
 
@@ -22,32 +22,18 @@ export class DiModuleLoader extends ModuleLoader {
         this.config = config;
     }
 
-
-    go() {
-        this.download().then(() => {
-            this.filtersPass().then(() => {
-                this.defaultInstance.go();
+    /**
+     * 
+     * @returns {Promise<Main>}
+     */
+    load() {
+        return this.importModule().then((main) => {
+            return this.interceptorsPass().then(() => {
+                return main;
             }).catch((reason) => {
                 LOG.warn("Filter rejected " + reason);
             });
         });
-    }
-
-    handle() {
-        this.download().then(() => {
-            this.filtersPass().then(() => {
-                this.defaultInstance.handle();
-            }).catch((reason) => {
-                LOG.warn("Filter rejected " + reason);
-            });
-        });
-    }
-
-    download() {
-        if (!this.defaultInstance) {
-            return this.importModule();
-        }
-        return Promise.resolve();
     }
 
     /**
@@ -57,14 +43,14 @@ export class DiModuleLoader extends ModuleLoader {
      */
     importModule() {
         return new Promise((resolve, reject) => {
-            return super.importModule().then(() => {
-                this.config.addAllTypeConfig(this.defaultInstance.typeConfigList);
+            return super.importModule().then((defaultInstance) => {
+                this.config.addAllTypeConfig(defaultInstance.typeConfigList);
                 this.config.finalize().then(() => {
                     new List(this.loaderInterceptors).promiseChain((loaderInterceptor) => {
                         return MindiInjector.inject(loaderInterceptor, this.config);
                     }).then(() => {
-                        MindiInjector.inject(this.defaultInstance, this.config).then(() => {
-                            resolve();
+                        MindiInjector.inject(defaultInstance, this.config).then(() => {
+                            resolve(defaultInstance);
                         });
                     });
                 });

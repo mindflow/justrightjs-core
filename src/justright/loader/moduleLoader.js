@@ -1,5 +1,5 @@
-import { Logger } from "coreutil_v1"
-import { History } from "../navigation/history.js";
+import { Logger, StringUtils } from "coreutil_v1"
+import { Url } from "../util/url.js";
 import { LoaderInterceptor } from "./loaderInterceptor.js"
 
 const LOG = new Logger("ModuleLoader");
@@ -8,14 +8,14 @@ export class ModuleLoader {
 
     /**
      * 
-     * @param {RegExp} matchPath 
+     * @param {string} matchPath 
      * @param {String} modulePath 
      * @param {Array<LoaderInterceptor>} loaderInterceptors
      */
     constructor(matchPath, modulePath, loaderInterceptors = []) {
         
         /**
-         * @type {RegExp}
+         * @type {string}
          */
         this.matchPath = matchPath;
 
@@ -29,89 +29,64 @@ export class ModuleLoader {
          */
         this.loaderInterceptors = loaderInterceptors;
 
-        /**
-         * @type {Object}
-         */
-        this.defaultInstance = null;
-
-        /**
-         * @type {String}
-         */
-        this.requestedPath = null;
     }
 
-    authorized(){ 
-        if (this.requiredScopeArray.length == 0) {
+    /**
+     * Matches if the configured matchUrl starts with the provided url or
+     * if the configured matchUrl is null
+     * 
+     * @param {Url} url 
+     * @returns 
+     */
+    matches(url){
+        if (!this.matchPath) {
             return true;
         }
-        return false;
+        if (!url) {
+            LOG.error("Url is null");
+            return false;
+        }
+        return StringUtils.nonNullEquals(this.matchPath, url.getPath());
     }
 
-    matches(){ 
-        const url = History.getUrl();
-        return this.matchPath.test(url.getPath());
-    }
-
-    go() {
-        this.download().then(() => {
-            this.filtersPass().then(() => {
-                this.defaultInstance.go();
+    /**
+     * 
+     * @returns {Promise<Main>}
+     */
+    load() {
+        return this.importModule().then((main) => {
+            return this.interceptorsPass().then(() => {
+                return main;
             }).catch((reason) => {
                 LOG.warn("Filter rejected " + reason);
-            });
-        });
-    }
-
-    handle() {
-        this.download().then(() => {
-            this.filtersPass().then(() => {
-                this.defaultInstance.handle();
-            }).catch((reason) => {
-                LOG.warn("Filter rejected " + reason);
-            });
-        });
-    }
-
-    download() {
-        if (!this.defaultInstance) {
-            return this.importModule();
-        }
-        return Promise.resolve();
-    }
-
-    filtersPass() {
-        const interceptors = this.loaderInterceptors;
-        if (interceptors && interceptors.length > 0) {
-            let filterPromiseChain = interceptors[0].process();
-            for (let i = 1; i < interceptors.length; i++) {
-                filterPromiseChain = filterPromiseChain.then(interceptors[i]);
-            }
-            return filterPromiseChain;
-        }
-        return Promise.resolve();
-    }
-
-    importModule() {
-        return new Promise((resolve, reject) => {
-            if (null != this.defaultInstance) {
-                resolve();
-                return;
-            }
-            import(this.modulePath).then((module) => {
-                this.defaultInstance = new module.default();
-                resolve();
-            }).catch((reason) => {
-                reject(reason);
             });
         });
     }
 
     /**
      * 
-     * @returns Object
+     * @returns {Promise}
      */
-    defaultInstance() {
-        return this.defaultInstance;
+    interceptorsPass() {
+        const interceptors = this.loaderInterceptors;
+        if (interceptors && interceptors.length > 0) {
+            let interceptorPromiseChain = interceptors[0].process();
+            for (let i = 1; i < interceptors.length; i++) {
+                interceptorPromiseChain = interceptorPromiseChain.then(interceptors[i]);
+            }
+            return interceptorPromiseChain;
+        }
+        return Promise.resolve();
+    }
+
+    importModule() {
+        return new Promise((resolve, reject) => {
+            import(this.modulePath).then((module) => {
+                resolve(new module.default());
+            }).catch((reason) => {
+                reject(reason);
+            });
+        });
     }
 
 }

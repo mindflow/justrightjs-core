@@ -8,7 +8,7 @@ export class LoaderInterceptor {
      * @returns {Boolean}
      */
     process() {
-        LOG.info("Unimplemented Loader Filter breaks by default");
+        LOG.info("Unimplemented Loader Interceptor breaks by default");
         return false;
     }
 

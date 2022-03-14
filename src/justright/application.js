@@ -1,21 +1,30 @@
-import { List, Logger } from  "coreutil_v1";
-import { MindiInjector, MindiConfig, InstancePostConfigTrigger, ConfigAccessor } from "mindi_v1";
+import { MindiInjector, MindiConfig, InstancePostConfigTrigger, ConfigAccessor, SingletonConfig, PrototypeConfig } from "mindi_v1";
+import { List, Logger, ObjectFunction, StringUtils } from  "coreutil_v1";
+import { ContainerUrl } from "containerbridge_v1";
 import { ComponentConfigProcessor } from "./component/componentConfigProcessor.js";
-import { ModuleLoader } from "./loader/moduleLoader.js";
 import { TemplateRegistry } from "./template/templateRegistry.js";
 import { StylesRegistry } from "./styles/stylesRegistry.js";
 import { Config } from "./config.js";
+import { Event } from "./event/event.js";
+import { History } from "./history/history.js";
+import { DiModuleLoader } from "./loader/diModuleLoader.js";
+import { Url } from "./util/url.js";
+import { Navigation } from "./navigation.js";
+import { ModuleRunner } from "./moduleRunner.js";
+import { Main } from "./main.js";
 
 const LOG = new Logger("Application");
 
-export class Application {
+export class Application extends ModuleRunner {
 
     constructor() {
+
+        super();
 
         /** @type {List} */
         this.workerList = new List();
 
-        /** @type {List} */
+        /** @type {List<DiModuleLoader>} */
         this.moduleLoaderList = new List();
 
         /** @type {MindiConfig} */
@@ -24,19 +33,58 @@ export class Application {
         /** @type {List} */
         this.runningWorkers = new List();
 
+        /** @type {Main} */
+        this.activeMain = null;
+
         this.config
             .addAllTypeConfig(Config.getInstance().getTypeConfigList())
             .addAllConfigProcessor(new List([ ComponentConfigProcessor ]))
             .addAllInstanceProcessor(new List([ InstancePostConfigTrigger ]));
     }
 
+    /**
+     * 
+     * @param {List<SingletonConfig | PrototypeConfig>} typeConfigList 
+     */
     addAllTypeConfig(typeConfigList) {
         this.config.addAllTypeConfig(typeConfigList);
     }
 
     run() {
-        this.getMatchingModuleLoader().handle();
-        this.startWorkers();
+        LOG.info("Running Application");
+        Navigation.moduleRunner = this;
+        ContainerUrl.addUserNavigateListener(
+            new ObjectFunction(this, this.update),
+            Event
+        );
+        this.runModule(History.getUrl()).then(() => {
+            this.startWorkers();
+        });
+    }
+
+    /**
+     * 
+     * @param {Event} event
+     */
+    update(event) {
+        const url = History.getUrl();
+        if (this.activeMain && StringUtils.nonNullEquals(this.activeMain.path, url.getPath())) {
+            this.activeMain.update();
+            return;
+        }
+        this.runModule(url);
+    }
+
+    /**
+     * 
+     * @param {Url} url 
+     * @returns 
+     */
+    runModule(url) {
+        return this.getMatchingModuleLoader(url).load().then((main) => {
+            this.activeMain = main;
+            main.load(url, null);
+        });
     }
 
     startWorkers() {
@@ -52,12 +100,13 @@ export class Application {
     }
 
     /**
-     * @returns {ModuleLoader}
+     * @param {Url} url
+     * @returns {DiModuleLoader}
      */
-    getMatchingModuleLoader() {
+    getMatchingModuleLoader(url) {
         let foundModuleLoader = null;
-        this.moduleLoaderList.forEach((value,parent) => {
-            if (value.matches()) {
+        this.moduleLoaderList.forEach((value, parent) => {
+            if (value.matches(url)) {
                 foundModuleLoader = value;
                 return false;
             }
