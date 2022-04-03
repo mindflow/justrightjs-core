@@ -6,12 +6,12 @@ import { TemplateRegistry } from "./template/templateRegistry.js";
 import { StylesRegistry } from "./styles/stylesRegistry.js";
 import { Config } from "./config.js";
 import { Event } from "./event/event.js";
-import { History } from "./history/history.js";
+import { History } from "./navigation/history.js";
 import { DiModuleLoader } from "./loader/diModuleLoader.js";
 import { Url } from "./util/url.js";
-import { Navigation } from "./navigation.js";
 import { ModuleRunner } from "./moduleRunner.js";
 import { Main } from "./main.js";
+import { ActiveModuleRunner } from "./activeModuleRunner.js";
 
 const LOG = new Logger("Application");
 
@@ -61,12 +61,12 @@ export class Application extends ModuleRunner {
             .addAllTypeConfig(this.customConfig)
             .addAllConfigProcessor(this.defaultConfigProcessors)
             .addAllInstanceProcessor(this.defaultInstanceProcessors);
-        Navigation.moduleRunner = this;
+        ActiveModuleRunner.instance().set(this);
         ContainerUrl.addUserNavigateListener(
             new ObjectFunction(this, this.update),
             Event
         );
-        this.runModule(History.getUrl()).then(() => {
+        this.runModule(History.currentUrl()).then(() => {
             this.startWorkers();
         });
     }
@@ -76,7 +76,7 @@ export class Application extends ModuleRunner {
      * @param {Event} event
      */
     update(event) {
-        const url = History.getUrl();
+        const url = History.currentUrl();
         if (this.activeMain && StringUtils.nonNullEquals(this.activeMain.path, url.getPath())) {
             this.activeMain.update(url);
             return;

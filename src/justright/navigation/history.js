@@ -11,11 +11,8 @@ export class History {
         ContainerUrl.pushUrl(url.toString(), title, stateObject);
     }
 
-    static getUrl() {
+    static currentUrl() {
         return new Url(ContainerUrl.currentUrl());
     }
 
-    static loadUrl(url) {
-        ContainerUrl.loadUrl(url.toString());
-    }
 }
