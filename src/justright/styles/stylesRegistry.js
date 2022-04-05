@@ -3,6 +3,7 @@
 import {Map, Logger, ObjectFunction} from "coreutil_v1";
 import { Client } from "../client/client.js";
 import { Url } from "../util/url.js";
+import { UrlUtils } from "../util/urlUtils.js";
 import { Styles } from "./styles.js";
 
 const LOG = new Logger("StylesRegistry");
@@ -117,7 +118,7 @@ export class StylesRegistry {
                     }
                     return true;
                 }
-                this.privateLoad(key, new Url(value))
+                this.privateLoad(key, UrlUtils.parse(value))
 
                     .then(() => {
                         loaded ++;

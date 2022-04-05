@@ -208,7 +208,9 @@ export class BaseElement {
     }
 
     remove() {
-        this.element.parentNode.removeChild(this.element);
+        if (this.element.parentNode) {
+            this.element.parentNode.removeChild(this.element);
+        }
     }
 
     clear() {

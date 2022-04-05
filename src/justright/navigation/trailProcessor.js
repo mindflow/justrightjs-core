@@ -1,6 +1,7 @@
 import { List, StringUtils } from "coreutil_v1";
 import { TrailNode } from "./trailNode.js";
 import { History } from "./history.js";
+import { UrlBuilder } from "../util/urlBuilder.js";
 
 export class TrailProcessor {
 
@@ -14,12 +15,13 @@ export class TrailProcessor {
         const trail = TrailProcessor.processNode(object, node, url);
 
         const currentUrl = History.currentUrl();
-        currentUrl.setBookmark(null);
-        History.replaceUrl(currentUrl, currentUrl.toString(), trail);
+        const urlBuilder = UrlBuilder.builder().withAllOfUrl(currentUrl);
+        const newUrl = urlBuilder.withBookmark(null).build();
+        History.replaceUrl(newUrl, newUrl.toString(), trail);
         
         trail.forEach((value) => {
-            currentUrl.setBookmark(value);
-            History.pushUrl(currentUrl, currentUrl.toString(), trail);
+            const newUrl = urlBuilder.withBookmark(value).build();
+            History.pushUrl(newUrl, newUrl.toString(), trail);
             return true;
         }, this);
     }
@@ -49,16 +51,14 @@ export class TrailProcessor {
             currentObject = object[parentNode.property];
         }
 
-        if (StringUtils.startsWith(url.bookmark, TrailProcessor.toStartsWith(parentNode.path))) {
-            // Add value.path to history
-            trailStops.add(parentNode.path);
+        if (StringUtils.startsWith(url.bookmark, TrailProcessor.toStartsWith(parentNode.trail))) {
+            trailStops.add(parentNode.trail);
             if (parentNode.waypoint) {
                 parentNode.waypoint.call(currentObject);
             }
         }
-        if (StringUtils.nonNullEquals(url.bookmark, parentNode.path)) {
-            // Add value.path to history
-            trailStops.add(parentNode.path);
+        if (StringUtils.nonNullEquals(url.bookmark, parentNode.trail)) {
+            trailStops.add(parentNode.trail);
             if (parentNode.destination) {
                 parentNode.destination.call(currentObject);
             }
@@ -73,14 +73,14 @@ export class TrailProcessor {
         return trailStops;
     }
 
-    static toStartsWith(path) {
-        if (null == path) {
+    static toStartsWith(trail) {
+        if (null == trail) {
             return "/";
         }
-        if (StringUtils.nonNullEquals(path, "/")) {
+        if (StringUtils.nonNullEquals(trail, "/")) {
             return "/";
         }
-        return path + "/";
+        return trail + "/";
     }
 
 }

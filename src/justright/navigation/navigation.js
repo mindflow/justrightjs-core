@@ -1,5 +1,7 @@
 import { History } from "./history.js";
 import { Url } from "../util/url.js";
+import { ContainerUrl } from "containerbridge_v1";
+import { UrlBuilder } from "../util/urlBuilder.js";
 
 let navigatoion = null;
 
@@ -9,6 +11,10 @@ export class Navigation {
 
     }
 
+    /**
+     * 
+     * @returns {Navigation}
+     */
     static instance() {
         if (!navigatoion) {
             navigatoion = new Navigation();
@@ -38,9 +44,9 @@ export class Navigation {
      */
     load(path) {
         const url = History.currentUrl();
-        url.determinePath(path);
-        History.pushUrl(url);
-        return url;
+        const newUrl = UrlBuilder.builder().withRootOfUrl(url).withPath(path).build();
+        History.pushUrl(newUrl);
+        return newUrl;
     }
 
 }

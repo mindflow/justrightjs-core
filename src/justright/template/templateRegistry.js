@@ -4,6 +4,7 @@ import {Map, Logger, ObjectFunction} from "coreutil_v1";
 import {Template} from "./template.js";
 import { Client } from "../client/client.js";
 import { Url } from "../util/url.js";
+import { UrlUtils } from "../util/urlUtils.js";
 
 const LOG = new Logger("TemplateRegistry");
 
@@ -91,9 +92,9 @@ export class TemplateRegistry {
      */
     load(name, url) {
         if(this.languagePrefix !== null) {
-            url.getPathList().setLast(
+            url.pathsList.setLast(
                 this.languagePrefix + "." +
-                url.getPathList().getLast()
+                url.pathsList.getLast()
             );
         }
         this.templateQueueSize ++;
@@ -133,7 +134,7 @@ export class TemplateRegistry {
                     }
                     return true;
                 }
-                this.privateLoad(key, new Url(value))
+                this.privateLoad(key, UrlUtils.parse(value))
 
                     .then(() => {
                         loaded ++;
@@ -161,9 +162,9 @@ export class TemplateRegistry {
      */
     privateLoad(name, url) {
         if(this.languagePrefix !== null) {
-            url.getPathList().setLast(
+            url.pathsList.setLast(
                 this.languagePrefix + "." +
-                url.getPathList().getLast()
+                url.pathsList.getLast()
             );
         }
         LOG.info("Loading template " + name + " at " + url.toString());

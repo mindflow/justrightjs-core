@@ -3,7 +3,7 @@ export class TrailNode {
     constructor() {
 
         /** @type {string} */
-        this.path = null;
+        this.trail = null;
 
         /** @type {property} */
         this.property = null;

@@ -1,5 +1,5 @@
 import { ContainerUrl } from "containerbridge_v1";
-import { Url } from "../util/url";
+import { UrlUtils } from "../util/urlUtils.js";
 
 export class History {
 
@@ -12,7 +12,7 @@ export class History {
     }
 
     static currentUrl() {
-        return new Url(ContainerUrl.currentUrl());
+        return UrlUtils.parse(ContainerUrl.currentUrl());
     }
 
 }

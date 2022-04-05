@@ -46,7 +46,7 @@ export class ModuleLoader {
             LOG.error("Url is null");
             return false;
         }
-        return StringUtils.nonNullEquals(this.matchPath, url.getPath());
+        return StringUtils.nonNullEquals(this.matchPath, url.path);
     }
 
     /**
