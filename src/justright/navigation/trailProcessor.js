@@ -6,67 +6,132 @@ import { UrlBuilder } from "../util/urlBuilder.js";
 export class TrailProcessor {
 
     /**
+     * Finds the all matching functions based on the trail in the url
+     * and calls those functions. Also ensures that the list
+     * of trail stops are added to the history
      * 
-     * @param {any} object 
-     * @param {TrailNode} node 
      * @param {Url} url 
+     * @param {any} callingObject 
+     * @param {TrailNode} node 
      */
-    static load(object, node, url) {
-        const trail = TrailProcessor.processNode(object, node, url);
+    static navigateAllStops(url, callingObject, node) {
+        const trailStops = TrailProcessor.callMatchingFunctionFromUrl(url, callingObject, node);
+        if (!trailStops || 0 === trailStops.size()) {
+            return;
+        }
 
-        const currentUrl = History.currentUrl();
-        const urlBuilder = UrlBuilder.builder().withAllOfUrl(currentUrl);
-        const newUrl = urlBuilder.withBookmark(null).build();
-        History.replaceUrl(newUrl, newUrl.toString(), trail);
+        const urlBuilder = UrlBuilder.builder().withAllOfUrl(History.currentUrl());
+        const stepUrl = urlBuilder.withBookmark(null).build();
+        History.replaceUrl(stepUrl, stepUrl.toString(), null);
         
-        trail.forEach((value) => {
-            const newUrl = urlBuilder.withBookmark(value).build();
-            History.pushUrl(newUrl, newUrl.toString(), trail);
+        trailStops.forEach((value) => {
+            const stepUrl = urlBuilder.withBookmark(value).build();
+            History.pushUrl(stepUrl, stepUrl.toString(), value);
             return true;
         }, this);
     }
 
     /**
+     * Finds the matching function based on the trail in the url
+     * and calls that function.
      * 
-     * @param {any} object 
-     * @param {TrailNode} node 
      * @param {Url} url 
+     * @param {any} callingObject 
+     * @param {TrailNode} node 
      */
-     static update(object, node, url) {
-        TrailProcessor.processNode(object, node, url);
+    static navigateNextStop(url, callingObject, node) {
+        TrailProcessor.callMatchingFunctionFromUrl(url, callingObject, node);
     }
 
     /**
      * 
-     * @param {any} object 
-     * @param {TrailNode} parentNode 
+     * 
+     * @param {function} theFunction 
+     * @param {any} callingObject 
+     * @param {TrailNode} node 
+     */
+    static identifyStop(theFunction, callingObject, node) {
+
+        const currentUrl = History.currentUrl();
+
+        const matchingNode = TrailProcessor.getNodeByFunction(node, theFunction);
+
+        if (!matchingNode) { 
+            return Promise.resolve();
+        }
+
+        const executedFunctionPromise = matchingNode.destination.call(callingObject);
+
+        const urlBuilder = UrlBuilder.builder().withAllOfUrl(currentUrl);
+        if (StringUtils.isBlank(currentUrl.bookmark)) {
+            const stepUrl = urlBuilder.withBookmark("/").build();
+            History.pushUrl(stepUrl, stepUrl.toString(), null);
+        }
+
+        const stepUrl = urlBuilder.withBookmark(matchingNode.trail).build();
+        History.pushUrl(stepUrl, stepUrl.toString(), null);
+
+        return executedFunctionPromise;
+    }
+
+    /**
+     * 
+     * @param {TrailNode} node 
+     * @param {string} theFunction 
+     * @returns 
+     */
+    static getNodeByFunction(node, theFunction) {
+
+        if (theFunction === node.destination) {
+            return node;
+        }
+
+        if (node.next) {
+            let matchingNode = null;
+            node.next.forEach((childNode) => {
+                if (!matchingNode) {
+                    matchingNode = TrailProcessor.getNodeByFunction(childNode, theFunction);
+                }
+            });
+            if (matchingNode) {
+                return matchingNode;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * 
      * @param {Url} url 
+     * @param {any} object 
+     * @param {TrailNode} node 
      * @param {List<String>} trailStops
      * @returns {List<String>}
      */
-    static processNode(object, parentNode, url, trailStops = new List()) {
-        let currentObject = object;
+    static callMatchingFunctionFromUrl(url, currentObject, node, trailStops = new List()) {
 
-        if (parentNode.property) {
-            currentObject = object[parentNode.property];
+        if (node.property) {
+            currentObject = currentObject[node.property];
         }
 
-        if (StringUtils.startsWith(url.bookmark, TrailProcessor.toStartsWith(parentNode.trail))) {
-            trailStops.add(parentNode.trail);
-            if (parentNode.waypoint) {
-                parentNode.waypoint.call(currentObject);
-            }
-        }
-        if (StringUtils.nonNullEquals(url.bookmark, parentNode.trail)) {
-            trailStops.add(parentNode.trail);
-            if (parentNode.destination) {
-                parentNode.destination.call(currentObject);
+        if (StringUtils.startsWith(url.bookmark, TrailProcessor.toStartsWith(node.trail))) {
+            trailStops.add(node.trail);
+            if (node.waypoint) {
+                node.waypoint.call(currentObject);
             }
         }
 
-        if (parentNode.next) {
-            parentNode.next.forEach((childNode) => {
-                trailStops = TrailProcessor.processNode(currentObject, childNode, url, trailStops);
+        if (StringUtils.nonNullEquals(url.bookmark, node.trail)) {
+            trailStops.add(node.trail);
+            if (node.destination) {
+                node.destination.call(currentObject);
+            }
+        }
+
+        if (node.next) {
+            node.next.forEach((childNode) => {
+                trailStops = TrailProcessor.callMatchingFunctionFromUrl(url, currentObject, childNode, trailStops);
             });
         }
 
@@ -74,12 +139,15 @@ export class TrailProcessor {
     }
 
     static toStartsWith(trail) {
+
         if (null == trail) {
             return "/";
         }
+
         if (StringUtils.nonNullEquals(trail, "/")) {
             return "/";
         }
+
         return trail + "/";
     }
 
