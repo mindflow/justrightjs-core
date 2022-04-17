@@ -44,13 +44,13 @@ export class TrailProcessor {
     }
 
     /**
-     * 
+     * Finds the trail stop which matches the function and records it in the history
      * 
      * @param {function} theFunction 
      * @param {any} callingObject 
      * @param {TrailNode} node 
      */
-    static identifyStop(theFunction, callingObject, node) {
+    static findNextStop(theFunction, callingObject, node) {
 
         const currentUrl = History.currentUrl();
 
@@ -62,14 +62,44 @@ export class TrailProcessor {
 
         const executedFunctionPromise = matchingNode.destination.call(callingObject);
 
-        const urlBuilder = UrlBuilder.builder().withAllOfUrl(currentUrl);
-        if (StringUtils.isBlank(currentUrl.bookmark)) {
-            const stepUrl = urlBuilder.withBookmark("/").build();
+        if (!StringUtils.nonNullEquals(currentUrl.bookmark, matchingNode.trail)) {
+            const urlBuilder = UrlBuilder.builder().withAllOfUrl(currentUrl);
+            if (StringUtils.isBlank(currentUrl.bookmark)) {
+                const stepUrl = urlBuilder.withBookmark("/").build();
+                History.pushUrl(stepUrl, stepUrl.toString(), null);
+            }
+
+            const stepUrl = urlBuilder.withBookmark(matchingNode.trail).build();
             History.pushUrl(stepUrl, stepUrl.toString(), null);
         }
 
-        const stepUrl = urlBuilder.withBookmark(matchingNode.trail).build();
-        History.pushUrl(stepUrl, stepUrl.toString(), null);
+        return executedFunctionPromise;
+    }
+
+    /**
+     * Finds the trail stop which matches the function and replaces current url with it
+     * 
+     * @param {function} theFunction 
+     * @param {any} callingObject 
+     * @param {TrailNode} node 
+     */
+     static replaceCurrentStop(theFunction, callingObject, node) {
+
+        const currentUrl = History.currentUrl();
+
+        const matchingNode = TrailProcessor.getNodeByFunction(node, theFunction);
+
+        if (!matchingNode) { 
+            return Promise.resolve();
+        }
+
+        const executedFunctionPromise = matchingNode.destination.call(callingObject);
+
+        if (!StringUtils.nonNullEquals(currentUrl.bookmark, matchingNode.trail)) {
+            const urlBuilder = UrlBuilder.builder().withAllOfUrl(currentUrl);
+            const stepUrl = urlBuilder.withBookmark(matchingNode.trail).build();
+            History.replaceUrl(stepUrl, stepUrl.toString(), null);
+        }
 
         return executedFunctionPromise;
     }
