@@ -1,23 +1,23 @@
-import { ObjectFunction } from "coreutil_v1";
+import { Method } from "coreutil_v1";
 
 /**
  * Object Function which is called if the filter function returns true
  */
-export class EventFilteredObjectFunction extends ObjectFunction {
+export class EventFilteredMethod extends Method {
 
     /**
      * Contructor
-     * @param {ObjectFunction} objectFunction 
+     * @param {Method} method 
      * @param {function} theFilter 
      */
-    constructor(objectFunction, filter){
-        this.objectFunction = objectFunction;
+    constructor(method, filter){
+        this.method = method;
         this.filter = filter;
     }
 
     call(params){
         if(this.filter && this.filter.call(this,params)) {
-            this.objectFunction.call(params);
+            this.method.call(params);
         }
     }
 

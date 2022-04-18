@@ -1,5 +1,5 @@
 import { AbstractValidator } from "./abstractValidator.js";
-import { ObjectFunction, PropertyAccessor } from "coreutil_v1";
+import { Method, PropertyAccessor } from "coreutil_v1";
 
 export class EqualsPropertyValidator extends AbstractValidator {
 
@@ -7,7 +7,7 @@ export class EqualsPropertyValidator extends AbstractValidator {
 	 * 
 	 * @param {boolean} mandatory 
 	 * @param {boolean} iscurrentlyValid 
-	 * @param {ObjectFunction} comparedValueFunction 
+	 * @param {Method} comparedValueFunction 
 	 */
     constructor(mandatory = false, iscurrentlyValid = false, model = null, attributeName = null) {
 		super(iscurrentlyValid);

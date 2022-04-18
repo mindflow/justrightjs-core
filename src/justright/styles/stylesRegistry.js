@@ -1,6 +1,6 @@
 /* jshint esversion: 6 */
 
-import {Map, Logger, ObjectFunction} from "coreutil_v1";
+import {Map, Logger, Method} from "coreutil_v1";
 import { Client } from "../client/client.js";
 import { Url } from "../util/url.js";
 import { UrlUtils } from "../util/urlUtils.js";
@@ -20,7 +20,7 @@ export class StylesRegistry {
         /** @type {integer} */
         this.stylesQueueSize = 0;
 
-        /** @type {ObjectFunction} */
+        /** @type {Method} */
         this.callback = null;
     }
 
@@ -55,7 +55,7 @@ export class StylesRegistry {
 
     /**
      * 
-     * @param {ObjectFunction} callback 
+     * @param {Method} callback 
      */
     done(callback){
         this.callback = callback;

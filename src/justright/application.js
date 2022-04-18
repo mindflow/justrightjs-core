@@ -1,5 +1,5 @@
 import { MindiInjector, MindiConfig, InstancePostConfigTrigger, ConfigAccessor, SingletonConfig, PrototypeConfig } from "mindi_v1";
-import { List, Logger, ObjectFunction, StringUtils } from  "coreutil_v1";
+import { List, Logger, Method, StringUtils } from  "coreutil_v1";
 import { ContainerUrl } from "containerbridge_v1";
 import { ComponentConfigProcessor } from "./component/componentConfigProcessor.js";
 import { TemplateRegistry } from "./template/templateRegistry.js";
@@ -63,7 +63,7 @@ export class Application extends ModuleRunner {
             .addAllInstanceProcessor(this.defaultInstanceProcessors);
         ActiveModuleRunner.instance().set(this);
         ContainerUrl.addUserNavigateListener(
-            new ObjectFunction(this, this.update),
+            new Method(this, this.update),
             Event
         );
         this.runModule(History.currentUrl()).then(() => {

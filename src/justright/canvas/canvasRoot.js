@@ -1,5 +1,5 @@
 import { ContainerElement, ContainerWindow } from "containerbridge_v1";
-import { ObjectFunction } from "coreutil_v1";
+import { Method } from "coreutil_v1";
 import { Component } from "../component/component.js";
 import { BaseElement } from "../element/baseElement.js";
 import { Event } from "../event/event.js";
@@ -89,12 +89,12 @@ export class CanvasRoot {
      * Remember to swallowFocusEscape for initial triggering events
      * which are external to focusRoot
      * 
-     * @param {ObjectFunction} listener
+     * @param {Method} listener
      * @param {BaseElement} focusRoot
      */
     static listenToFocusEscape(listener, focusRoot) {
         
-        const callIfNotContains = new ObjectFunction(null, (event) => {
+        const callIfNotContains = new Method(null, (event) => {
             if (ContainerElement.contains(focusRoot.element, event.getTarget().element)) {
                 return;
             }

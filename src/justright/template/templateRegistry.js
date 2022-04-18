@@ -1,6 +1,6 @@
 /* jshint esversion: 6 */
 
-import {Map, Logger, ObjectFunction} from "coreutil_v1";
+import {Map, Logger, Method} from "coreutil_v1";
 import {Template} from "./template.js";
 import { Client } from "../client/client.js";
 import { Url } from "../util/url.js";
@@ -20,7 +20,7 @@ export class TemplateRegistry {
         /** @type {integer} */
         this.templateQueueSize = 0;
 
-        /** @type {ObjectFunction} */
+        /** @type {Method} */
         this.callback = null;
 
         /** @type {string} */
@@ -66,7 +66,7 @@ export class TemplateRegistry {
 
     /**
      * 
-     * @param {ObjectFunction} callback 
+     * @param {Method} callback 
      */
     done(callback){
         this.callback = callback;

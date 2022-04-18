@@ -1,4 +1,4 @@
-import { Map, ObjectFunction, Logger } from "coreutil_v1";
+import { Map, Method, Logger } from "coreutil_v1";
 import { Event } from "./event.js";
 import { BaseElement } from "../element/baseElement.js";
 
@@ -8,7 +8,7 @@ export class EventRegistry {
 
     constructor() {
 
-        /** @type {Map<Map<ObjectFunction>} */
+        /** @type {Map<Map<Method>} */
         this.listeners = new Map();
     }
 
@@ -32,7 +32,7 @@ export class EventRegistry {
     /**
      * 
      * @param {String} eventName the event name as it will be referred to in the EventRegistry (example "//event:clicked")
-     * @param {ObjectFunction} listener the object which owns the handler function
+     * @param {Method} listener the object which owns the handler function
      * @param {String} uniqueIndex a unique index for the event
      */
     listen(eventName, listener, uniqueIndex) {
@@ -43,7 +43,7 @@ export class EventRegistry {
     /**
      * 
      * @param {String} key 
-     * @returns {Map<ObjectFunction>}
+     * @returns {Map<Method>}
      */
     initMap(key) {
         if (!this.listeners.exists(key)) {

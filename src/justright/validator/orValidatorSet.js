@@ -1,4 +1,4 @@
-import { List, ObjectFunction } from "coreutil_v1";
+import { List, Method } from "coreutil_v1";
 import { AbstractValidator } from './abstractValidator.js'
 
 export class OrValidatorSet extends AbstractValidator {
@@ -12,8 +12,8 @@ export class OrValidatorSet extends AbstractValidator {
      * @param {AbstractValidator} validator
      */
     withValidator(validator) {
-        validator.withValidListener(new ObjectFunction(this, this.oneValid));
-        validator.withInvalidListener(new ObjectFunction(this, this.oneInvalid));
+        validator.withValidListener(new Method(this, this.oneValid));
+        validator.withInvalidListener(new Method(this, this.oneInvalid));
         this.validatorList.add(validator);
         return this;
     }

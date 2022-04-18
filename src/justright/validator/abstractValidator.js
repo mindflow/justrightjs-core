@@ -78,7 +78,7 @@ export class AbstractValidator {
 
 	/**
 	 * 
-	 * @param {ObjectFunction} validListener 
+	 * @param {Method} validListener 
 	 */
 	withValidListener(validListener) {
 		this.validListenerList.add(validListener);
@@ -87,7 +87,7 @@ export class AbstractValidator {
 
 	/**
 	 * 
-	 * @param {ObjectFunction} invalidListener 
+	 * @param {Method} invalidListener 
 	 */
 	withInvalidListener(invalidListener) {
 		this.invalidListenerList.add(invalidListener);
