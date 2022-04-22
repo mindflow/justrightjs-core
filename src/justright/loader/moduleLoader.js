@@ -53,14 +53,15 @@ export class ModuleLoader {
      * 
      * @returns {Promise<Main>}
      */
-    load() {
-        return this.importModule().then((main) => {
-            return this.interceptorsPass().then(() => {
-                return main;
-            }).catch((reason) => {
-                LOG.warn("Filter rejected " + reason);
-            });
-        });
+    async load() {
+        try {
+            const main = await this.importModule();
+            await this.interceptorsPass();
+            return main;
+        } catch(reason) {
+            LOG.warn("Filter rejected " + reason);
+            return null;
+        }
     }
 
     /**

@@ -26,18 +26,17 @@ export class DiModuleLoader extends ModuleLoader {
      * 
      * @returns {Promise<Main>}
      */
-    load() {
-        return this.importModule().then((main) => {
-            return this.interceptorsPass().then(() => {
-                return MindiInjector.inject(main, this.config);
-            }).catch((reason) => {
-                LOG.warn("Filter rejected " + reason);
-                throw reason;
-            });
-        }).catch((reason) => {
+    async load() {
+        try {
+            const main = await this.importModule();
+            await this.interceptorsPass();
+            return await MindiInjector.inject(main, this.config);
+        } catch(reason) {
+            LOG.warn("Module loader failed " + reason);
             throw reason;
-        });
+        }
     }
+
 
     /**
      * 

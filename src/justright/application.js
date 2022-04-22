@@ -54,7 +54,7 @@ export class Application extends ModuleRunner {
         this.customConfig = typeConfigList;
     }
 
-    run() {
+    async run() {
         LOG.info("Running Application");
         this.config
             .addAllTypeConfig(this.defaultConfig)
@@ -66,9 +66,8 @@ export class Application extends ModuleRunner {
             new Method(this, this.update),
             Event
         );
-        this.runModule(History.currentUrl()).then(() => {
-            this.startWorkers();
-        });
+        await this.runModule(History.currentUrl());
+        this.startWorkers();
     }
 
     /**
@@ -89,13 +88,16 @@ export class Application extends ModuleRunner {
      * @param {Url} url 
      * @returns 
      */
-    runModule(url) {
-        return this.getMatchingModuleLoader(url).load().then((main) => {
+    async runModule(url) {
+        try {
+            const main = await this.getMatchingModuleLoader(url).load();
             this.activeMain = main;
             main.load(url, null);
-        }).catch((error) => {
+            return main;
+        } catch(error) {
             LOG.error(error);
-        });
+            return null;
+        }
     }
 
     startWorkers() {
