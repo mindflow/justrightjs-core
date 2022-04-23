@@ -79,21 +79,16 @@ export class StylesRegistry {
      * @param {string} name 
      * @param {Url} url 
      */
-     load(name, url) {
+     async load(name, url) {
         this.stylesQueueSize ++;
-        return new Promise((resolve) => {
-            Client.get(url).then((response) => {
-                if(!response.ok){
-                    throw "Unable to load styles for " + name + " at " + url;
-                }
-                response.text().then((text) => {
-                    this.set(name,new Styles(text),url);
-                    this.doCallback(this);
-                    resolve();
-                });
-            });
-        });
-
+        const response = await Client.get(url);
+        if(!response.ok){
+            throw "Unable to load styles for " + name + " at " + url;
+        }
+        const text = await response.text();
+        this.set(name, new Styles(text), url);
+        this.doCallback(this);
+        return null;
     }
 
     /**

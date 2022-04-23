@@ -99,61 +99,55 @@ export class HttpCallBuilder {
     /**
      * @returns {Promise}
      */
-    get() {
-        return this.asTypeMappedPromise(
-            Client.get(this.url, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization)
-        );
+    async get() {
+        const response = Client.get(this.url, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization);
+        return this.asTypeMappedPromise(response);
     }
 
     /**
      * @returns {Promise}
      */
-    post() {
-        return this.asTypeMappedPromise(
-            Client.post(this.url, this.payload, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization)
-        );
+    async post() {
+        const resposne = await Client.post(this.url, this.payload, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization);
+        return this.asTypeMappedPromise(resposne);
     }
 
     /**
      * @returns {Promise}
      */
-    put() {
-        return this.asTypeMappedPromise(
-            Client.put(this.url, this.payload, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization)
-        );
+    async put() {
+        const response = await Client.put(this.url, this.payload, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization)
+        return this.asTypeMappedPromise(response);
     }
 
     /**
      * @returns {Promise}
      */
-    patch() {
-        return this.asTypeMappedPromise(
-            Client.patch(this.url, this.payload, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization)
-        );
+    async patch() {
+        const response = await Client.patch(this.url, this.payload, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization);
+        return this.asTypeMappedPromise(response);
     }
 
     /**
      * @returns {Promise}
      */
-    delete() {
-        return this.asTypeMappedPromise(
-            Client.delete(this.url, this.connectionTimeoutValue, this.responseTimeoutValue)
-        );
+    async delete() {
+        const response = await Client.delete(this.url, this.connectionTimeoutValue, this.responseTimeoutValue);
+        return this.asTypeMappedPromise(response);
     }
 
     /**
      * 
      * @param {Promise} fetchPromise 
      */
-    asTypeMappedPromise(fetchPromise) {
-        return new Promise((resolve,reject) => {
-            fetchPromise.then((fetchResponse) => {
-                this.handleFetchResponse(fetchResponse, resolve, reject);
-            }).catch((error) => {
-                // API did not execute
-                reject(this.errorMappingFunction(error));
-            });
-        });
+    async asTypeMappedPromise(fetchPromise) {
+        try {
+            const fetchResponse = await fetchPromise;
+            return await this.handleFetchResponse(fetchResponse);
+        } catch(error) {
+            // API did not execute
+            throw this.errorMappingFunction(error);
+        }
     }
 
     /**
@@ -162,39 +156,35 @@ export class HttpCallBuilder {
      * @param {function} resolve 
      * @param {function} reject 
      */
-    handleFetchResponse(fetchResponse, resolve, reject) {
+    async handleFetchResponse(fetchResponse) {
         const successResponseMapper = this.successMappingMap.get(fetchResponse.status);
         const failResponseMapper = this.failMappingMap.get(fetchResponse.status);
 
         // Empty response
         if (204 === fetchResponse.status || fetchResponse.headers.get("Content-Length") === "0") {
             if (successResponseMapper) {
-                resolve(successResponseMapper(null)); 
-                return;
+                return successResponseMapper(null); 
             }
             if(failResponseMapper) {
-                reject(failResponseMapper(null)); 
-                return;
+                throw failResponseMapper(null);
             }
-            reject(new Error("Missing mapper for return status: " + fetchResponse.status));
-            return;
+            throw new Error("Missing mapper for return status: " + fetchResponse.status);
         }
 
-        // Assuming json response        
-        fetchResponse.json().then((responseJson) => {
-            if(successResponseMapper) { 
-                resolve(successResponseMapper(responseJson)); 
-                return;
+        // Assuming json response      
+        try {  
+            const responseJson = await fetchResponse.json();
+            if (successResponseMapper) { 
+                return successResponseMapper(responseJson);
             }
-            if(failResponseMapper) {
-                reject(failResponseMapper(responseJson)); 
-                return;
+            if (failResponseMapper) {
+                throw failResponseMapper(responseJson);
             }
-            reject(this.errorMappingFunction(responseJson));
-        }).catch((error) => {
+            throw this.errorMappingFunction(responseJson);
+        } catch(error) {
             // Response did not provide json
-            reject(this.errorMappingFunction(error));
-        });
+            throw this.errorMappingFunction(error);
+        }
     }
 
 }

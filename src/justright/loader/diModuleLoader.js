@@ -43,30 +43,18 @@ export class DiModuleLoader extends ModuleLoader {
      * @param {ModuleLoader} moduleLoader
      * @returns {Promise}
      */
-    importModule() {
-        return new Promise((resolve, reject) => {
-            return super.importModule().then((main) => {
-                this.config.addAllTypeConfig(main.typeConfigList);
-                this.config.finalize().then(() => {
-
-                    new List(this.loaderInterceptors).promiseChain((loaderInterceptor) => {
-                        return MindiInjector.inject(loaderInterceptor, this.config);
-                    }).then(() => {
-                        resolve(main);
-                    }).catch((error) => {
-                        // Failed to inject
-                        reject(error);
-                    });
-
-                }).catch((error) => {
-                    // Failed to finalize config
-                    reject(error);
-                });
-
-            }).catch((error) => {
-                // Failed to import module
-                reject(error);
+    async importModule() {
+        try {
+            const main = await super.importModule();
+            this.config.addAllTypeConfig(main.typeConfigList);
+            await this.config.finalize();
+            await new List(this.loaderInterceptors).promiseChain((loaderInterceptor) => {
+                return MindiInjector.inject(loaderInterceptor, this.config);
             });
-        });
+            return main;
+        } catch(error) {
+            reject(error);
+            return null;
+        }
     }
 }

@@ -80,14 +80,13 @@ export class ModuleLoader {
         return Promise.resolve();
     }
 
-    importModule() {
-        return new Promise((resolve, reject) => {
-            import(this.modulePath).then((module) => {
-                resolve(new module.default());
-            }).catch((reason) => {
-                reject(reason);
-            });
-        });
+    async importModule() {
+        try {
+            const module = await import(this.modulePath);
+            return new module.default();
+        } catch(reason)  {
+            throw reason;
+        }
     }
 
 }
