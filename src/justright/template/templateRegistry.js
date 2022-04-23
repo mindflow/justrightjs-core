@@ -90,7 +90,7 @@ export class TemplateRegistry {
      * @param {string} name 
      * @param {Url} url 
      */
-    load(name, url) {
+    async load(name, url) {
         if(this.languagePrefix !== null) {
             url.pathsList.setLast(
                 this.languagePrefix + "." +
@@ -98,61 +98,33 @@ export class TemplateRegistry {
             );
         }
         this.templateQueueSize ++;
-        return new Promise((resolve) => {
-            Client.get(url).then((response) => {
-                if(!response.ok){
-                    throw "Unable to load template for " + name + " at " + url;
-                }
-                response.text().then((text) => {
-                    this.set(name,new Template(text),url);
-                    this.doCallback(this);
-                    resolve();
-                });
-            });
-        });
+        const response = await Client.get(url);
+        if(!response.ok){
+            throw "Unable to load template for " + name + " at " + url;
+        }
+        const text = await response.text();
+        this.set(name,new Template(text),url);
+        this.doCallback(this);
     }
 
-    /**
-     * 
-     * @param {Map} nameUrlMap 
-     */
-    getTemplatesLoadedPromise(nameUrlMap) {
-
-        return new Promise((resolve,reject) => {
-            var loaded = 0;
-            if(!nameUrlMap || nameUrlMap.size() == 0) {
-                resolve();
-                return;
-            }
-            nameUrlMap.forEach((key, value, parent) => {
-                if(this.contains(key)){
-                    loaded ++;
-                    if(loaded == nameUrlMap.size()){
-                        resolve();
-                        // Break loop
-                        return false;
-                    }
-                    return true;
-                }
-                this.privateLoad(key, UrlUtils.parse(value))
-
-                    .then(() => {
-                        loaded ++;
-                        if(loaded == nameUrlMap.size()){
-                            resolve();
-                            // Break loop
-                            return false;
-                        }
-                    })
-
-                    .catch((reason) => {
-                        reject(reason);
-                        // Break loop
-                        return false;
-                    });
+    async getTemplatesLoadedPromise(nameUrlMap) {
+        
+        if(!nameUrlMap || nameUrlMap.size() == 0) {
+            return null;
+        }
+        let loadPromises = [];
+        nameUrlMap.forEach((key, value, parent) => {
+            if (this.contains(key)){
                 return true;
-            },this);
-        });
+            }
+            try {
+                loadPromises.push(this.privateLoad(key, UrlUtils.parse(value)));
+            } catch(reason) {
+                throw reason;
+            }
+            return true;
+        }, this);
+        return await Promise.all(loadPromises);
     }
 
     /**
@@ -160,7 +132,7 @@ export class TemplateRegistry {
      * @param {string} name 
      * @param {Url} url 
      */
-    privateLoad(name, url) {
+    async privateLoad(name, url) {
         if(this.languagePrefix !== null) {
             url.pathsList.setLast(
                 this.languagePrefix + "." +
@@ -168,16 +140,13 @@ export class TemplateRegistry {
             );
         }
         LOG.info("Loading template " + name + " at " + url.toString());
-        return new Promise((resolse) => {
-            Client.get(url).then((response) => {
-                if(!response.ok){
-                    throw "Unable to load template for " + name + " at " + url;
-                }
-                response.text().then((text) => {
-                    this.set(name,new Template(text),url);
-                    resolse();
-                });
-            });
-        });
+        const response = await Client.get(url);
+        if(!response.ok){
+            throw "Unable to load template for " + name + " at " + url;
+        }
+        const text = await response.text();
+        const template = new Template(text);
+        this.set(name, template, url);
+        return template;
     }
 }

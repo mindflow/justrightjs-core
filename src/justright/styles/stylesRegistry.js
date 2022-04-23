@@ -1,6 +1,6 @@
 /* jshint esversion: 6 */
 
-import {Map, Logger, Method} from "coreutil_v1";
+import { Map, Logger, Method } from "coreutil_v1";
 import { Client } from "../client/client.js";
 import { Url } from "../util/url.js";
 import { UrlUtils } from "../util/urlUtils.js";
@@ -91,47 +91,24 @@ export class StylesRegistry {
         return null;
     }
 
-    /**
-     * 
-     * @param {Map} nameUrlMap 
-     */
-    getStylesLoadedPromise(nameUrlMap) {
+    async getStylesLoadedPromise(nameUrlMap) {
         
-        return new Promise((resolve,reject) => {
-            var loaded = 0;
-            if(!nameUrlMap || nameUrlMap.size() == 0) {
-                resolve();
-                return;
-            }
-            nameUrlMap.forEach((key, value, parent) => {
-                if(this.contains(key)){
-                    loaded ++;
-                    if(loaded == nameUrlMap.size()){
-                        resolve();
-                        // Break loop
-                        return false;
-                    }
-                    return true;
-                }
-                this.privateLoad(key, UrlUtils.parse(value))
-
-                    .then(() => {
-                        loaded ++;
-                        if(loaded == nameUrlMap.size()){
-                            resolve();
-                            // Break loop
-                            return false;
-                        }
-                    })
-
-                    .catch((reason) => {
-                        reject(reason);
-                        // Break loop
-                        return false;
-                    });
+        if(!nameUrlMap || nameUrlMap.size() == 0) {
+            return null;
+        }
+        let loadPromises = [];
+        nameUrlMap.forEach((key, value, parent) => {
+            if (this.contains(key)){
                 return true;
-            },this);
-        });
+            }
+            try {
+                loadPromises.push(this.privateLoad(key, UrlUtils.parse(value)));
+            } catch(reason) {
+                throw reason;
+            }
+            return true;
+        }, this);
+        return await Promise.all(loadPromises);
     }
 
     /**
@@ -139,19 +116,16 @@ export class StylesRegistry {
      * @param {string} name 
      * @param {Url} url 
      */
-    privateLoad(name, url) {
+    async privateLoad(name, url) {
         LOG.info("Loading styles " + name + " at " + url.toString());
 
-        return new Promise((resolve) => {
-            Client.get(url).then((response) => {
-                if(!response.ok){
-                    throw "Unable to load styles for " + name + " at " + url;
-                }
-                response.text().then((text) => {
-                    this.set(name,new Styles(text),url);
-                    resolve();
-                });
-            });
-        });
+        const response = await Client.get(url);
+        if(!response.ok){
+            throw "Unable to load styles for " + name + " at " + url;
+        }
+        const text = await response.text();
+        const styles = new Styles(text);
+        this.set(name, styles, url);
+        return styles;
     }
 }

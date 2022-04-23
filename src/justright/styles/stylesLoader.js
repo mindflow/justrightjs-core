@@ -1,5 +1,4 @@
 import { Logger, Map } from "coreutil_v1";
-import { Config } from "mindi_v1";
 import { StylesRegistry } from "./stylesRegistry.js";
 
 const LOG = new Logger("StylesLoader");
