@@ -173,7 +173,7 @@ export class BaseElement {
     }
 
     set(input) {
-        if(this.element.parentNode === null){
+        if(!this.element.parentNode){
             console.error("The element has no parent, can not swap it for value");
             return;
         }
@@ -181,8 +181,8 @@ export class BaseElement {
             this.element.parentNode.replaceChild(input.mappedElement, this.element);
             return;
         }
-        if(input && input.rootElement !== null) {
-            this.element.parentNode.replaceChild(input.rootElement.mappedElement, this.element);
+        if(input && input.rootElement) {
+            this.element.parentNodess.replaceChild(input.rootElement.mappedElement, this.element);
             this.element = input.rootElement.mappedElement;
             return;
         }
