@@ -53,8 +53,7 @@ export class DiModuleLoader extends ModuleLoader {
             });
             return main;
         } catch(error) {
-            reject(error);
-            return null;
+            throw error;
         }
     }
 }
