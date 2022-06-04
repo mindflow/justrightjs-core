@@ -2,9 +2,9 @@ import { Map, Method, Logger } from "coreutil_v1";
 import { Event } from "./event.js";
 import { BaseElement } from "../element/baseElement.js";
 
-const LOG = new Logger("EventRegistry");
+const LOG = new Logger("BaseElementEventRegistry");
 
-export class EventRegistry {
+export class BaseElementEventRegistry {
 
     constructor() {
 
@@ -17,7 +17,7 @@ export class EventRegistry {
      * 
      * @param {BaseElement} element the element which is the source of the event and which can be attached to
      * @param {String} eventType the event type as it is defined by the containing trigger (example "onclick")
-     * @param {String} eventName the event name as it will be referred to in the EventRegistry (example "//event:clicked")
+     * @param {String} eventName the event name as it will be referred to in the BaseElementEventRegistry (example "//event:clicked")
      * @param {String} componentIndex unique id of the component which owns the element
      * @param {boolean} capture 
      */
@@ -31,7 +31,7 @@ export class EventRegistry {
 
     /**
      * 
-     * @param {String} eventName the event name as it will be referred to in the EventRegistry (example "//event:clicked")
+     * @param {String} eventName the event name as it will be referred to in the BaseElementEventRegistry (example "//event:clicked")
      * @param {Method} listener the object which owns the handler function
      * @param {String} uniqueIndex a unique index for the event
      */

@@ -1,7 +1,7 @@
 import { Logger, List } from "coreutil_v1"
 import { SingletonConfig, PrototypeConfig } from "mindi_v1"
 import { TemplateRegistry } from "./template/templateRegistry.js";
-import { EventRegistry } from "./event/eventRegistry.js";
+import { BaseElementEventRegistry } from "./event/baseElementEventRegistry.js";
 import { UniqueIdRegistry } from "./component/uniqueIdRegistry.js";
 import { ComponentFactory } from "./component/componentFactory.js";
 import { StylesRegistry } from "./styles/stylesRegistry.js";
@@ -20,7 +20,7 @@ export class Config {
             SingletonConfig.unnamed(StylesRegistry),
             SingletonConfig.unnamed(UniqueIdRegistry),
             SingletonConfig.unnamed(ComponentFactory),
-            PrototypeConfig.unnamed(EventRegistry)]);
+            PrototypeConfig.unnamed(BaseElementEventRegistry)]);
         }
 
     getTypeConfigList() {

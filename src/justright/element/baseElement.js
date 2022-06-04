@@ -182,7 +182,7 @@ export class BaseElement {
             return;
         }
         if(input && input.rootElement) {
-            this.element.parentNodess.replaceChild(input.rootElement.mappedElement, this.element);
+            this.element.parentNode.replaceChild(input.rootElement.mappedElement, this.element);
             this.element = input.rootElement.mappedElement;
             return;
         }

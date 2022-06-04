@@ -1,8 +1,8 @@
-import { Map, Logger } from "coreutil_v1";
+import { Map } from "coreutil_v1";
 import { XmlElement } from "xmlparser_v1";
-import { ElementMapper } from "../element/elementMapper";
-import { BaseElement } from "../element/baseElement";
-import { EventRegistry } from "../event/eventRegistry";
+import { ElementMapper } from "../element/elementMapper.js";
+import { BaseElement } from "../element/baseElement.js";
+import { BaseElementEventRegistry } from "../event/baseElementEventRegistry.js";
 
 /**
  * Collects information when elements are created and finds the root element, creates map of elements 
@@ -10,14 +10,14 @@ import { EventRegistry } from "../event/eventRegistry";
  */
 export class ElementRegistrator {
 
-    constructor(eventRegistry, uniqueIdRegistry, componentIndex) {
+    constructor(baseElementEventRegistry, uniqueIdRegistry, componentIndex) {
         this.componentIndex = componentIndex;
 
         /** @type {Map} */
         this.uniqueIdRegistry = uniqueIdRegistry;
 
-        /** @type {EventRegistry} */
-        this.eventRegistry = eventRegistry;
+        /** @type {BaseElementEventRegistry} */
+        this.baseElementEventRegistry = baseElementEventRegistry;
 
         /** @type {BaseElement} */
         this.rootElement = null;
@@ -52,13 +52,13 @@ export class ElementRegistrator {
         if(element === null || element === undefined || !(element instanceof BaseElement)) {
             return;
         }
-        var eventRegistry = this.eventRegistry;
+        var baseElementEventRegistry = this.baseElementEventRegistry;
         var componentIndex = this.componentIndex;
         element.attributes.forEach(function (attributeKey,attribute,parent){
             if(attribute !== null && attribute !== undefined && attribute.value.startsWith("//event:")) {
                 var eventName = attribute.value;
                 var eventType = attribute.name;
-                eventRegistry.attach(element,eventType,eventName,componentIndex);
+                baseElementEventRegistry.attach(element,eventType,eventName,componentIndex);
             }
             return true;         
         },this);
