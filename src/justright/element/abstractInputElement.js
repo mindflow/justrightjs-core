@@ -2,7 +2,6 @@ import { Logger } from "coreutil_v1";
 import { XmlElement } from "xmlparser_v1";
 import { BaseElement } from "./baseElement.js";
 
-
 const LOG = new Logger("AbstractInputElement");
 
 /**

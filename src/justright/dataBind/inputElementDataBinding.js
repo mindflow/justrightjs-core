@@ -1,4 +1,4 @@
-import { PropertyAccessor, List, Logger } from "coreutil_v1";
+import { PropertyAccessor, List, Logger, Method } from "coreutil_v1";
 import { AbstractInputElement } from "../element/abstractInputElement";
 
 const LOG = new Logger("InputElementDataBinding");
@@ -38,8 +38,8 @@ export class InputElementDataBinding {
                 this.validator.validate(field.value);
             }
         };
-        field.attachEvent("onchange", puller);
-        field.attachEvent("onkeyup", puller);
+        field.listenTo("change", new Method(this, puller));
+        field.listenTo("keyup", new Method(this, puller));
         puller.call();
 
         const pusher = () => {

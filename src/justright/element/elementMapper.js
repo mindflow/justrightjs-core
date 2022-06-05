@@ -1,12 +1,12 @@
 /* jshint esversion: 6 */
 
-import {XmlCdata,XmlElement} from "xmlparser_v1";
-import {RadioInputElement} from "./radioInputElement.js";
-import {CheckboxInputElement} from "./checkboxInputElement.js";
-import {TextInputElement} from "./textInputElement.js";
-import {TextareaInputElement} from "./textareaInputElement.js";
-import {TextnodeElement} from "./textnodeElement.js";
-import {SimpleElement} from "./simpleElement.js";
+import { XmlCdata,XmlElement } from "xmlparser_v1";
+import { RadioInputElement } from "./radioInputElement.js";
+import { CheckboxInputElement } from "./checkboxInputElement.js";
+import { TextInputElement } from "./textInputElement.js";
+import { TextareaInputElement } from "./textareaInputElement.js";
+import { TextnodeElement } from "./textnodeElement.js";
+import { SimpleElement } from "./simpleElement.js";
 import { BaseElement } from "./baseElement.js";
 import { FormElement } from "./formElement.js";
 import { VideoElement } from "./videoElement.js";
@@ -20,15 +20,15 @@ export class ElementMapper {
      * @param {BaseElement} parent 
      */
     static map(input, parent) {
-        if (ElementMapper.mapsToRadio(input)){ return new RadioInputElement(input, parent); }
-        if (ElementMapper.mapsToCheckbox(input)){ return new CheckboxInputElement(input, parent); }
-        if (ElementMapper.mapsToSubmit(input)){ return new TextInputElement(input, parent); }
-        if (ElementMapper.mapsToForm(input)){ return new FormElement(input, parent); }
-        if (ElementMapper.mapsToTextarea(input)){ return new TextareaInputElement(input, parent); }
-        if (ElementMapper.mapsToText(input)){ return new TextInputElement(input, parent); }
-        if (ElementMapper.mapsToVideo(input)){ return new VideoElement(input, parent); }
-        if (ElementMapper.mapsToTextnode(input)){ return new TextnodeElement(input, parent); }
-        if (ElementMapper.mapsToSimple(input)){ return new SimpleElement(input, parent); }
+        if (ElementMapper.mapsToRadio(input)){     return new RadioInputElement(input, parent); }
+        if (ElementMapper.mapsToCheckbox(input)){  return new CheckboxInputElement(input, parent); }
+        if (ElementMapper.mapsToSubmit(input)){    return new TextInputElement(input, parent); }
+        if (ElementMapper.mapsToForm(input)){      return new FormElement(input, parent); }
+        if (ElementMapper.mapsToTextarea(input)){  return new TextareaInputElement(input, parent); }
+        if (ElementMapper.mapsToText(input)){      return new TextInputElement(input, parent); }
+        if (ElementMapper.mapsToVideo(input)){     return new VideoElement(input, parent); }
+        if (ElementMapper.mapsToTextnode(input)){  return new TextnodeElement(input, parent); }
+        if (ElementMapper.mapsToSimple(input)){    return new SimpleElement(input, parent); }
         console.log("Mapping to simple by default " + input);
         return new SimpleElement(input, parent);
     }

@@ -12,6 +12,8 @@ import { Url } from "./util/url.js";
 import { ModuleRunner } from "./moduleRunner.js";
 import { Main } from "./main.js";
 import { ActiveModuleRunner } from "./activeModuleRunner.js";
+import { ConfiguredFunction } from "./config/configuredFunction.js";
+import { ElementMapper } from "./element/elementMapper.js";
 
 const LOG = new Logger("Application");
 
@@ -35,6 +37,10 @@ export class Application extends ModuleRunner {
 
         /** @type {Main} */
         this.activeMain = null;
+
+        ConfiguredFunction.configure("wrapEvent", (parameter) => { return new Event(parameter); });
+
+        ConfiguredFunction.configure("mapElement", (parameter) => { return ElementMapper.map(parameter); });
 
         this.defaultConfig = Config.getInstance().getTypeConfigList();
 

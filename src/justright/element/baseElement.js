@@ -2,7 +2,8 @@ import { XmlElement } from "xmlparser_v1";
 import { Map, Logger, List } from "coreutil_v1";
 import { ContainerElement } from "containerbridge_v1";
 import { Attribute } from "./attribute.js";
-import { Event } from "../event/event.js";
+import { ConfiguredFunction } from "../config/configuredFunction.js";
+import { ElementUtils } from "../util/elementUtils.js";
 
 const LOG = new Logger("BaseElement");
 
@@ -18,24 +19,13 @@ export class BaseElement {
      * @param {BaseElement} parent the parent BaseElement
      */
     constructor(value, parent) {
-        
+
         /** @type {HTMLElement} */
         this.element = null;
         this.attributeMap = null;
         this.eventsAttached = new List();
-        
-        if(value instanceof XmlElement) {
-            this.element = this.createFromXmlElement(value, parent);
-            return;
-        }
-        if(typeof value === "string"){
-            this.element = ContainerElement.createElement(value);
-            return;
-        }
-        if(ContainerElement.isUIElement(value)){
-            this.element = value;
-            return;
-        }
+        this.element = ElementUtils.createContainerElement(value, parent);
+
         LOG.error("Unrecognized value for Element");
         LOG.error(value);
     }
@@ -53,52 +43,9 @@ export class BaseElement {
         }
     }
 
-    /**
-     * Creates a browser Element from the XmlElement
-     *
-     * @param {XmlElement} xmlElement
-     * @param {BaseElement} parentElement
-     * @return {HTMLElement}
-     */
-    createFromXmlElement(xmlElement, parentElement) {
-        let element = null;
-        if(xmlElement.namespace){
-            element = ContainerElement.createElementNS(xmlElement.namespaceUri, xmlElement.fullName);
-        }else{
-            element = ContainerElement.createElement(xmlElement.name);
-        }
-        if(parentElement && parentElement.mappedElement !== null) {
-            ContainerElement.appendChild(parentElement.mappedElement, element);
-        }
-        xmlElement.attributes.forEach((attributeKey, attribute) => {
-            ContainerElement.setAttribute(element, attributeKey, attribute.value);
-            return true;
-        });
-        return element;
-    }
-
-    /**
-     * Attach a function to an event in the enclosed element if none allready exists
-     *
-     * @param {string} eventType
-     * @param {function} functionParam
-     * @param {boolean} capture
-     */
-    attachEvent(eventType, functionParam, capture = false) {
-        if(!this.eventsAttached.contains(eventType)) {
-            if(eventType.startsWith("on")) {
-                eventType = eventType.substr(2);
-            }
-            ContainerElement.addEventListener(this.element, eventType, functionParam, capture);
-            this.eventsAttached.add(eventType);
-        } else {
-            LOG.warn("Event '" + eventType + "' allready attached for " + this.element.name);
-        }
-    }
-
     listenTo(eventType, listener, capture) {
         ContainerElement.addEventListener(this.element, eventType, (event) => {
-            listener.call(new Event(event));
+            listener.call(ConfiguredFunction.execute("wrapEvent", event));
         }, capture);
     }
 

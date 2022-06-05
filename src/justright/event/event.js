@@ -1,6 +1,6 @@
 /* jshint esversion: 6 */
 
-import { ElementMapper } from "../element/elementMapper.js";
+import { ConfiguredFunction } from "../config/configuredFunction.js";
 import { SimpleElement } from "../element/simpleElement.js";
 
 export class Event{
@@ -54,7 +54,7 @@ export class Event{
      */
     getTarget(){
         if (this.event && this.event.target) {
-            return ElementMapper.map(this.event.target);
+            return ConfiguredFunction.execute("mapElement", this.event.target);
         }
     }
 
@@ -64,7 +64,7 @@ export class Event{
      */
     getRelatedTarget(){
         if (this.event && this.event.relatedTarget) {
-            return ElementMapper.map(this.event.relatedTarget);
+            return ConfiguredFunction.execute("mapElement", this.event.relatedTarget);
         }
         return null;
     }
@@ -75,7 +75,7 @@ export class Event{
      */
      getRelatedTargetAttribute(attributeName){
         if (this.event.relatedTarget) {
-            return ElementMapper.map(this.event.relatedTarget).getAttributeValue(attributeName);
+            return ConfiguredFunction.execute("mapElement", this.event.relatedTarget).getAttributeValue(attributeName);
         }
         return null;
     }

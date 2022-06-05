@@ -4,7 +4,6 @@ import { Logger } from "coreutil_v1";
 import { Component } from "./component.js";
 import { UniqueIdRegistry } from "./uniqueIdRegistry.js";
 import { ElementRegistrator } from "./elementRegistrator.js";
-import { BaseElementEventRegistry } from "../event/baseElementEventRegistry.js";
 import { TemplateRegistry } from "../template/templateRegistry.js";
 import { StylesRegistry } from "../styles/stylesRegistry.js";
 import { CanvasStyles } from "../canvas/canvasStyles.js";
@@ -14,9 +13,6 @@ const LOG = new Logger("ComponentFactory");
 export class ComponentFactory {
 
     constructor() {
-
-        /** @type {BaseElementEventRegistry} */
-        this.baseElementEventRegistry = InjectionPoint.instance(BaseElementEventRegistry);
 
         /** @type {StylesRegistry} */
         this.stylesRegistry = InjectionPoint.instance(StylesRegistry);
@@ -39,7 +35,7 @@ export class ComponentFactory {
             throw "No template was found with name " + name;
 
         }
-        var elementRegistrator = new ElementRegistrator(this.baseElementEventRegistry, this.uniqueIdRegistry, componentCounter++);
+        var elementRegistrator = new ElementRegistrator(this.uniqueIdRegistry, componentCounter++);
         new DomTree(template.getTemplateSource(),elementRegistrator).load();
 
         this.mountStyles(name);
