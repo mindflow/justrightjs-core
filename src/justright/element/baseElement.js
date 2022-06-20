@@ -25,9 +25,6 @@ export class BaseElement {
         this.attributeMap = null;
         this.eventsAttached = new List();
         this.element = ElementUtils.createContainerElement(value, parent);
-
-        LOG.error("Unrecognized value for Element");
-        LOG.error(value);
     }
 
     loadAttributes() {

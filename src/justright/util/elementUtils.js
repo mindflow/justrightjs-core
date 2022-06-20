@@ -15,6 +15,8 @@ export class ElementUtils {
         if(ContainerElement.isUIElement(value)){
             return value;
         }
+        LOG.error("Unrecognized value for Element");
+        LOG.error(value);
         return null;
     }
 
