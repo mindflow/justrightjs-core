@@ -44,6 +44,7 @@ export class BaseElement {
         ContainerElement.addEventListener(this.element, eventType, (event) => {
             listener.call(ConfiguredFunction.execute("wrapEvent", event));
         }, capture);
+        return this;
     }
 
     /**
