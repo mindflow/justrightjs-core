@@ -72,8 +72,9 @@ export class Application extends ModuleRunner {
             new Method(this, this.update),
             Event
         );
-        await this.runModule(History.currentUrl());
+        const main = await this.runModule(History.currentUrl());
         this.startWorkers();
+        return main;
     }
 
     /**

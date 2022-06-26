@@ -30,8 +30,8 @@ export class ActiveModuleRunner {
      * Load path without renavigating browser
      * @param {string} path 
      */
-     load(path) {
+     async load(path) {
         const url = Navigation.instance().load(path);
-        this.moduleRunner.runModule(url);
+        return await this.moduleRunner.runModule(url);
     }
 }
