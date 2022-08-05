@@ -8,6 +8,10 @@ export class CanvasRoot {
 
     static shouldSwallowNextFocusEscape = false;
 
+    static mouseDownElement = null;
+
+    static focusEscapeEventRequested = false;
+
     /**
      * 
      * @param {String} id 
@@ -94,8 +98,20 @@ export class CanvasRoot {
      */
     static listenToFocusEscape(listener, focusRoot) {
         
+        /* Hack: Because we don't have a way of knowing in the click event which element was in focus when mousedown occured */
+        if (!CanvasRoot.focusEscapeEventRequested) {
+            const updateMouseDownElement = new Method(null, (event) => {
+                CanvasRoot.mouseDownElement = event.getTarget();
+            });
+            ContainerWindow.addEventListener("mousedown", updateMouseDownElement, Event);
+            CanvasRoot.focusEscapeEventRequested = true;
+        }
+
         const callIfNotContains = new Method(null, (event) => {
-            if (ContainerElement.contains(focusRoot.element, event.getTarget().element)) {
+            if (!CanvasRoot.mouseDownElement) {
+                CanvasRoot.mouseDownElement = event.getTarget();
+            }
+            if (ContainerElement.contains(focusRoot.element, CanvasRoot.mouseDownElement.element)) {
                 return;
             }
             if (CanvasRoot.shouldSwallowNextFocusEscape) {
