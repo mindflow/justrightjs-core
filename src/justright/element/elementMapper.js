@@ -56,6 +56,7 @@ export class ElementMapper {
     static mapsToText(input){
         if (input instanceof HTMLInputElement) {
             if (input.type === "text") { return true; }
+            if (input.type === "number") { return true; }
             if (input.type === "password") { return true; }
             if (input.type === "email") { return true; }
             if (input.type === "date") { return true; }
@@ -64,6 +65,7 @@ export class ElementMapper {
         if(input instanceof XmlElement && input.name === "input") {
             if(!input.getAttribute("type")) { return true; }
             if(input.getAttribute("type").value === "text") { return true; }
+            if(input.getAttribute("type").value === "number") { return true; }
             if(input.getAttribute("type").value === "password") { return true; }
             if(input.getAttribute("type").value === "email") { return true; }
             if(input.getAttribute("type").value === "date") { return true; }

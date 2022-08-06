@@ -7,7 +7,7 @@ export class Event{
 
     constructor(event){
         this.event = event;
-        if(this.event.type.toLowerCase() == "dragstart"){
+        if (this.event.type.toLowerCase() == "dragstart"){
             this.event.dataTransfer.setData('text/plain', null);
         }
     }
@@ -23,28 +23,28 @@ export class Event{
     /**
      * The distance between the event and the edge x coordinate of the containing object
      */
-    getOffsetX(){
+    get offsetX(){
         return this.event.offsetX;
     }
 
     /**
      * The distance between the event and the edge y coordinate of the containing object
      */
-    getOffsetY(){
+    get offsetY(){
         return this.event.offsetY;
     }
 
     /**
      * The mouse x coordinate of the event relative to the client window view
      */
-    getClientX(){
+    get clientX(){
         return this.event.clientX;
     }
 
     /**
      * The mouse y coordinate of the event relative to the client window view
      */
-    getClientY(){
+    get clientY(){
         return this.event.clientY;
     }
 
@@ -52,7 +52,7 @@ export class Event{
      * 
      * @returns {SimpleElement}
      */
-    getTarget(){
+    get target(){
         if (this.event && this.event.target) {
             return ConfiguredFunction.execute("mapElement", this.event.target);
         }
@@ -62,7 +62,7 @@ export class Event{
      * 
      * @returns {SimpleElement}
      */
-    getRelatedTarget(){
+    get relatedTarget(){
         if (this.event && this.event.relatedTarget) {
             return ConfiguredFunction.execute("mapElement", this.event.relatedTarget);
         }
@@ -80,14 +80,14 @@ export class Event{
         return null;
     }
 
-    getTargetValue(){
-        if(this.getTarget()) { 
-            return this.getTarget().value;
+    get targetValue(){
+        if(this.target) { 
+            return this.target.value;
         }
         return null;
     }
 
-    getKeyCode() {
+    get keyCode() {
         return this.event.keyCode;
     }
 

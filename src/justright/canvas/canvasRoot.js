@@ -101,7 +101,7 @@ export class CanvasRoot {
         /* Hack: Because we don't have a way of knowing in the click event which element was in focus when mousedown occured */
         if (!CanvasRoot.focusEscapeEventRequested) {
             const updateMouseDownElement = new Method(null, (event) => {
-                CanvasRoot.mouseDownElement = event.getTarget();
+                CanvasRoot.mouseDownElement = event.target;
             });
             ContainerWindow.addEventListener("mousedown", updateMouseDownElement, Event);
             CanvasRoot.focusEscapeEventRequested = true;
@@ -109,7 +109,7 @@ export class CanvasRoot {
 
         const callIfNotContains = new Method(null, (event) => {
             if (!CanvasRoot.mouseDownElement) {
-                CanvasRoot.mouseDownElement = event.getTarget();
+                CanvasRoot.mouseDownElement = event.target;
             }
             if (ContainerElement.contains(focusRoot.element, CanvasRoot.mouseDownElement.element)) {
                 return;

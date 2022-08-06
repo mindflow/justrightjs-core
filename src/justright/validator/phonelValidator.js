@@ -1,11 +1,11 @@
 import { RegexValidator } from "./regexValidator.js";
 
-const PHONE_FORMAT = /^\+[0-9]{2}\s?([0-9]\s?)*$/;
-
 export class PhoneValidator extends RegexValidator {
 
+    static get PHONE_FORMAT() { return /^\+[0-9]{2}\s?([0-9]\s?)*$/; }
+
     constructor(mandatory = false, iscurrentlyValid = false) {
-        super(mandatory, iscurrentlyValid, PHONE_FORMAT);
+        super(mandatory, iscurrentlyValid, PhoneValidator.PHONE_FORMAT);
     }
 
 }
