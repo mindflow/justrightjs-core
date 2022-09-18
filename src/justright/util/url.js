@@ -1,13 +1,34 @@
-import {List,Map} from "coreutil_v1";
+import {List, Map, StringUtils} from "coreutil_v1";
 
 export class Url{
 
+    /**
+     * 
+     * @param {String} protocol 
+     * @param {String} host 
+     * @param {String} port 
+     * @param {List} pathValueList 
+     * @param {Map} parameterValueMap 
+     * @param {String} bookmark 
+     */
     constructor(protocol, host, port, pathValueList, parameterValueMap, bookmark){
+
+        /** @type {String} */
         this.protocolString = protocol;
+
+        /** @type {String} */
         this.hostString = host;
+
+        /** @type {String} */
         this.portString = port;
+
+        /** @type {List} */
         this.pathValueList = pathValueList;
+
+        /** @type {Map} */
         this.parameterValueMap = parameterValueMap;
+
+        /** @type {String} */
         this.bookmarkString = bookmark;
         
         if (!this.pathValueList) {
@@ -44,6 +65,18 @@ export class Url{
 
     getPathPart(index){
         return this.pathValueList.get(index);
+    }
+
+    replacePathValue(from, to){
+        let i = 0;
+        while (i < this.pathValueList.size()) {
+            if (StringUtils.nonNullEquals(from, this.pathValueList.get(i))) {
+                this.pathValueList.set(i, to);
+                return this;
+            }
+            i ++;
+        }
+        return this;
     }
 
     get path(){

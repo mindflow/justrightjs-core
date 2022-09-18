@@ -34,14 +34,16 @@ export class EventManager {
      * @param {string} eventType 
      * @param {Array|any} parameter 
      */
-    trigger(eventType, parameter) {
+    async trigger(eventType, parameter) {
         if (!this.listenerMap.contains(eventType)) {
             return;
         }
+        let resultArray = [];
         this.listenerMap.get(eventType).forEach((listener, parent) => {
-            listener.call(parameter);
+            resultArray.push(listener.call(parameter));
             return true;
         });
+        return Promise.all(resultArray);
     }
 
 }

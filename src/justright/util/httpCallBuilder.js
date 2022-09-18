@@ -9,15 +9,11 @@ export class HttpCallBuilder {
     /**
      * 
      * @param {string} url 
-     * @param {object} payload 
      */
-    constructor(url, payload) {
+    constructor(url) {
 
         /** @type {String} */
         this.url = url;
-
-        /** @type {Object} */
-        this.payload = payload;
 
         /** @type {String} */
         this.authorization = null;
@@ -43,11 +39,10 @@ export class HttpCallBuilder {
     /**
      * 
      * @param {string} url 
-     * @param {object} payload 
      * @returns {HttpCallBuilder}
      */
-    static newInstance(url, payload) {
-        return new HttpCallBuilder(url, payload);
+    static newInstance(url) {
+        return new HttpCallBuilder(url);
     }
 
     /**
@@ -107,24 +102,24 @@ export class HttpCallBuilder {
     /**
      * @returns {Promise}
      */
-    async post() {
-        const resposne = await Client.post(this.url, this.payload, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization);
+    async post(payload) {
+        const resposne = await Client.post(this.url, payload, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization);
         return this.asTypeMappedPromise(resposne);
     }
 
     /**
      * @returns {Promise}
      */
-    async put() {
-        const response = await Client.put(this.url, this.payload, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization)
+    async put(payload) {
+        const response = await Client.put(this.url, payload, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization)
         return this.asTypeMappedPromise(response);
     }
 
     /**
      * @returns {Promise}
      */
-    async patch() {
-        const response = await Client.patch(this.url, this.payload, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization);
+    async patch(payload) {
+        const response = await Client.patch(this.url, payload, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization);
         return this.asTypeMappedPromise(response);
     }
 
