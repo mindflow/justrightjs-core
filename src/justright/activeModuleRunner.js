@@ -11,6 +11,10 @@ export class ActiveModuleRunner {
         this.moduleRunner = null;
     }
 
+    /**
+     * 
+     * @returns {ActiveModuleRunner}
+     */
     static instance() {
         if (!activeModuleRunner) {
             activeModuleRunner = new ActiveModuleRunner();

@@ -1,5 +1,4 @@
 import { Method, Map, List } from "coreutil_v1";
-import { Event } from "./event.js";
 
 /**
  * EventManager
