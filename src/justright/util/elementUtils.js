@@ -1,6 +1,9 @@
 import { ContainerElement } from "containerbridge_v1";
+import { Logger } from "coreutil_v1";
 import { XmlElement } from "xmlparser_v1";
 import { BaseElement } from "../element/baseElement";
+
+const LOG = new Logger("ElementUtils");
 
 export class ElementUtils {
 
