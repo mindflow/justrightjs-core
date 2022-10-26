@@ -48,9 +48,28 @@ export class Style {
         this.baseElement.setAttributeValue("style", MapUtils.toString(currentStyleMap, ":", ";"));
         return this;
     }
+
+    /**
+     * 
+     * @param {String} styleName 
+     * @param {String} styleValue 
+     */
+     is(styleName, styleValue) {
+        const currentStyleMap = this.srylesAsMap(this.baseElement.getAttributeValue("style"));
+        return StringUtils.nonNullEquals(currentStyleMap.get(styleName), styleValue);
+    }
     
+    /**
+     * 
+     * @param {String} styleName 
+     */
+     exists(styleName) {
+        const currentStyleMap = this.srylesAsMap(this.baseElement.getAttributeValue("style"));
+        return currentStyleMap.contains(styleName);
+    }
+
     srylesAsMap(styles) {
-        if (!styles || styles.indexOf("=") === -1) {
+        if (!styles || styles.indexOf(":") === -1) {
             return new Map();
         }
 
