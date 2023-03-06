@@ -1,4 +1,4 @@
-import { Map, Logger } from "coreutil_v1";
+import { Map, Logger, StringUtils } from "coreutil_v1";
 import { Client } from "../client/client.js";
 
 
@@ -79,7 +79,9 @@ export class HttpCallBuilder {
      * @param {string} authorization 
      */
     authorizationHeader(authorization) {
-        this.authorization = "Bearer " + authorization;
+        if (!StringUtils.isBlank(authorization)) {
+            this.authorization = "Bearer " + authorization;
+        }
         return this;
     }
 
