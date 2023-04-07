@@ -4,13 +4,14 @@ import { ContainerElement } from "containerbridge_v1";
 import { Attribute } from "./attribute.js";
 import { ConfiguredFunction } from "../config/configuredFunction.js";
 import { ElementUtils } from "../util/elementUtils.js";
+import { MappedHtmlElement } from "./mappedHtmlElement.js";
 
 const LOG = new Logger("BaseElement");
 
 /**
  * A base class for enclosing an HTMLElement
  */
-export class BaseElement {
+export class BaseElement extends MappedHtmlElement {
 
     /**
      * Constructor
@@ -19,69 +20,58 @@ export class BaseElement {
      * @param {BaseElement} parent the parent BaseElement
      */
     constructor(value, parent) {
-
-        /** @type {HTMLElement} */
-        this.element = null;
+        super();
         this.attributeMap = null;
         this.eventsAttached = new List();
-        this.element = ElementUtils.createContainerElement(value, parent);
+        super.mappedElement = ElementUtils.createContainerElement(value, parent);
     }
 
     loadAttributes() {
-        if (this.element.attributes === null || this.element.attributes === undefined) {
+        if (super.mappedElement.attributes === null || super.mappedElement.attributes === undefined) {
             this.attributeMap = new Map();
             return;
         }
         if (this.attributeMap === null || this.attributeMap === undefined) {
             this.attributeMap = new Map();
-            for (var i = 0; i < this.element.attributes.length; i++) {
-                this.attributeMap.set(this.element.attributes[i].name,new Attribute(this.element.attributes[i]));
+            for (var i = 0; i < super.mappedElement.attributes.length; i++) {
+                this.attributeMap.set(super.mappedElement.attributes[i].name,new Attribute(super.mappedElement.attributes[i]));
             }
         }
     }
 
     listenTo(eventType, listener, capture) {
-        ContainerElement.addEventListener(this.element, eventType, (event) => {
+        ContainerElement.addEventListener(super.mappedElement, eventType, (event) => {
             listener.call(ConfiguredFunction.execute("wrapEvent", event));
         }, capture);
         return this;
     }
 
-    /**
-     * Get the enclosed element
-     *
-     * @return {HTMLElement}
-     */
-    get mappedElement() {
-        return this.element;
-    }
-
     get fullName() {
-        return this.element.tagName;
+        return super.mappedElement.tagName;
     }
 
     get top() {
-        return this.element.getBoundingClientRect().top;
+        return super.mappedElement.getBoundingClientRect().top;
     }
 
     get bottom() {
-        return this.element.getBoundingClientRect().bottom;
+        return super.mappedElement.getBoundingClientRect().bottom;
     }
 
     get left() {
-        return this.element.getBoundingClientRect().left;
+        return super.mappedElement.getBoundingClientRect().left;
     }
 
     get right() {
-        return this.element.getBoundingClientRect().right;
+        return super.mappedElement.getBoundingClientRect().right;
     }
 
     get width() {
-        return this.element.offsetWidth;
+        return super.mappedElement.offsetWidth;
     }
 
     get height() {
-        return this.element.offsetHeight;
+        return super.mappedElement.offsetHeight;
     }
 
     get attributes() {
@@ -90,77 +80,77 @@ export class BaseElement {
     }
 
     setAttributeValue(key,value) {
-        ContainerElement.setAttribute(this.element, key,value);
+        ContainerElement.setAttribute(super.mappedElement, key,value);
     }
 
     getAttributeValue(key) {
-        return ContainerElement.getAttribute(this.element, key);
+        return ContainerElement.getAttribute(super.mappedElement, key);
     }
 
     containsAttribute(key) {
-        return this.element.hasAttribute(key);
+        return super.mappedElement.hasAttribute(key);
     }
 
     removeAttribute(key) {
-        this.element.removeAttribute(key);
+        super.mappedElement.removeAttribute(key);
     }
 
     setStyle(key,value) {
-        this.element.style[key] = value;
+        super.mappedElement.style[key] = value;
     }
 
     getStyle(key) {
-        return this.element.style[key];
+        return super.mappedElement.style[key];
     }
 
     removeStyle(key) {
-        this.element.style[key] = null;
+        super.mappedElement.style[key] = null;
     }
 
     set(input) {
-        if(!this.element.parentNode){
+        if(!super.mappedElement.parentNode){
             console.error("The element has no parent, can not swap it for value");
             return;
         }
         if(input.mappedElement) {
-            this.element.parentNode.replaceChild(input.mappedElement, this.element);
+            super.mappedElement.parentNode.replaceChild(input.mappedElement, super.mappedElement);
             return;
         }
         if(input && input.rootElement) {
-            this.element.parentNode.replaceChild(input.rootElement.mappedElement, this.element);
-            this.element = input.rootElement.mappedElement;
+            super.mappedElement.parentNode.replaceChild(input.rootElement.mappedElement, super.mappedElement);
+            super.mappedElement = input.rootElement.mappedElement;
             return;
         }
         if(typeof input == "string") {
-            this.element.parentNode.replaceChild(ContainerElement.createTextNode(input), this.element);
+            super.mappedElement.parentNode.replaceChild(ContainerElement.createTextNode(input), super.mappedElement);
             return;
         }
         if(input instanceof Text) {
-            this.element.parentNode.replaceChild(input, this.element);
+            super.mappedElement.parentNode.replaceChild(input, super.mappedElement);
             return;
         }
         if(input instanceof Element) {
-            this.element.parentNode.replaceChild(input, this.element);
+            super.mappedElement.parentNode.replaceChild(input, super.mappedElement);
             return;
         }
     }
 
     isMounted() {
-        if(this.element.parentNode) {
+        if(super.mappedElement.parentNode) {
             return true;
         }
         return false;
     }
 
     remove() {
-        if (this.element.parentNode) {
-            this.element.parentNode.removeChild(this.element);
+        if (super.mappedElement.parentNode) {
+            super.mappedElement.parentNode.removeChild(super.mappedElement);
         }
     }
 
     clear() {
-        while (this.element.firstChild) {
-            this.element.removeChild(this.element.firstChild);
+        while (super.mappedElement.firstChild) {
+            super.mappedElement.removeChild(super.mappedElement.firstChild);
         }
     }
 
@@ -171,49 +161,49 @@ export class BaseElement {
 
     addChild(input) {
         if (input.mappedElement !== undefined && input.mappedElement !== null){
-            this.element.appendChild(input.mappedElement);
+            super.mappedElement.appendChild(input.mappedElement);
             return;
         }
         if (input && input.rootElement) {
-            this.element.appendChild(input.rootElement.mappedElement);
+            super.mappedElement.appendChild(input.rootElement.mappedElement);
             return;
         }
         if (typeof input == "string") {
-            this.element.appendChild(ContainerElement.createTextNode(input));
+            super.mappedElement.appendChild(ContainerElement.createTextNode(input));
             return;
         }
         if (input instanceof Text) {
-            this.element.appendChild(input);
+            super.mappedElement.appendChild(input);
             return;
         }
         if (input instanceof Element) {
-            this.element.appendChild(input);
+            super.mappedElement.appendChild(input);
             return;
         }
     }
 
     prependChild(input) {
-        if(this.element.firstChild === null) {
+        if(super.mappedElement.firstChild === null) {
             this.addChild(input);
         }
         if (input.mappedElement !== undefined && input.mappedElement !== null) {
-            this.element.insertBefore(input.mappedElement,this.element.firstChild);
+            super.mappedElement.insertBefore(input.mappedElement, super.mappedElement.firstChild);
             return;
         }
         if (input && input.rootElement) {
-            this.element.insertBefore(input.rootElement.mappedElement,this.element.firstChild);
+            super.mappedElement.insertBefore(input.rootElement.mappedElement, super.mappedElement.firstChild);
             return;
         }
         if (typeof input == "string") {
-            this.element.insertBefore(ContainerElement.createTextNode(input),this.element.firstChild);
+            super.mappedElement.insertBefore(ContainerElement.createTextNode(input), super.mappedElement.firstChild);
             return;
         }
         if (input instanceof Text) {
-            this.element.insertBefore(input,this.element.firstChild);
+            super.mappedElement.insertBefore(input, super.mappedElement.firstChild);
             return;
         }
         if (input instanceof Element) {
-            this.element.insertBefore(input,this.element.firstChild);
+            super.mappedElement.insertBefore(input, super.mappedElement.firstChild);
             return;
         }
     }
