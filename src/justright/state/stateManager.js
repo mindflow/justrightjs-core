@@ -75,6 +75,9 @@ export class StateManager {
     createProxy(object, key, stateManager) {
         return new Proxy(object, {
             set: (target, prop, value) => {
+                if (target[prop] === value) {
+                    return true;
+                }
                 const success = (target[prop] = value);
                 stateManager.signalStateChange(target, key);
                 return success === value;
