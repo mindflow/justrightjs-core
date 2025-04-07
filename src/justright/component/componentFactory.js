@@ -32,6 +32,7 @@ export class ComponentFactory {
         var template = this.templateRegistry.get(name);
         if(!template) {
             LOG.error(this.templateRegistry);
+            console.trace();
             throw "No template was found with name " + name;
 
         }
