@@ -42,6 +42,9 @@ export class EventManager {
             resultArray.push(listener.call(parameter));
             return true;
         });
+        if (resultArray.length === 1) {
+            return resultArray[0];
+        }
         return Promise.all(resultArray);
     }
 
