@@ -133,6 +133,8 @@ export class BaseElement extends MappedHtmlElement {
             super.mappedElement.parentNode.replaceChild(input, super.mappedElement);
             return;
         }
+        LOG.warn("No valid input to set the element");
+        LOG.warn(input);
     }
 
     isMounted() {
@@ -180,6 +182,8 @@ export class BaseElement extends MappedHtmlElement {
             super.mappedElement.appendChild(input);
             return;
         }
+        LOG.warn("No valid input to add the element");
+        LOG.warn(input);
     }
 
     prependChild(input) {
@@ -206,5 +210,7 @@ export class BaseElement extends MappedHtmlElement {
             super.mappedElement.insertBefore(input, super.mappedElement.firstChild);
             return;
         }
+        LOG.warn("No valid input to prepend the element");
+        LOG.warn(input);
     }
 }
