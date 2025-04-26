@@ -1,4 +1,6 @@
-import { Method, Map, List } from "coreutil_v1";
+import { Method, Map, List, Logger } from "coreutil_v1";
+
+const LOG = new Logger("EventManager");
 
 /**
  * EventManager
@@ -34,6 +36,10 @@ export class EventManager {
      * @param {Array|any} parameter 
      */
     async trigger(eventType, parameter) {
+        if (!eventType) {
+            LOG.error("Event type is undefined");
+            return;
+        }
         if (!this.listenerMap.contains(eventType)) {
             return;
         }
