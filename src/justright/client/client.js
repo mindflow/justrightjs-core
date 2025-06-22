@@ -60,9 +60,9 @@ export class Client {
      * @param {string} data
      * @returns {Promise<Response>}
      */
-    static patch(url, data, connectionTimeout = 4000, responseTimeout = 4000, authorization = null){
+    static patch(url, data, connectionTimeout = 4000, responseTimeout = 4000, authorization = null) {
         let headers = Client.getHeader(authorization);
-        var params =  {
+        let params =  {
             body: JSON.stringify(data), // must match 'Content-Type' header
             method: 'PATCH', 
             mode: 'cors', // no-cors, cors, *same-origin
@@ -77,13 +77,26 @@ export class Client {
      * @param {string} url
      * @returns {Promise<Response>}
      */
-    static delete(url, connectionTimeout = 4000, responseTimeout = 4000){
-        var params =  {
-            method: 'DELETE',
-            mode: 'cors', // no-cors, cors, *same-origin
-            redirect: 'follow' // manual, *follow, error
+    static delete(url, data, connectionTimeout = 4000, responseTimeout = 4000, authorization = null) {
+        const headers = Client.getHeader(authorization);
+        if (data) {
+            const params =  {
+                body: JSON.stringify(data), // must match 'Content-Type' header
+                method: 'DELETE',
+                mode: 'cors', // no-cors, cors, *same-origin
+                redirect: 'follow', // manual, *follow, error
+                headers: headers
+            }
+            return ContainerHttpClient.fetch(url.toString(), params, connectionTimeout, responseTimeout);
+        } else {
+            const params =  {
+                method: 'DELETE',
+                mode: 'cors', // no-cors, cors, *same-origin
+                redirect: 'follow', // manual, *follow, error
+                headers: headers
+            }
+            return ContainerHttpClient.fetch(url.toString(), params, connectionTimeout, responseTimeout);
         }
-        return ContainerHttpClient.fetch(url.toString(), params, connectionTimeout, responseTimeout);
     }
 
     static getHeader(authorization = null) {

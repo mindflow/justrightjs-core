@@ -128,8 +128,8 @@ export class HttpCallBuilder {
     /**
      * @returns {Promise}
      */
-    async delete() {
-        const response = await Client.delete(this.url, this.connectionTimeoutValue, this.responseTimeoutValue);
+    async delete(payload = null) {
+        const response = await Client.delete(this.url, payload, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization);
         return this.asTypeMappedPromise(response);
     }
 
