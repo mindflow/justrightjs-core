@@ -149,7 +149,8 @@ export class Application extends ModuleRunner {
      */
     windowTemplateRegistry() {
         window.templateRegistry = () => {
-            LOG.info(ConfigAccessor.instanceHolder(TemplateRegistry.name, this.config).instance);
+            const typeConfig = ConfigAccessor.typeConfigByName(TemplateRegistry.name, this.config);
+            LOG.info(typeConfig.instanceHolder().instance);
         }
     }
 
@@ -158,7 +159,8 @@ export class Application extends ModuleRunner {
      */
     windowStyleRegistry() {
         window.styleRegistry = () => {
-            LOG.info(ConfigAccessor.instanceHolder(StylesRegistry.name, this.config).instance);
+            const typeConfig = ConfigAccessor.typeConfigByName(StylesRegistry.name, this.config);
+            LOG.info(typeConfig.instanceHolder().instance);
         }
     }
 
