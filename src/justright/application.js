@@ -4,7 +4,6 @@ import { ContainerUrl } from "containerbridge_v1";
 import { ComponentConfigProcessor } from "./component/componentConfigProcessor.js";
 import { TemplateRegistry } from "./template/templateRegistry.js";
 import { StylesRegistry } from "./styles/stylesRegistry.js";
-import { Config } from "./config.js";
 import { Event } from "./event/event.js";
 import { History } from "./navigation/history.js";
 import { DiModuleLoader } from "./loader/diModuleLoader.js";
@@ -14,6 +13,9 @@ import { Main } from "./main.js";
 import { ActiveModuleRunner } from "./activeModuleRunner.js";
 import { ConfiguredFunction } from "./config/configuredFunction.js";
 import { ElementMapper } from "./element/elementMapper.js";
+import { StateManager } from "./state/stateManager.js";
+import { UniqueIdRegistry } from "./component/uniqueIdRegistry.js";
+import { ComponentFactory } from "./component/componentFactory.js";
 
 const LOG = new Logger("Application");
 
@@ -42,7 +44,12 @@ export class Application extends ModuleRunner {
 
         ConfiguredFunction.configure("mapElement", (parameter) => { return ElementMapper.map(parameter); });
 
-        this.defaultConfig = Config.getInstance().getTypeConfigList();
+        this.defaultConfig = new List([
+            SingletonConfig.unnamed(TemplateRegistry),
+            SingletonConfig.unnamed(StylesRegistry),
+            SingletonConfig.unnamed(UniqueIdRegistry),
+            SingletonConfig.unnamed(ComponentFactory),
+            PrototypeConfig.unnamed(StateManager)]);
 
         this.defaultConfigProcessors = new List([ ComponentConfigProcessor ]);
 
