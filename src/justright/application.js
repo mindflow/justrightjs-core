@@ -21,7 +21,7 @@ const LOG = new Logger("Application");
 
 export class Application extends ModuleRunner {
 
-    constructor() {
+    constructor(config = new MindiConfig()) {
 
         super();
 
@@ -32,7 +32,7 @@ export class Application extends ModuleRunner {
         this.moduleLoaderList = new List();
 
         /** @type {MindiConfig} */
-        this.config = new MindiConfig();
+        this.config = config;
 
         /** @type {List} */
         this.runningWorkers = new List();
@@ -55,23 +55,12 @@ export class Application extends ModuleRunner {
 
         this.defaultInstanceProcessors = new List([ InstancePostConfigTrigger ])
 
-        this.customConfig = new List();
-
-    }
-
-    /**
-     * 
-     * @param {List<SingletonConfig | PrototypeConfig>} typeConfigList 
-     */
-    set customTypeConfig(typeConfigList) {
-        this.customConfig = typeConfigList;
     }
 
     async run() {
         LOG.info("Running Application");
         this.config
             .addAllTypeConfig(this.defaultConfig)
-            .addAllTypeConfig(this.customConfig)
             .addAllConfigProcessor(this.defaultConfigProcessors)
             .addAllInstanceProcessor(this.defaultInstanceProcessors);
         ActiveModuleRunner.instance().set(this);
