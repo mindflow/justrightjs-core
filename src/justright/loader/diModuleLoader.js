@@ -46,7 +46,7 @@ export class DiModuleLoader extends ModuleLoader {
     async importModule() {
         try {
             const main = await super.importModule();
-            this.config.addAllTypeConfig(main.typeConfigList);
+            this.config.addAllTypeConfig(main.typeConfigArray);
             await this.config.finalize();
             await new List(this.loaderInterceptors).promiseChain((loaderInterceptor) => {
                 return MindiInjector.inject(loaderInterceptor, this.config);

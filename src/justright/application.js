@@ -1,5 +1,5 @@
 import { MindiInjector, MindiConfig, InstancePostConfigTrigger, ConfigAccessor, SingletonConfig, PrototypeConfig } from "mindi_v1";
-import { List, Logger, Method, StringUtils } from  "coreutil_v1";
+import { ArrayUtils, Logger, Method, StringUtils } from  "coreutil_v1";
 import { ContainerUrl } from "containerbridge_v1";
 import { ComponentConfigProcessor } from "./component/componentConfigProcessor.js";
 import { TemplateRegistry } from "./template/templateRegistry.js";
@@ -25,17 +25,17 @@ export class Application extends ModuleRunner {
 
         super();
 
-        /** @type {List} */
-        this.workerList = new List();
+        /** @type {Array} */
+        this.workerList = new Array();
 
-        /** @type {List<DiModuleLoader>} */
-        this.moduleLoaderList = new List();
+        /** @type {Array<DiModuleLoader>} */
+        this.moduleLoaderList = new Array();
 
         /** @type {MindiConfig} */
         this.config = config;
 
-        /** @type {List} */
-        this.runningWorkers = new List();
+        /** @type {Array} */
+        this.runningWorkers = new Array();
 
         /** @type {Main} */
         this.activeMain = null;
@@ -44,16 +44,17 @@ export class Application extends ModuleRunner {
 
         ConfiguredFunction.configure("mapElement", (parameter) => { return ElementMapper.map(parameter); });
 
-        this.defaultConfig = new List([
+        this.defaultConfig = [
             SingletonConfig.unnamed(TemplateRegistry),
             SingletonConfig.unnamed(StylesRegistry),
             SingletonConfig.unnamed(UniqueIdRegistry),
             SingletonConfig.unnamed(ComponentFactory),
-            PrototypeConfig.unnamed(StateManager)]);
+            PrototypeConfig.unnamed(StateManager)
+        ];
 
-        this.defaultConfigProcessors = new List([ ComponentConfigProcessor ]);
+        this.defaultConfigProcessors =[ ComponentConfigProcessor ];
 
-        this.defaultInstanceProcessors = new List([ InstancePostConfigTrigger ])
+        this.defaultInstanceProcessors = [ InstancePostConfigTrigger ]
 
     }
 
@@ -104,15 +105,16 @@ export class Application extends ModuleRunner {
     }
 
     startWorkers() {
-        if (this.runningWorkers.size() > 0) {
+        if (this.runningWorkers.length > 0) {
             return;
         }
-        this.workerList.forEach((value,parent) => {
+        const config = this.config;
+        const runningWorkers = this.runningWorkers;
+        this.workerList.forEach((value) => {
             const instance = new value();
-            MindiInjector.inject(instance, this.config);
-            this.runningWorkers.add(instance);
-            return true;
-        }, this);
+            MindiInjector.inject(instance, config);
+            ArrayUtils.add(runningWorkers, instance);
+        });
     }
 
     /**
@@ -121,13 +123,11 @@ export class Application extends ModuleRunner {
      */
     getMatchingModuleLoader(url) {
         let foundModuleLoader = null;
-        this.moduleLoaderList.forEach((value, parent) => {
-            if (value.matches(url)) {
+        this.moduleLoaderList.forEach((value) => {
+            if (!foundModuleLoader && value.matches(url)) {
                 foundModuleLoader = value;
-                return false;
             }
-            return true;
-        }, this);
+        });
         return foundModuleLoader;
     }
 

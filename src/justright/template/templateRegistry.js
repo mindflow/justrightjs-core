@@ -1,7 +1,7 @@
 /* jshint esversion: 6 */
 
-import {Map, Logger, Method} from "coreutil_v1";
-import {Template} from "./template.js";
+import { Logger, Method } from "coreutil_v1";
+import { Template } from "./template.js";
 import { Client } from "../client/client.js";
 import { Url } from "../util/url.js";
 import { UrlUtils } from "../util/urlUtils.js";
@@ -61,7 +61,10 @@ export class TemplateRegistry {
      * @param {string} name 
      */
     contains(name){
-        return this.templateMap.contains(name);
+        if (this.templateMap.get(name)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -109,21 +112,21 @@ export class TemplateRegistry {
 
     async getTemplatesLoadedPromise(nameUrlMap) {
         
-        if(!nameUrlMap || nameUrlMap.size() == 0) {
+        if(!nameUrlMap || nameUrlMap.length == 0) {
             return null;
         }
         let loadPromises = [];
-        nameUrlMap.forEach((key, value, parent) => {
-            if (this.contains(key)){
-                return true;
+        const parent = this;
+        nameUrlMap.forEach((value, key) => {
+            if (parent.contains(key)){
+                return;
             }
             try {
-                loadPromises.push(this.privateLoad(key, UrlUtils.parse(value)));
+                loadPromises.push(parent.privateLoad(key, UrlUtils.parse(value)));
             } catch(reason) {
                 throw reason;
             }
-            return true;
-        }, this);
+        });
         return await Promise.all(loadPromises);
     }
 
@@ -133,7 +136,7 @@ export class TemplateRegistry {
      * @param {Url} url 
      */
     async privateLoad(name, url) {
-        if(this.languagePrefix !== null) {
+        if (this.languagePrefix !== null) {
             url.pathsList.setLast(
                 this.languagePrefix + "." +
                 url.pathsList.getLast()
@@ -141,7 +144,7 @@ export class TemplateRegistry {
         }
         LOG.info("Loading template " + name + " at " + url.toString());
         const response = await Client.get(url);
-        if(!response.ok){
+        if (!response.ok){
             throw "Unable to load template for " + name + " at " + url;
         }
         const text = await response.text();

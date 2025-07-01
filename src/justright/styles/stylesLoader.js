@@ -1,4 +1,4 @@
-import { Logger, Map } from "coreutil_v1";
+import { Logger } from "coreutil_v1";
 import { StylesRegistry } from "./stylesRegistry.js";
 
 const LOG = new Logger("StylesLoader");
@@ -24,8 +24,8 @@ export class StylesLoader {
      * @returns {Promise}
      */
     load(configEntries) {
-        let stylesMap = new Map();
-        configEntries.forEach((key, configEntry, parent) => {
+        const stylesMap = new Map();
+        configEntries.forEach((configEntry, key) => {
             if(configEntry.classReference.STYLES_URL && configEntry.classReference.COMPONENT_NAME) {
                 stylesMap.set(configEntry.classReference.COMPONENT_NAME, configEntry.classReference.STYLES_URL);
             }

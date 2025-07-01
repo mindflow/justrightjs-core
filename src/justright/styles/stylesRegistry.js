@@ -1,6 +1,6 @@
 /* jshint esversion: 6 */
 
-import { Map, Logger, Method } from "coreutil_v1";
+import { Logger, Method } from "coreutil_v1";
 import { Client } from "../client/client.js";
 import { Url } from "../util/url.js";
 import { UrlUtils } from "../util/urlUtils.js";
@@ -30,7 +30,7 @@ export class StylesRegistry {
      * @param {Styles} styles 
      * @param {Url} url 
      */
-    set(name,styles,url){
+    set(name, styles, url){
         if(url !== undefined && url !== null) {
             this.stylesUrlMap.set(name, url);
         }
@@ -50,7 +50,10 @@ export class StylesRegistry {
      * @param {string} name 
      */
     contains(name){
-        return this.stylesMap.contains(name);
+        if (this.stylesMap.get(name)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -67,7 +70,7 @@ export class StylesRegistry {
      * @param {StylesRegistry} registry 
      */
     doCallback(registry){
-        if(tmo.callback !== null && registry.callback !== undefined  && registry.stylesQueueSize === registry.stylesMap.size()){
+        if(tmo.callback !== null && registry.callback !== undefined  && registry.stylesQueueSize === registry.stylesMap.entries.length){
             var tempCallback = registry.callback;
             registry.callback = null;
             tempCallback.call();
@@ -91,23 +94,28 @@ export class StylesRegistry {
         return null;
     }
 
+    /**
+     * 
+     * @param {Map<string, string>} nameUrlMap 
+     * @returns 
+     */
     async getStylesLoadedPromise(nameUrlMap) {
         
-        if(!nameUrlMap || nameUrlMap.size() == 0) {
+        if(!nameUrlMap || nameUrlMap.size == 0) {
             return null;
         }
         let loadPromises = [];
-        nameUrlMap.forEach((key, value, parent) => {
-            if (this.contains(key)){
+        const parent = this;
+        nameUrlMap.forEach((value, key) => {
+            if (parent.contains(key)){
                 return true;
             }
             try {
-                loadPromises.push(this.privateLoad(key, UrlUtils.parse(value)));
+                loadPromises.push(parent.privateLoad(key, UrlUtils.parse(value)));
             } catch(reason) {
                 throw reason;
             }
-            return true;
-        }, this);
+        });
         return await Promise.all(loadPromises);
     }
 
