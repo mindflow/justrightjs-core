@@ -1,4 +1,10 @@
-import { MindiInjector, MindiConfig, InstancePostConfigTrigger, ConfigAccessor, SingletonConfig, PrototypeConfig } from "mindi_v1";
+import { MindiInjector,
+    MindiConfig,
+    InstancePostConfigTrigger,
+    ConfigAccessor,
+    SingletonConfig,
+    PrototypeConfig, 
+    Config } from "mindi_v1";
 import { ArrayUtils, Logger, Method, StringUtils } from  "coreutil_v1";
 import { ContainerUrl } from "containerbridge_v1";
 import { ComponentConfigProcessor } from "./component/componentConfigProcessor.js";
@@ -21,7 +27,13 @@ const LOG = new Logger("Application");
 
 export class Application extends ModuleRunner {
 
-    constructor(config = new MindiConfig()) {
+    /**
+     * 
+     * @param {Array} moduleLoaderArray 
+     * @param {Array} runningWorkers 
+     * @param {Config} config 
+     */
+    constructor(moduleLoaderArray, runningWorkers = null, config = new MindiConfig()) {
 
         super();
 
@@ -29,13 +41,13 @@ export class Application extends ModuleRunner {
         this.workerArray = new Array();
 
         /** @type {Array<DiModuleLoader>} */
-        this.moduleLoaderArray = new Array();
+        this.moduleLoaderArray = moduleLoaderArray;
+
+        /** @type {Array} */
+        this.runningWorkers = runningWorkers;
 
         /** @type {MindiConfig} */
         this.config = config;
-
-        /** @type {Array} */
-        this.runningWorkers = new Array();
 
         /** @type {Main} */
         this.activeMain = null;
