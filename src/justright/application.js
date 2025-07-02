@@ -26,10 +26,10 @@ export class Application extends ModuleRunner {
         super();
 
         /** @type {Array} */
-        this.workerList = new Array();
+        this.workerArray = new Array();
 
         /** @type {Array<DiModuleLoader>} */
-        this.moduleLoaderList = new Array();
+        this.moduleLoaderArray = new Array();
 
         /** @type {MindiConfig} */
         this.config = config;
@@ -110,7 +110,7 @@ export class Application extends ModuleRunner {
         }
         const config = this.config;
         const runningWorkers = this.runningWorkers;
-        this.workerList.forEach((value) => {
+        this.workerArray.forEach((value) => {
             const instance = new value();
             MindiInjector.inject(instance, config);
             ArrayUtils.add(runningWorkers, instance);
@@ -123,7 +123,7 @@ export class Application extends ModuleRunner {
      */
     getMatchingModuleLoader(url) {
         let foundModuleLoader = null;
-        this.moduleLoaderList.forEach((value) => {
+        this.moduleLoaderArray.forEach((value) => {
             if (!foundModuleLoader && value.matches(url)) {
                 foundModuleLoader = value;
             }
