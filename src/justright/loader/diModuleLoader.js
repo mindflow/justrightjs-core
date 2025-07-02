@@ -1,4 +1,4 @@
-import { List, Logger } from "coreutil_v1"
+import { ArrayUtils, Logger } from "coreutil_v1"
 import { MindiConfig, MindiInjector } from "mindi_v1";
 import { ModuleLoader } from "./moduleLoader.js";
 import { LoaderInterceptor } from "./loaderInterceptor.js"
@@ -48,8 +48,9 @@ export class DiModuleLoader extends ModuleLoader {
             const main = await super.importModule();
             this.config.addAllTypeConfig(main.typeConfigArray);
             await this.config.finalize();
-            await new List(this.loaderInterceptors).promiseChain((loaderInterceptor) => {
-                return MindiInjector.inject(loaderInterceptor, this.config);
+            const workingConfig = this.config;
+            await ArrayUtils.promiseChain(this.loaderInterceptors, (loaderInterceptor) => {
+                return MindiInjector.inject(loaderInterceptor, workingConfig);
             });
             return main;
         } catch(error) {
