@@ -30,21 +30,21 @@ export class Application extends ModuleRunner {
     /**
      * 
      * @param {Array} moduleLoaderArray 
-     * @param {Array} runningWorkers 
+     * @param {Array} workerArray 
      * @param {Config} config 
      */
-    constructor(moduleLoaderArray, runningWorkers = null, config = new MindiConfig()) {
+    constructor(moduleLoaderArray, workerArray = new Array(), config = new MindiConfig()) {
 
         super();
 
         /** @type {Array} */
-        this.workerArray = new Array();
+        this.workerArray = workerArray;
 
         /** @type {Array<DiModuleLoader>} */
         this.moduleLoaderArray = moduleLoaderArray;
 
         /** @type {Array} */
-        this.runningWorkers = runningWorkers;
+        this.runningWorkers = new Array();
 
         /** @type {MindiConfig} */
         this.config = config;
@@ -64,9 +64,9 @@ export class Application extends ModuleRunner {
             PrototypeConfig.unnamed(StateManager)
         ];
 
-        this.defaultConfigProcessors =[ ComponentConfigProcessor ];
+        this.defaultConfigProcessors = [ ComponentConfigProcessor ];
 
-        this.defaultInstanceProcessors = [ InstancePostConfigTrigger ]
+        this.defaultInstanceProcessors = [ InstancePostConfigTrigger ];
 
     }
 
