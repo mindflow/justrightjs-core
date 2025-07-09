@@ -12,17 +12,17 @@ export class ModuleLoader {
      * @param {String} modulePath 
      * @param {Array<LoaderInterceptor>} loaderInterceptors
      */
-    constructor(matchPath, modulePath, loaderInterceptors = []) {
+    constructor(modulePath, matchPath, loaderInterceptors = []) {
         
-        /**
-         * @type {string}
-         */
-        this.matchPath = matchPath;
-
         /**
          * @type {String}
          */
         this.modulePath = modulePath;
+
+        /**
+         * @type {string}
+         */
+        this.matchPath = matchPath;
 
         /**
          * @type {Array<LoaderInterceptor>}

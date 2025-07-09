@@ -30,24 +30,24 @@ export class Application extends ModuleRunner {
     /**
      * 
      * @param {Array} moduleLoaderArray 
-     * @param {Array} workerArray 
      * @param {Config} config 
+     * @param {Array} workerArray 
      */
-    constructor(moduleLoaderArray, workerArray = new Array(), config = new MindiConfig()) {
+    constructor(moduleLoaderArray, config = new MindiConfig(), workerArray = new Array()) {
 
         super();
-
-        /** @type {Array} */
-        this.workerArray = workerArray;
 
         /** @type {Array<DiModuleLoader>} */
         this.moduleLoaderArray = moduleLoaderArray;
 
-        /** @type {Array} */
-        this.runningWorkers = new Array();
-
         /** @type {MindiConfig} */
         this.config = config;
+
+        /** @type {Array} */
+        this.workerArray = workerArray;
+
+        /** @type {Array} */
+        this.runningWorkers = new Array();
 
         /** @type {Main} */
         this.activeMain = null;

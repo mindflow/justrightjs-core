@@ -15,8 +15,8 @@ export class DiModuleLoader extends ModuleLoader {
      * @param {String} modulePath 
      * @param {Array<LoaderInterceptor>} loaderInterceptors
      */
-    constructor(config, matchPath, modulePath, loaderInterceptors = []) {
-        super(matchPath, modulePath, loaderInterceptors);
+    constructor(modulePath, matchPath, config, loaderInterceptors = []) {
+        super(modulePath, matchPath, loaderInterceptors);
 
         /** @type {MindiConfig} */
         this.config = config;
