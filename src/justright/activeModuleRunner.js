@@ -31,11 +31,11 @@ export class ActiveModuleRunner {
     }
 
     /**
-     * Load path without renavigating browser
-     * @param {string} path 
+     * Load anchor without renavigating browser
+     * @param {string} anchor 
      */
-     async load(path) {
-        const url = Navigation.instance().load(path);
+     async load(anchor) {
+        const url = Navigation.instance().loadAnchor(anchor);
         return await this.moduleRunner.runModule(url);
     }
 }

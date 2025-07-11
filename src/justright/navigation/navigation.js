@@ -42,9 +42,21 @@ export class Navigation {
      * @param {string} path
      * @returns {Url}
      */
-    load(path) {
+    loadPath(path) {
         const url = History.currentUrl();
         const newUrl = UrlBuilder.builder().withRootOfUrl(url).withPath(path).build();
+        History.pushUrl(newUrl);
+        return newUrl;
+    }
+
+    /**
+     * Load anchor without renavigating browser
+     * @param {string} anchor
+     * @returns {Url}
+     */
+    loadAnchor(anchor) {
+        const url = History.currentUrl();
+        const newUrl = UrlBuilder.builder().withRootOfUrl(url).withAnchor(anchor).build();
         History.pushUrl(newUrl);
         return newUrl;
     }

@@ -21,11 +21,11 @@ export class TrailProcessor {
         }
 
         const urlBuilder = UrlBuilder.builder().withAllOfUrl(History.currentUrl());
-        const stepUrl = urlBuilder.withBookmark(null).build();
+        const stepUrl = urlBuilder.withAnchor(null).build();
         History.replaceUrl(stepUrl, stepUrl.toString(), null);
         
         trailStops.forEach((value) => {
-            const stepUrl = urlBuilder.withBookmark(value).build();
+            const stepUrl = urlBuilder.withAnchor(value).build();
             History.pushUrl(stepUrl, stepUrl.toString(), value);
             return true;
         }, this);
@@ -62,14 +62,14 @@ export class TrailProcessor {
 
         const executedFunctionPromise = matchingNode.destination.call(callingObject);
 
-        if (!StringUtils.nonNullEquals(currentUrl.bookmark, matchingNode.trail)) {
+        if (!StringUtils.nonNullEquals(currentUrl.anchor, matchingNode.trail)) {
             const urlBuilder = UrlBuilder.builder().withAllOfUrl(currentUrl);
-            if (StringUtils.isBlank(currentUrl.bookmark)) {
-                const stepUrl = urlBuilder.withBookmark("/").build();
+            if (StringUtils.isBlank(currentUrl.anchor)) {
+                const stepUrl = urlBuilder.withAnchor("/").build();
                 History.pushUrl(stepUrl, stepUrl.toString(), null);
             }
 
-            const stepUrl = urlBuilder.withBookmark(matchingNode.trail).build();
+            const stepUrl = urlBuilder.withAnchor(matchingNode.trail).build();
             History.pushUrl(stepUrl, stepUrl.toString(), null);
         }
 
@@ -95,9 +95,9 @@ export class TrailProcessor {
 
         const executedFunctionPromise = matchingNode.destination.call(callingObject);
 
-        if (!StringUtils.nonNullEquals(currentUrl.bookmark, matchingNode.trail)) {
+        if (!StringUtils.nonNullEquals(currentUrl.anchor, matchingNode.trail)) {
             const urlBuilder = UrlBuilder.builder().withAllOfUrl(currentUrl);
-            const stepUrl = urlBuilder.withBookmark(matchingNode.trail).build();
+            const stepUrl = urlBuilder.withAnchor(matchingNode.trail).build();
             History.replaceUrl(stepUrl, stepUrl.toString(), null);
         }
 

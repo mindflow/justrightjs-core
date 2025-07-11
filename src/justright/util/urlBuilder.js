@@ -10,7 +10,7 @@ export class UrlBuilder {
         this.port = null;
         this.pathsList = new List();
         this.parametersMap = new Map();
-        this.bookmark = null;
+        this.anchor = null;
     }
 
     /**
@@ -108,15 +108,15 @@ export class UrlBuilder {
 
     /**
      * 
-     * @param {string} bookmark 
+     * @param {string} anchor 
      * @returns {UrlBuilder}
      */
-    withBookmark(bookmark) {
-        this.bookmark = UrlUtils.determineBookmark({ "string" : bookmark });
+    withAnchor(anchor) {
+        this.anchor = UrlUtils.determineBookmark({ "string" : anchor });
         return this;
     }
 
     build() {
-        return new Url(this.protocol, this.host, this.port, this.pathsList, this.parametersMap, this.bookmark);
+        return new Url(this.protocol, this.host, this.port, this.pathsList, this.parametersMap, this.anchor);
     }
 }

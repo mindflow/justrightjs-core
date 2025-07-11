@@ -17,7 +17,7 @@ export class Main {
     /**
      * @returns {string}
      */
-    get path() {
+    get anchor() {
         throw "Main class must implement get path()";
     }
 

@@ -8,21 +8,21 @@ export class ModuleLoader {
 
     /**
      * 
-     * @param {string} matchPath 
      * @param {String} modulePath 
+     * @param {string} trailMap 
      * @param {Array<LoaderInterceptor>} loaderInterceptors
      */
-    constructor(modulePath, matchPath, loaderInterceptors = []) {
-        
+    constructor(modulePath, trailMap, loaderInterceptors = []) {
+    
         /**
-         * @type {String}
+         * @type {string}
          */
         this.modulePath = modulePath;
 
         /**
-         * @type {string}
+         * @type {String}
          */
-        this.matchPath = matchPath;
+        this.trailMap = trailMap;
 
         /**
          * @type {Array<LoaderInterceptor>}
@@ -39,14 +39,17 @@ export class ModuleLoader {
      * @returns 
      */
     matches(url){
-        if (!this.matchPath) {
+        if (!this.trailMap) {
             return true;
         }
         if (!url) {
             LOG.error("Url is null");
             return false;
         }
-        return StringUtils.nonNullEquals(this.matchPath, url.path);
+        if (!url.anchor && this.trailMap.root) {
+            return true;
+        }
+        return StringUtils.nonNullEquals(this.trailMap.trail, url.anchor);
     }
 
     /**

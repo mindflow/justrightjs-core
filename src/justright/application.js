@@ -92,7 +92,7 @@ export class Application extends ModuleRunner {
      */
     update(event) {
         const url = History.currentUrl();
-        if (this.activeMain && StringUtils.nonNullEquals(this.activeMain.path, url.path)) {
+        if (this.activeMain && StringUtils.nonNullEquals(this.activeMain.anchor, url.path)) {
             this.activeMain.update(url);
             return;
         }

@@ -9,9 +9,9 @@ export class Url{
      * @param {String} port 
      * @param {List} pathValueList 
      * @param {Map} parameterValueMap 
-     * @param {String} bookmark 
+     * @param {String} anchor 
      */
-    constructor(protocol, host, port, pathValueList, parameterValueMap, bookmark){
+    constructor(protocol, host, port, pathValueList, parameterValueMap, anchor){
 
         /** @type {String} */
         this.protocolString = protocol;
@@ -29,7 +29,7 @@ export class Url{
         this.parameterValueMap = parameterValueMap;
 
         /** @type {String} */
-        this.bookmarkString = bookmark;
+        this.anchorString = anchor;
         
         if (!this.pathValueList) {
             this.pathValueList = new List();
@@ -55,8 +55,8 @@ export class Url{
         return this.pathValueList;
     }
 
-    get bookmark(){
-        return this.bookmarkString;
+    get anchor(){
+        return this.anchorString;
     }
 
     get parameterMap() {
@@ -125,8 +125,8 @@ export class Url{
             value = value + encodeURI(parameterKey) + "=" + encodeURI(parameterValue);
         },this);
 
-        if(this.bookmark !== null) {
-            value = value + "#" + this.bookmark;
+        if(this.anchor !== null) {
+            value = value + "#" + this.anchor;
         }
         return value;
     }
