@@ -22,6 +22,7 @@ import { ElementMapper } from "./element/elementMapper.js";
 import { StateManager } from "./state/stateManager.js";
 import { UniqueIdRegistry } from "./component/uniqueIdRegistry.js";
 import { ComponentFactory } from "./component/componentFactory.js";
+import { ModuleLoader } from "./loader/moduleLoader.js";
 
 const LOG = new Logger("Application");
 
@@ -29,7 +30,7 @@ export class Application extends ModuleRunner {
 
     /**
      * 
-     * @param {Array} moduleLoaderArray 
+     * @param {Array<ModuleLoader>} moduleLoaderArray 
      * @param {Config} config 
      * @param {Array} workerArray 
      */
@@ -37,7 +38,7 @@ export class Application extends ModuleRunner {
 
         super();
 
-        /** @type {Array<DiModuleLoader>} */
+        /** @type {Array<ModuleLoader>} */
         this.moduleLoaderArray = moduleLoaderArray;
 
         /** @type {MindiConfig} */

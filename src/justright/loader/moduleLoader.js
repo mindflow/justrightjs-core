@@ -46,10 +46,13 @@ export class ModuleLoader {
             LOG.error("Url is null");
             return false;
         }
-        if (!url.anchor && this.trailMap.root) {
-            return true;
+        if (!url.anchor) {
+            if (this.trailMap.root) {
+                return true;
+            }
+            return false;
         }
-        return StringUtils.nonNullEquals(this.trailMap.trail, url.anchor);
+        return StringUtils.startsWith(url.anchor + "/", this.trailMap.trail + "/");
     }
 
     /**
