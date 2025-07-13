@@ -17,7 +17,7 @@ export class TrailProcessor {
      */
     static proceedAlongAnchor(url, callingObject, node) {
         const trailStops = TrailProcessor.triggerFunctionsAlongAnchor(url, callingObject, node);
-        if (!trailStops || 0 === trailStops.size()) {
+        if (!trailStops || 0 === trailStops.length) {
             return;
         }
 
