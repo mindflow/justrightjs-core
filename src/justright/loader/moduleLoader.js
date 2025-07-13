@@ -1,6 +1,7 @@
 import { Logger, StringUtils } from "coreutil_v1"
 import { Url } from "../util/url.js";
 import { LoaderInterceptor } from "./loaderInterceptor.js"
+import { TrailNode } from "../navigation/trailNode.js";
 
 const LOG = new Logger("ModuleLoader");
 
@@ -20,7 +21,7 @@ export class ModuleLoader {
         this.modulePath = modulePath;
 
         /**
-         * @type {String}
+         * @type {TrailNode}
          */
         this.trailMap = trailMap;
 
@@ -61,9 +62,9 @@ export class ModuleLoader {
      */
     async load() {
         try {
-            const main = await this.importModule();
+            const module = await this.importModule();
             await this.interceptorsPass();
-            return main;
+            return module;
         } catch(reason) {
             LOG.warn("Filter rejected " + reason);
             return null;

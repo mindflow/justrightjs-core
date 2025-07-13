@@ -15,7 +15,7 @@ import { History } from "./navigation/history.js";
 import { DiModuleLoader } from "./loader/diModuleLoader.js";
 import { Url } from "./util/url.js";
 import { ModuleRunner } from "./moduleRunner.js";
-import { Main } from "./main.js";
+import { Module } from "./module.js";
 import { ActiveModuleRunner } from "./activeModuleRunner.js";
 import { ConfiguredFunction } from "./config/configuredFunction.js";
 import { ElementMapper } from "./element/elementMapper.js";
@@ -23,6 +23,7 @@ import { StateManager } from "./state/stateManager.js";
 import { UniqueIdRegistry } from "./component/uniqueIdRegistry.js";
 import { ComponentFactory } from "./component/componentFactory.js";
 import { ModuleLoader } from "./loader/moduleLoader.js";
+import { TrailProcessor } from "./navigation/trailProcessor.js";
 
 const LOG = new Logger("Application");
 
@@ -50,8 +51,8 @@ export class Application extends ModuleRunner {
         /** @type {Array} */
         this.runningWorkers = new Array();
 
-        /** @type {Main} */
-        this.activeMain = null;
+        /** @type {Module} */
+        this.activeModule = null;
 
         ConfiguredFunction.configure("wrapEvent", (parameter) => { return new Event(parameter); });
 
@@ -82,9 +83,9 @@ export class Application extends ModuleRunner {
             new Method(this, this.update),
             Event
         );
-        const main = await this.runModule(History.currentUrl());
+        const module = await this.runModule(History.currentUrl());
         this.startWorkers();
-        return main;
+        return module;
     }
 
     /**
@@ -93,8 +94,9 @@ export class Application extends ModuleRunner {
      */
     update(event) {
         const url = History.currentUrl();
-        if (this.activeMain && StringUtils.nonNullEquals(this.activeMain.anchor, url.path)) {
-            this.activeMain.update(url);
+
+        if (this.activeModule && StringUtils.startsWith(url.anchor, this.activeModule.trailMap.trail)) {
+            TrailProcessor.triggerFunctionsAlongAnchor(url, this.activeModule, this.activeModule.trailMap);
             return;
         }
         this.runModule(url);
@@ -107,10 +109,12 @@ export class Application extends ModuleRunner {
      */
     async runModule(url) {
         try {
-            const main = await this.getMatchingModuleLoader(url).load();
-            this.activeMain = main;
-            main.load(url, null);
-            return main;
+            const moduleLoader = this.getMatchingModuleLoader(url);
+            this.activeModule = await moduleLoader.load();
+            this.activeModule.url = url;
+            this.activeModule.trailMap = moduleLoader.trailMap;
+            this.activeModule.load();
+            return this.activeModule;
         } catch(error) {
             LOG.error(error);
             return null;

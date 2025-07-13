@@ -1,5 +1,6 @@
 import { ModuleRunner } from "./moduleRunner.js";
 import { Navigation } from "./navigation/navigation.js";
+import { TrailNode } from "./navigation/trailNode.js";
 
 let activeModuleRunner = null;
 
@@ -32,10 +33,10 @@ export class ActiveModuleRunner {
 
     /**
      * Load anchor without renavigating browser
-     * @param {string} anchor 
+     * @param {TrailNode} trailNode 
      */
-     async load(anchor) {
-        const url = Navigation.instance().loadAnchor(anchor);
+     async load(trailNode) {
+        const url = Navigation.instance().loadAnchor(trailNode.trail);
         return await this.moduleRunner.runModule(url);
     }
 }

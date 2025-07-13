@@ -2,7 +2,7 @@ import { ArrayUtils, Logger } from "coreutil_v1"
 import { MindiConfig, MindiInjector } from "mindi_v1";
 import { ModuleLoader } from "./moduleLoader.js";
 import { LoaderInterceptor } from "./loaderInterceptor.js"
-import { Main } from "../main.js";
+import { Module } from "../module.js";
 
 const LOG = new Logger("DiModuleLoader");
 
@@ -24,13 +24,13 @@ export class DiModuleLoader extends ModuleLoader {
 
     /**
      * 
-     * @returns {Promise<Main>}
+     * @returns {Promise<Module>}
      */
     async load() {
         try {
-            const main = await this.importModule();
+            const module = await this.importModule();
             await this.interceptorsPass();
-            return await MindiInjector.inject(main, this.config);
+            return await MindiInjector.inject(module, this.config);
         } catch(reason) {
             LOG.warn("Module loader failed " + reason);
             throw reason;
@@ -45,14 +45,14 @@ export class DiModuleLoader extends ModuleLoader {
      */
     async importModule() {
         try {
-            const main = await super.importModule();
-            this.config.addAllTypeConfig(main.typeConfigArray);
+            const module = await super.importModule();
+            this.config.addAllTypeConfig(module.typeConfigArray);
             await this.config.finalize();
             const workingConfig = this.config;
             await ArrayUtils.promiseChain(this.loaderInterceptors, (loaderInterceptor) => {
                 return MindiInjector.inject(loaderInterceptor, workingConfig);
             });
-            return main;
+            return module;
         } catch(error) {
             throw error;
         }

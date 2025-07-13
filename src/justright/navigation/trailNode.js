@@ -2,6 +2,9 @@ export class TrailNode {
 
     constructor() {
 
+        /** @type {boolean} */
+        this.root = false;
+
         /** @type {string} */
         this.trail = null;
 

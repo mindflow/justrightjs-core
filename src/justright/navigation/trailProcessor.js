@@ -1,4 +1,4 @@
-import { ArrayUtils, List, StringUtils } from "coreutil_v1";
+import { ArrayUtils, StringUtils } from "coreutil_v1";
 import { TrailNode } from "./trailNode.js";
 import { History } from "./history.js";
 import { UrlBuilder } from "../util/urlBuilder.js";
@@ -105,24 +105,27 @@ export class TrailProcessor {
      * @param {Url} url
      * @param {any} object 
      * @param {TrailNode} node 
-     * @param {List<String>} trailStops
-     * @returns {List<String>}
+     * @param {Array<String>} trailStops
+     * @returns {Array<String>}
      */
-    static triggerFunctionsAlongAnchor(url, currentObject, node, trailStops = new List()) {
+    static triggerFunctionsAlongAnchor(url, currentObject, node, trailStops = new Array()) {
+
+        const parentsPath = trailStops ? trailStops.join("") : "";
 
         if (node.property) {
             currentObject = currentObject[node.property];
         }
 
         if (StringUtils.startsWith(url.anchor, TrailProcessor.toStartsWith(node.trail))) {
-            trailStops.add(node.trail);
+            trailStops = ArrayUtils.add(trailStops, node.trail);
             if (node.waypoint) {
                 node.waypoint.call(currentObject);
             }
         }
 
-        if (StringUtils.nonNullEquals(url.anchor, node.trail)) {
-            trailStops.add(node.trail);
+
+        if (StringUtils.nonNullEquals(url.anchor, parentsPath + node.trail)) {
+            trailStops = ArrayUtils.add(trailStops, node.trail);
             if (node.destination) {
                 node.destination.call(currentObject);
             }
