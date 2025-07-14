@@ -28,8 +28,49 @@ export class TrailProcessor {
         trailStops.forEach((value) => {
             const stepUrl = urlBuilder.withAnchor(value).build();
             History.pushUrl(stepUrl, stepUrl.toString(), value);
-            return true;
-        }, this);
+        });
+    }
+
+    /**
+     * Finds the matching functions based on the trail in the url
+     * and calls those functions sequentially.
+     * 
+     * @param {Url} url
+     * @param {any} object 
+     * @param {TrailNode} node 
+     * @param {Array<String>} trailStops
+     * @returns {Array<String>}
+     */
+    static triggerFunctionsAlongAnchor(url, currentObject, node, trailStops = new Array()) {
+
+        const parentsPath = trailStops ? trailStops.join("") : "";
+
+        if (node.property) {
+            currentObject = currentObject[node.property];
+        }
+
+        if (StringUtils.startsWith(url.anchor, TrailProcessor.toStartsWith(node.trail))) {
+            trailStops = ArrayUtils.add(trailStops, node.trail);
+            if (node.waypoint) {
+                node.waypoint.call(currentObject);
+            }
+        }
+
+
+        if (StringUtils.nonNullEquals(url.anchor, parentsPath + node.trail)) {
+            trailStops = ArrayUtils.add(trailStops, node.trail);
+            if (node.destination) {
+                node.destination.call(currentObject);
+            }
+        }
+
+        if (node.next) {
+            node.next.forEach((childNode) => {
+                trailStops = TrailProcessor.triggerFunctionsAlongAnchor(url, currentObject, childNode, trailStops);
+            });
+        }
+
+        return trailStops;
     }
 
     /**
@@ -98,47 +139,6 @@ export class TrailProcessor {
         return executedFunctionResponse;
     }
 
-    /**
-     * Finds the matching function based on the trail in the url
-     * and calls that function.
-     * 
-     * @param {Url} url
-     * @param {any} object 
-     * @param {TrailNode} node 
-     * @param {Array<String>} trailStops
-     * @returns {Array<String>}
-     */
-    static triggerFunctionsAlongAnchor(url, currentObject, node, trailStops = new Array()) {
-
-        const parentsPath = trailStops ? trailStops.join("") : "";
-
-        if (node.property) {
-            currentObject = currentObject[node.property];
-        }
-
-        if (StringUtils.startsWith(url.anchor, TrailProcessor.toStartsWith(node.trail))) {
-            trailStops = ArrayUtils.add(trailStops, node.trail);
-            if (node.waypoint) {
-                node.waypoint.call(currentObject);
-            }
-        }
-
-
-        if (StringUtils.nonNullEquals(url.anchor, parentsPath + node.trail)) {
-            trailStops = ArrayUtils.add(trailStops, node.trail);
-            if (node.destination) {
-                node.destination.call(currentObject);
-            }
-        }
-
-        if (node.next) {
-            node.next.forEach((childNode) => {
-                trailStops = TrailProcessor.triggerFunctionsAlongAnchor(url, currentObject, childNode, trailStops);
-            });
-        }
-
-        return trailStops;
-    }
 
     /**
      * 
