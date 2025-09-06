@@ -10,6 +10,8 @@ import { SimpleElement } from "./simpleElement.js";
 import { BaseElement } from "./baseElement.js";
 import { FormElement } from "./formElement.js";
 import { VideoElement } from "./videoElement.js";
+import { OptionElement } from "./optionElement.js";
+import { SelectElement } from "./selectElement.js";
 
 export class ElementMapper {
 
@@ -28,6 +30,8 @@ export class ElementMapper {
         if (ElementMapper.mapsToText(input)){      return new TextInputElement(input, parent); }
         if (ElementMapper.mapsToVideo(input)){     return new VideoElement(input, parent); }
         if (ElementMapper.mapsToTextnode(input)){  return new TextnodeElement(input, parent); }
+        if (ElementMapper.mapsToOption(input)){    return new OptionElement(input, parent); }
+        if (ElementMapper.mapsToSelect(input)){    return new SelectElement(input, parent); }
         if (ElementMapper.mapsToSimple(input)){    return new SimpleElement(input, parent); }
         console.log("Mapping to simple by default " + input);
         return new SimpleElement(input, parent);
@@ -77,6 +81,16 @@ export class ElementMapper {
     static mapsToTextnode(input){
         return (input instanceof Node && input.nodeType === "TEXT_NODE") ||
             (input instanceof XmlCdata);
+    }
+
+    static mapsToOption(input){
+        return (input instanceof HTMLOptionElement) ||
+            (input instanceof XmlElement && input.name === "option");
+    }
+    
+    static mapsToSelect(input){
+        return (input instanceof HTMLSelectElement) ||
+            (input instanceof XmlElement && input.name === "select");
     }
 
     static mapsToVideo(input){
