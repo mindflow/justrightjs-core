@@ -12,6 +12,7 @@ import { FormElement } from "./formElement.js";
 import { VideoElement } from "./videoElement.js";
 import { OptionElement } from "./optionElement.js";
 import { SelectElement } from "./selectElement.js";
+import { FileInputElement } from "./fileInputElement.js";
 
 export class ElementMapper {
 
@@ -27,6 +28,7 @@ export class ElementMapper {
         if (ElementMapper.mapsToSubmit(input)){    return new TextInputElement(input, parent); }
         if (ElementMapper.mapsToForm(input)){      return new FormElement(input, parent); }
         if (ElementMapper.mapsToTextarea(input)){  return new TextareaInputElement(input, parent); }
+        if (ElementMapper.mapsToFile(input)){      return new FileInputElement(input, parent); }
         if (ElementMapper.mapsToText(input)){      return new TextInputElement(input, parent); }
         if (ElementMapper.mapsToVideo(input)){     return new VideoElement(input, parent); }
         if (ElementMapper.mapsToTextnode(input)){  return new TextnodeElement(input, parent); }
@@ -55,6 +57,16 @@ export class ElementMapper {
     static mapsToForm(input){
         return (input instanceof HTMLFormElement) ||
             (input instanceof XmlElement && input.name === "form");
+    }
+
+    static mapsToFile(input){
+        if (input instanceof HTMLInputElement) {
+            if (input.type === "file") { return true; }
+        }
+        if(input instanceof XmlElement && input.name === "input") {
+            if(input.getAttribute("type").value === "file") { return true; }
+        }
+        return false;
     }
 
     static mapsToText(input){
