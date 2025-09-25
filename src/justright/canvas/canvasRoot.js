@@ -93,17 +93,25 @@ export class CanvasRoot {
      * Remember to swallowFocusEscape for initial triggering events
      * which are external to focusRoot
      * 
+     * Also remember to keep the destroy function and call it
+     * when the listener is no longer needed
+     * 
      * @param {Method} listener
      * @param {BaseElement} focusRoot
+     * @returns {Function} destroy function
      */
     static listenToFocusEscape(listener, focusRoot) {
         
+        const destroyFunctions = [];
+
         /* Hack: Because we don't have a way of knowing in the click event which element was in focus when mousedown occured */
         if (!CanvasRoot.focusEscapeEventRequested) {
             const updateMouseDownElement = new Method(null, (event) => {
                 CanvasRoot.mouseDownElement = event.target;
             });
-            ContainerWindow.addEventListener("mousedown", updateMouseDownElement, Event);
+            destroyFunctions.push(
+                ContainerWindow.addEventListener("mousedown", updateMouseDownElement, Event)
+            );
             CanvasRoot.focusEscapeEventRequested = true;
         }
 
@@ -119,7 +127,13 @@ export class CanvasRoot {
             }
             listener.call(event);
         });
-        ContainerWindow.addEventListener("click", callIfNotContains, Event);
+        destroyFunctions.push(
+            ContainerWindow.addEventListener("click", callIfNotContains, Event)
+        );
+
+        return () => {
+            destroyFunctions.forEach(destroy => destroy());
+        };
     }
 
     /**
