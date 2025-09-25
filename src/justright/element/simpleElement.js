@@ -23,4 +23,8 @@ export class SimpleElement extends BaseElement{
         this.element.innerHTML = value;
     }
 
+    focus() {
+        this.element.focus();
+    }
+
 }

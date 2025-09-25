@@ -16,4 +16,9 @@ export class FileInputElement extends AbstractInputElement{
         super(element, parent);
     }
 
+    async focus() {
+        LOG.WARN("File input elements cannot be focused directly due to browser security restrictions.");
+        this.element.focus();
+    }
+
 }
