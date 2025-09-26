@@ -1,5 +1,6 @@
 import { Map, Logger, StringUtils } from "coreutil_v1";
 import { Client } from "../client/client.js";
+import { ContainerHttpResponse } from "containerbridge_v1";
 
 
 const LOG = new Logger("HttpCallBuilder");
@@ -18,7 +19,6 @@ export class HttpCallBuilder {
         /** @type {String} */
         this.authorization = null;
 
-
         /** @type {Map} */
         this.successMappingMap = new Map();
 
@@ -27,7 +27,6 @@ export class HttpCallBuilder {
 
         /** @type {function} */
         this.errorMappingFunction = (error) => { return error; };
-
 
         /** @type {number} */
         this.connectionTimeoutValue = 4000;
@@ -97,7 +96,7 @@ export class HttpCallBuilder {
      * @returns {Promise}
      */
     async get() {
-        const response = Client.get(this.url, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization);
+        const response = Client.get(this.url, this.authorization, this.connectionTimeoutValue);
         return this.asTypeMappedPromise(response);
     }
 
@@ -105,15 +104,15 @@ export class HttpCallBuilder {
      * @returns {Promise}
      */
     async post(payload) {
-        const resposne = await Client.post(this.url, payload, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization);
-        return this.asTypeMappedPromise(resposne);
+        const response = await Client.post(this.url, payload, this.authorization, this.connectionTimeoutValue);
+        return this.asTypeMappedPromise(response);
     }
 
     /**
      * @returns {Promise}
      */
     async put(payload) {
-        const response = await Client.put(this.url, payload, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization)
+        const response = await Client.put(this.url, payload, this.authorization, this.connectionTimeoutValue);
         return this.asTypeMappedPromise(response);
     }
 
@@ -121,7 +120,7 @@ export class HttpCallBuilder {
      * @returns {Promise}
      */
     async patch(payload) {
-        const response = await Client.patch(this.url, payload, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization);
+        const response = await Client.patch(this.url, payload, this.authorization, this.connectionTimeoutValue);
         return this.asTypeMappedPromise(response);
     }
 
@@ -129,13 +128,13 @@ export class HttpCallBuilder {
      * @returns {Promise}
      */
     async delete(payload = null) {
-        const response = await Client.delete(this.url, payload, this.connectionTimeoutValue, this.responseTimeoutValue, this.authorization);
+        const response = await Client.delete(this.url, payload, this.authorization, this.connectionTimeoutValue);
         return this.asTypeMappedPromise(response);
     }
 
     /**
      * 
-     * @param {Promise} fetchPromise 
+     * @param {Promise<ContainerHttpResponse} fetchPromise 
      */
     async asTypeMappedPromise(fetchPromise) {
         try {
@@ -149,7 +148,7 @@ export class HttpCallBuilder {
 
     /**
      * 
-     * @param {Response} fetchResponse 
+     * @param {ContainerHttpResponse} fetchResponse 
      * @param {function} resolve 
      * @param {function} reject 
      */

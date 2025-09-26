@@ -1,5 +1,3 @@
-/* jshint esversion: 6 */
-
 import { ConfiguredFunction } from "../config/configuredFunction.js";
 import { SimpleElement } from "../element/simpleElement.js";
 
@@ -18,6 +16,10 @@ export class Event{
 
     preventDefault(){
         this.event.preventDefault();
+    }
+
+    get dataTransfer() {
+        return this.event.dataTransfer;
     }
 
     /**

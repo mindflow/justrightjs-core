@@ -1,13 +1,13 @@
-import { ContainerHttpClient } from "containerbridge_v1";
+import { ContainerHttpClient, ContainerHttpResponse } from "containerbridge_v1";
 
 export class Client {
 
     /**
      * 
      * @param {string} url 
-     * @returns {Promise<Response>}
+     * @returns {Promise<ContainerHttpResponse>}
      */
-    static get(url, connectionTimeout = 4000, responseTimeout = 4000, authorization = null){
+    static get(url, authorization = null, timeout = 1000){
         let headers = Client.getHeader(authorization);
         var params =  {
             headers: headers,
@@ -15,16 +15,16 @@ export class Client {
             mode: 'cors', // no-cors, cors, *same-origin
             redirect: 'follow' // manual, *follow, error
         }
-        return ContainerHttpClient.fetch(url.toString(),params, connectionTimeout, responseTimeout);
+        return ContainerHttpClient.fetch(url.toString(), params, timeout);
     }
 
     /**
      * 
      * @param {string} url 
      * @param {string} data
-     * @returns {Promise<Response>}
+     * @returns {Promise<ContainerHttpResponse>}
      */
-    static post(url, data, connectionTimeout = 4000, responseTimeout = 4000, authorization = null){
+    static post(url, data, authorization = null, timeout = 1000){
         let headers = Client.getHeader(authorization);
         var params =  {
             body: JSON.stringify(data), // must match 'Content-Type' header
@@ -33,16 +33,16 @@ export class Client {
             mode: "cors", // no-cors, cors, *same-origin
             redirect: "follow", // manual, *follow, error
         }
-        return ContainerHttpClient.fetch(url.toString(), params, connectionTimeout, responseTimeout);
+        return ContainerHttpClient.fetch(url.toString(), params, timeout);
     }
 
     /**
      * 
      * @param {string} url 
      * @param {string} data
-     * @returns {Promise<Response>}
+     * @returns {Promise<ContainerHttpResponse>}
      */
-    static put(url, data, connectionTimeout = 4000, responseTimeout = 4000, authorization = null){
+    static put(url, data, authorization = null, timeout = 1000){
         let headers = Client.getHeader(authorization);
         var params =  {
             body: JSON.stringify(data), // must match 'Content-Type' header
@@ -51,16 +51,16 @@ export class Client {
             redirect: 'follow', // manual, *follow, error
             headers: headers
         }
-        return ContainerHttpClient.fetch(url.toString(), params, connectionTimeout, responseTimeout);
+        return ContainerHttpClient.fetch(url.toString(), params, timeout);
     }
 
     /**
      * 
      * @param {string} url 
      * @param {string} data
-     * @returns {Promise<Response>}
+     * @returns {Promise<ContainerHttpResponse>}
      */
-    static patch(url, data, connectionTimeout = 4000, responseTimeout = 4000, authorization = null) {
+    static patch(url, data, authorization = null, timeout = 1000) {
         let headers = Client.getHeader(authorization);
         let params =  {
             body: JSON.stringify(data), // must match 'Content-Type' header
@@ -69,15 +69,15 @@ export class Client {
             redirect: 'follow', // manual, *follow, error
             headers: headers
         }
-        return ContainerHttpClient.fetch(url.toString(), params, connectionTimeout, responseTimeout);
+        return ContainerHttpClient.fetch(url.toString(), params, timeout);
     }
 
     /**
      * 
      * @param {string} url
-     * @returns {Promise<Response>}
+     * @returns {Promise<ContainerHttpResponse>}
      */
-    static delete(url, data, connectionTimeout = 4000, responseTimeout = 4000, authorization = null) {
+    static delete(url, data, authorization = null, timeout = 1000) {
         const headers = Client.getHeader(authorization);
         if (data) {
             const params =  {
@@ -87,7 +87,7 @@ export class Client {
                 redirect: 'follow', // manual, *follow, error
                 headers: headers
             }
-            return ContainerHttpClient.fetch(url.toString(), params, connectionTimeout, responseTimeout);
+            return ContainerHttpClient.fetch(url.toString(), params, timeout);
         } else {
             const params =  {
                 method: 'DELETE',
@@ -95,7 +95,7 @@ export class Client {
                 redirect: 'follow', // manual, *follow, error
                 headers: headers
             }
-            return ContainerHttpClient.fetch(url.toString(), params, connectionTimeout, responseTimeout);
+            return ContainerHttpClient.fetch(url.toString(), params, timeout);
         }
     }
 
