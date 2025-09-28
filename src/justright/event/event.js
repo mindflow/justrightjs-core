@@ -18,6 +18,16 @@ export class Event{
         this.event.preventDefault();
     }
 
+    get files() {
+        if (this.event.target && this.event.target.files) {
+            return this.event.target.files;
+        }
+        if (this.event.dataTransfer && this.event.dataTransfer.files) {
+            return this.event.dataTransfer.files;
+        }
+        return [];
+    }
+
     get dataTransfer() {
         return this.event.dataTransfer;
     }
