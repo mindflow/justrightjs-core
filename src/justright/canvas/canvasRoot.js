@@ -122,6 +122,11 @@ export class CanvasRoot {
             if (ContainerElement.contains(focusRoot.element, CanvasRoot.mouseDownElement.element)) {
                 return;
             }
+            // If the element is not connected, then the element is not visible
+            // and we should not trigger focus escape events
+            if (!ContainerElement.isConnected(CanvasRoot.mouseDownElement.element)) {
+                return;
+            }
             if (CanvasRoot.shouldSwallowNextFocusEscape) {
                 return;
             }
