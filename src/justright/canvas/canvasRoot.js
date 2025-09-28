@@ -98,7 +98,7 @@ export class CanvasRoot {
      * 
      * @param {Method} listener
      * @param {BaseElement} focusRoot
-     * @returns {Function} destroy function
+     * @returns {Function} destroy function to remove the listener from the container window
      */
     static listenToFocusEscape(listener, focusRoot) {
         
