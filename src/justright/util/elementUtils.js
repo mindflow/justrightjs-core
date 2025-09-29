@@ -1,4 +1,4 @@
-import { ContainerElementUtils } from "containerbridge_v1";
+import { ContainerElement, ContainerElementUtils } from "containerbridge_v1";
 import { Logger } from "coreutil_v1";
 import { XmlElement } from "xmlparser_v1";
 import { MappedContainerElement } from "../element/mappedContainerElement";
@@ -22,7 +22,7 @@ export class ElementUtils {
             return ContainerElementUtils.createElement(value);
         }
         if (ContainerElementUtils.isUIElement(value)) {
-            return value;
+            return new ContainerElement(value);
         }
         LOG.error("Unrecognized value for Element");
         LOG.error(value);
@@ -44,7 +44,7 @@ export class ElementUtils {
             element = ContainerElementUtils.createElement(xmlElement.name);
         }
         if (parentElement && parentElement.containerElement !== null) {
-            ContainerElementUtils.appendChild(parentElement.containerElement, element);
+            parentElement.containerElement.appendChild(element);
         }
         xmlElement.attributes.forEach((attributeKey, attribute) => {
             ContainerElementUtils.setAttributeValue(element, attributeKey, attribute.value);
