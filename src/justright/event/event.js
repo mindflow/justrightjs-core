@@ -27,11 +27,7 @@ export class Event{
         }
         return [];
     }
-
-    get dataTransfer() {
-        return this.event.dataTransfer;
-    }
-
+    
     /**
      * The distance between the event and the edge x coordinate of the containing object
      */
