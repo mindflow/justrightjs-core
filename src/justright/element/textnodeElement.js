@@ -1,5 +1,5 @@
 import { XmlCdata } from "xmlparser_v1";
-import { ContainerElementUtils } from "containerbridge_v1";
+import { ContainerElement, ContainerElementUtils } from "containerbridge_v1";
 import { BaseElement } from "./baseElement.js";
 
 export class TextnodeElement {
@@ -11,11 +11,15 @@ export class TextnodeElement {
      * @param {BaseElement} parent 
      */
     constructor(value, parent) {
+
+        /** @type {ContainerElement} */
+        this.containerElement = null;
+
         if(value instanceof XmlCdata) {
-            this.element = this.createFromXmlCdata(value, parent);
+            this.containerElement = this.createFromXmlCdata(value, parent);
         }
         if(typeof value === "string"){
-            this.element = ContainerElementUtils.createTextNode(value);
+            this.containerElement = ContainerElementUtils.createTextNode(value);
         }
     }
 
@@ -25,9 +29,9 @@ export class TextnodeElement {
      * @param {BaseElement} parentElement 
      */
     createFromXmlCdata(cdataElement, parentElement) {
-        let element = document.createTextNode(cdataElement.value);
-        if(parentElement !== null && parentElement.mappedElement !== null) {
-            ContainerElementUtils.appendChild(parentElement.mappedElement, element);
+        const element = ContainerElementUtils.createTextNode(cdataElement.value);
+        if(parentElement !== null && parentElement.containerElement !== null) {
+            parentElement.containerElement.appendChild(element);
         }
         return element;
     }
@@ -37,10 +41,6 @@ export class TextnodeElement {
     }
 
     get value() {
-        return this.element;
-    }
-
-    get mappedElement() {
         return this.element;
     }
 

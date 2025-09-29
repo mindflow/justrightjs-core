@@ -13,19 +13,23 @@ export class VideoElement extends BaseElement {
     }
 
     get mappedElement() {
-        return this.element;
+        return this.containerElement;
+    }
+
+    playMuted() {
+        this.containerElement.playMuted();
     }
 
     play() {
-        this.element.play();
+        this.containerElement.play();
     }
 
     mute() {
-        this.element.muted = true;
+        this.containerElement.muted = true;
     }
 
     unmute() {
-        this.element.muted = false;
+        this.containerElement.muted = false;
     }
 
 }

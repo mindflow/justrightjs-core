@@ -17,11 +17,11 @@ export class RadioInputElement extends AbstractInputElement{
     }
 
     set checked(value){
-        this.element.checked = value;
+        this.containerElement.checked = value;
     }
 
     isChecked(){
-        return this.element.checked;
+        return this.containerElement.checked;
     }
 
     get value() {
@@ -29,6 +29,6 @@ export class RadioInputElement extends AbstractInputElement{
     }
 
     set value(value) {
-        this.element.checked = (value === true || value === "true");
+        this.containerElement.checked = (value === true || value === "true");
     }
 }

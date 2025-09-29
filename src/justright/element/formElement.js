@@ -21,7 +21,7 @@ export class FormElement extends BaseElement{
      * @return {string}
      */
     get name() {
-        return this.element.name;
+        return this.containerElement.name;
     }
 
     /**
@@ -30,11 +30,11 @@ export class FormElement extends BaseElement{
      * @param {string} value
      */
     set name(value) {
-        this.element.name = value;
+        this.containerElement.name = value;
     }
 
     submit() {
-        return this.element.submit();
+        return this.containerElement.submit();
     }
 
 }

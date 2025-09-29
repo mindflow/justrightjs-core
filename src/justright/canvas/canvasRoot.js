@@ -19,7 +19,7 @@ export class CanvasRoot {
      */
     static replaceComponent(id, component) {
         const bodyElement = ContainerElementUtils.getElementById(id);
-        bodyElement.parentNode.replaceChild(component.rootElement.mappedElement, bodyElement);
+        bodyElement.parentNode.replaceChild(component.rootElement.containerElement, bodyElement);
     }
 
     /**
@@ -30,7 +30,7 @@ export class CanvasRoot {
     static setComponent(id, component) {
         const bodyElement = ContainerElementUtils.getElementById(id);
         bodyElement.innerHTML = '';
-        bodyElement.appendChild(component.rootElement.mappedElement, bodyElement);
+        bodyElement.appendChild(component.rootElement.containerElement, bodyElement);
     }
 
     /**
@@ -40,7 +40,7 @@ export class CanvasRoot {
      */
     static addChildComponent(id, component) {
         const bodyElement = ContainerElementUtils.getElementById(id);
-        bodyElement.appendChild(component.rootElement.mappedElement);
+        bodyElement.appendChild(component.rootElement.containerElement);
     }
 
     /**
@@ -50,7 +50,7 @@ export class CanvasRoot {
      */
     static addChildElement(id, element) {
         const bodyElement = ContainerElementUtils.getElementById(id);
-        bodyElement.appendChild(element.mappedElement);
+        bodyElement.appendChild(element.containerElement);
     }
 
     /**
@@ -65,28 +65,28 @@ export class CanvasRoot {
      * @param {BaseElement} element
      */
     static addHeaderElement(element) {
-        ContainerElementUtils.appendRootMetaChild(element.mappedElement);
+        ContainerElementUtils.appendRootMetaChild(element.containerElement);
     }
 
     /** 
      * @param {BaseElement} element
      */
     static addBodyElement(element) {
-        ContainerElementUtils.appendRootUiChild(element.mappedElement);
+        ContainerElementUtils.appendRootUiChild(element.containerElement);
     }
 
     /** 
      * @param {BaseElement} element
      */
     static prependHeaderElement(element) {
-        ContainerElementUtils.prependElement("head", element.mappedElement);
+        ContainerElementUtils.prependElement("head", element.containerElement);
     }
 
     /** 
      * @param {BaseElement} element
      */
     static prependBodyElement(element) {
-        ContainerElementUtils.prependElement("body", element.mappedElement);
+        ContainerElementUtils.prependElement("body", element.containerElement);
     }
 
     /** 
@@ -110,7 +110,7 @@ export class CanvasRoot {
                 CanvasRoot.mouseDownElement = event.target;
             });
             destroyFunctions.push(
-                ContainerWindow.addEventListener("mousedown", updateMouseDownElement, Event)
+                ContainerWindow.addEventListener("mousedown", updateMouseDownElement)
             );
             CanvasRoot.focusEscapeEventRequested = true;
         }
@@ -119,12 +119,12 @@ export class CanvasRoot {
             if (!CanvasRoot.mouseDownElement) {
                 CanvasRoot.mouseDownElement = event.target;
             }
-            if (ContainerElementUtils.contains(focusRoot.element, CanvasRoot.mouseDownElement.element)) {
+            if (ContainerElementUtils.contains(focusRoot.containerElement, CanvasRoot.mouseDownElement)) {
                 return;
             }
             // If the element is not connected, then the element is not visible
             // and we should not trigger focus escape events
-            if (!ContainerElementUtils.isConnected(CanvasRoot.mouseDownElement.element)) {
+            if (!ContainerElementUtils.isConnected(CanvasRoot.mouseDownElement)) {
                 return;
             }
             if (CanvasRoot.shouldSwallowNextFocusEscape) {
@@ -133,7 +133,7 @@ export class CanvasRoot {
             listener.call(event);
         });
         destroyFunctions.push(
-            ContainerWindow.addEventListener("click", callIfNotContains, Event)
+            ContainerWindow.addEventListener("click", callIfNotContains)
         );
 
         return () => {

@@ -25,7 +25,7 @@ export class AbstractInputElement extends BaseElement{
      * @return {string}
      */
     get name() {
-        return this.element.name;
+        return this.containerElement.name;
     }
 
     /**
@@ -34,7 +34,7 @@ export class AbstractInputElement extends BaseElement{
      * @param {string} value
      */
     set name(value) {
-        this.element.name = value;
+        this.containerElement.name = value;
     }
 
     /**
@@ -45,30 +45,30 @@ export class AbstractInputElement extends BaseElement{
     }
 
     set value(value){
-        this.element.value = value;
-        this.element.dispatchEvent(new InputEvent('change'));
+        this.containerElement.value = value;
+        this.containerElement.dispatchEvent('change');
     }
 
     /**
      * Returns the source value
      */
     get backingValue(){
-        return this.element.value;
+        return this.containerElement.value;
     }
 
     focus() {
-        this.element.focus();
+        this.containerElement.focus();
     }
 
     selectAll() {
-        this.element.select();
+        this.containerElement.select();
     }
 
     enable() {
-        this.element.disabled = false;
+        this.containerElement.disabled = false;
     }
 
     disable() {
-        this.element.disabled = true;
+        this.containerElement.disabled = true;
     }
 }

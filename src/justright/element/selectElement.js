@@ -36,11 +36,11 @@ export class SelectElement extends BaseElement {
     }
 
     renderOptions(){
-        while (this.element.firstChild) {
-            this.element.removeChild(this.element.firstChild);
+        while (this.containerElement.firstChild) {
+            this.containerElement.removeChild(this.containerElement.firstChild);
         }
         for (const option of this.optionsArray){
-            this.element.appendChild(option.element);
+            this.containerElement.appendChild(option.containerElement);
         }
     }
 
@@ -50,7 +50,7 @@ export class SelectElement extends BaseElement {
      * @return {string}
      */
     get name() {
-        return this.element.name;
+        return this.containerElement.name;
     }
 
     /**
@@ -59,7 +59,7 @@ export class SelectElement extends BaseElement {
      * @param {string} value
      */
     set name(value) {
-        this.element.name = value;
+        this.containerElement.name = value;
     }
 
     /**
@@ -73,22 +73,22 @@ export class SelectElement extends BaseElement {
      * Returns the source value
      */
     get backingValue(){
-        return this.element.value;
+        return this.containerElement.value;
     }
 
     focus() {
-        this.element.focus();
+        this.containerElement.focus();
     }
 
     selectAll() {
-        this.element.select();
+        this.containerElement.select();
     }
 
     enable() {
-        this.element.disabled = false;
+        this.containerElement.disabled = false;
     }
 
     disable() {
-        this.element.disabled = true;
+        this.containerElement.disabled = true;
     }
 }

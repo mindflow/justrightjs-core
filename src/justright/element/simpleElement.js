@@ -16,15 +16,15 @@ export class SimpleElement extends BaseElement{
     }
 
     get innerHTML(){
-        return this.element.innerHTML;
+        return this.containerElement.innerHTML;
     }
 
     set innerHTML(value){
-        this.element.innerHTML = value;
+        this.containerElement.innerHTML = value;
     }
 
     focus() {
-        this.element.focus();
+        this.containerElement.focus();
     }
 
 }

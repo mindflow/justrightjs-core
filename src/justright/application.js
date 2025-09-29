@@ -17,8 +17,6 @@ import { Url } from "./util/url.js";
 import { ModuleRunner } from "./moduleRunner.js";
 import { Module } from "./module.js";
 import { ActiveModuleRunner } from "./activeModuleRunner.js";
-import { ConfiguredFunction } from "./config/configuredFunction.js";
-import { ElementMapper } from "./element/elementMapper.js";
 import { StateManager } from "./state/stateManager.js";
 import { UniqueIdRegistry } from "./component/uniqueIdRegistry.js";
 import { ComponentFactory } from "./component/componentFactory.js";
@@ -53,10 +51,6 @@ export class Application extends ModuleRunner {
 
         /** @type {Module} */
         this.activeModule = null;
-
-        ConfiguredFunction.configure("wrapEvent", (parameter) => { return new Event(parameter); });
-
-        ConfiguredFunction.configure("mapElement", (parameter) => { return ElementMapper.map(parameter); });
 
         this.defaultConfig = [
             SingletonConfig.unnamed(TemplateRegistry),

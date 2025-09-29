@@ -1,17 +1,16 @@
 import { XmlElement } from "xmlparser_v1";
-import { Map, Logger, List } from "coreutil_v1";
-import { ContainerElementUtils } from "containerbridge_v1";
+import { Map, Logger, List, Method } from "coreutil_v1";
+import { ContainerElement, ContainerElementUtils, ContainerText } from "containerbridge_v1";
 import { Attribute } from "./attribute.js";
-import { ConfiguredFunction } from "../config/configuredFunction.js";
 import { ElementUtils } from "../util/elementUtils.js";
-import { MappedHtmlElement } from "./mappedHtmlElement.js";
+import { MappedContainerElement } from "./mappedContainerElement.js";
 
 const LOG = new Logger("BaseElement");
 
 /**
  * A base class for enclosing an HTMLElement
  */
-export class BaseElement extends MappedHtmlElement {
+export class BaseElement extends MappedContainerElement {
 
     /**
      * Constructor
@@ -20,58 +19,62 @@ export class BaseElement extends MappedHtmlElement {
      * @param {BaseElement} parent the parent BaseElement
      */
     constructor(value, parent) {
-        super();
+        super(ElementUtils.createContainerElement(value, parent));
         this.attributeMap = null;
         this.eventsAttached = new List();
-        super.mappedElement = ElementUtils.createContainerElement(value, parent);
     }
 
     loadAttributes() {
-        if (super.mappedElement.attributes === null || super.mappedElement.attributes === undefined) {
+        if (this.containerElement.attributes === null || this.containerElement.attributes === undefined) {
             this.attributeMap = new Map();
             return;
         }
         if (this.attributeMap === null || this.attributeMap === undefined) {
             this.attributeMap = new Map();
-            for (var i = 0; i < super.mappedElement.attributes.length; i++) {
-                this.attributeMap.set(super.mappedElement.attributes[i].name,new Attribute(super.mappedElement.attributes[i]));
+            for (var i = 0; i < this.containerElement.attributes.length; i++) {
+                this.attributeMap.set(this.containerElement.attributes[i].name,new Attribute(this.containerElement.attributes[i]));
             }
         }
     }
 
+    /**
+     * 
+     * @param {string} eventType 
+     * @param {Method} listener 
+     * @param {boolean} capture 
+     * @returns 
+     */
     listenTo(eventType, listener, capture) {
-        ContainerElementUtils.addEventListener(super.mappedElement, eventType, (event) => {
-            listener.call(ConfiguredFunction.execute("wrapEvent", event));
-        }, capture);
+        this.containerElement.addEventListener(eventType, listener, capture);
         return this;
     }
 
     get fullName() {
-        return super.mappedElement.tagName;
+        return this.containerElement.tagName;
     }
 
     get top() {
-        return super.mappedElement.getBoundingClientRect().top;
+        return this.containerElement.boundingClientRect.top;
     }
 
     get bottom() {
-        return super.mappedElement.getBoundingClientRect().bottom;
+        return this.containerElement.boundingClientRect.bottom;
     }
 
     get left() {
-        return super.mappedElement.getBoundingClientRect().left;
+        return this.containerElement.boundingClientRect.left;
     }
 
     get right() {
-        return super.mappedElement.getBoundingClientRect().right;
+        return this.containerElement.boundingClientRect.right;
     }
 
     get width() {
-        return super.mappedElement.offsetWidth;
+        return this.containerElement.offsetWidth;
     }
 
     get height() {
-        return super.mappedElement.offsetHeight;
+        return this.containerElement.offsetHeight;
     }
 
     get attributes() {
@@ -80,57 +83,61 @@ export class BaseElement extends MappedHtmlElement {
     }
 
     setAttributeValue(key, value) {
-        ContainerElementUtils.setAttribute(super.mappedElement, key,value);
+        ContainerElementUtils.setAttributeValue(this.containerElement, key,value);
     }
 
     getAttributeValue(key) {
-        return ContainerElementUtils.getAttribute(super.mappedElement, key);
+        return ContainerElementUtils.getAttributeValue(this.containerElement, key);
     }
 
     containsAttribute(key) {
-        return super.mappedElement.hasAttribute(key);
+        const containerElement = this.containerElement;
+        return containerElement.hasAttribute(key);
     }
 
     removeAttribute(key) {
-        super.mappedElement.removeAttribute(key);
+        this.containerElement.removeAttribute(key);
     }
 
     setStyle(key, value) {
-        super.mappedElement.style[key] = value;
+        this.containerElement.style[key] = value;
     }
 
     getStyle(key) {
-        return super.mappedElement.style[key];
+        return this.containerElement.style[key];
     }
 
     removeStyle(key) {
-        super.mappedElement.style[key] = null;
+        this.containerElement.style[key] = null;
     }
 
     set(input) {
-        if(!super.mappedElement.parentNode){
+        if(!this.containerElement.parentNode){
             console.error("The element has no parent, can not swap it for value");
             return;
         }
-        if(input.mappedElement) {
-            super.mappedElement.parentNode.replaceChild(input.mappedElement, super.mappedElement);
+        /** @type {ContainerElement} */
+        const parentNode = this.containerElement.parentNode;
+
+        if(input.containerElement) {
+            parentNode.replaceChild(input.containerElement);
             return;
         }
         if(input && input.rootElement) {
-            super.mappedElement.parentNode.replaceChild(input.rootElement.mappedElement, super.mappedElement);
-            super.mappedElement = input.rootElement.mappedElement;
+            parentNode.replaceChild(input.rootElement.containerElement, this.containerElement);
+            this.containerElement = input.rootElement.containerElement;
             return;
         }
         if(typeof input == "string") {
-            super.mappedElement.parentNode.replaceChild(ContainerElementUtils.createTextNode(input), super.mappedElement);
+            parentNode.replaceChild(ContainerElementUtils.createTextNode(input), this.containerElement);
             return;
         }
         if(input instanceof Text) {
-            super.mappedElement.parentNode.replaceChild(input, super.mappedElement);
+            parentNode.replaceChild(input, this.containerElement);
             return;
         }
         if(input instanceof Element) {
-            super.mappedElement.parentNode.replaceChild(input, super.mappedElement);
+            parentNode.replaceChild(input, this.containerElement);
             return;
         }
         LOG.warn("No valid input to set the element");
@@ -138,21 +145,23 @@ export class BaseElement extends MappedHtmlElement {
     }
 
     isMounted() {
-        if(super.mappedElement.parentNode) {
+        if(this.containerElement.parentNode) {
             return true;
         }
         return false;
     }
 
     remove() {
-        if (super.mappedElement.parentNode) {
-            super.mappedElement.parentNode.removeChild(super.mappedElement);
+        if (this.containerElement.parentNode) {
+            /** @type {ContainerElement} */
+            const parentNode = this.containerElement.parentNode;
+            parentNode.removeChild(this.containerElement);
         }
     }
 
     clear() {
-        while (super.mappedElement.firstChild) {
-            super.mappedElement.removeChild(super.mappedElement.firstChild);
+        while (this.containerElement.firstChild) {
+            this.containerElement.removeChild(this.containerElement.firstChild);
         }
     }
 
@@ -162,24 +171,25 @@ export class BaseElement extends MappedHtmlElement {
     }
 
     addChild(input) {
-        if (input.mappedElement !== undefined && input.mappedElement !== null){
-            super.mappedElement.appendChild(input.mappedElement);
+        if (input.containerElement !== undefined && input.containerElement !== null){
+            this.containerElement.appendChild(input.containerElement);
             return;
         }
         if (input && input.rootElement) {
-            super.mappedElement.appendChild(input.rootElement.mappedElement);
+            this.containerElement.appendChild(input.rootElement.containerElement);
             return;
         }
         if (typeof input == "string") {
-            super.mappedElement.appendChild(ContainerElementUtils.createTextNode(input));
+            this.containerElement.appendChild(ContainerElementUtils.createTextNode(input));
             return;
         }
         if (input instanceof Text) {
-            super.mappedElement.appendChild(input);
+            this.containerElement.appendChild(input);
             return;
         }
         if (input instanceof Element) {
-            super.mappedElement.appendChild(input);
+            const containerElement = new ContainerElement(input);
+            this.containerElement.appendChild(containerElement);
             return;
         }
         LOG.warn("No valid input to add the element");
@@ -187,27 +197,27 @@ export class BaseElement extends MappedHtmlElement {
     }
 
     prependChild(input) {
-        if(super.mappedElement.firstChild === null) {
+        if(this.containerElement.firstChild === null) {
             this.addChild(input);
         }
-        if (input.mappedElement !== undefined && input.mappedElement !== null) {
-            super.mappedElement.insertBefore(input.mappedElement, super.mappedElement.firstChild);
+        if (input.containerElement !== undefined && input.containerElement !== null) {
+            this.containerElement.insertBefore(input.containerElement, this.containerElement.firstChild);
             return;
         }
         if (input && input.rootElement) {
-            super.mappedElement.insertBefore(input.rootElement.mappedElement, super.mappedElement.firstChild);
+            this.containerElement.insertBefore(input.rootElement.containerElement, this.containerElement.firstChild);
             return;
         }
         if (typeof input == "string") {
-            super.mappedElement.insertBefore(ContainerElementUtils.createTextNode(input), super.mappedElement.firstChild);
+            this.containerElement.insertBefore(ContainerElementUtils.createTextNode(input), this.containerElement.firstChild);
             return;
         }
-        if (input instanceof Text) {
-            super.mappedElement.insertBefore(input, super.mappedElement.firstChild);
+        if (input instanceof ContainerText) {
+            this.containerElement.insertBefore(input, this.containerElement.firstChild);
             return;
         }
         if (input instanceof Element) {
-            super.mappedElement.insertBefore(input, super.mappedElement.firstChild);
+            this.containerElement.insertBefore(input, this.containerElement.firstChild);
             return;
         }
         LOG.warn("No valid input to prepend the element");
