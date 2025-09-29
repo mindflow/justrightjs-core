@@ -1,6 +1,6 @@
 import { XmlElement } from "xmlparser_v1";
 import { Map, Logger, List } from "coreutil_v1";
-import { ContainerElement } from "containerbridge_v1";
+import { ContainerElementUtils } from "containerbridge_v1";
 import { Attribute } from "./attribute.js";
 import { ConfiguredFunction } from "../config/configuredFunction.js";
 import { ElementUtils } from "../util/elementUtils.js";
@@ -40,7 +40,7 @@ export class BaseElement extends MappedHtmlElement {
     }
 
     listenTo(eventType, listener, capture) {
-        ContainerElement.addEventListener(super.mappedElement, eventType, (event) => {
+        ContainerElementUtils.addEventListener(super.mappedElement, eventType, (event) => {
             listener.call(ConfiguredFunction.execute("wrapEvent", event));
         }, capture);
         return this;
@@ -79,12 +79,12 @@ export class BaseElement extends MappedHtmlElement {
         return this.attributeMap;
     }
 
-    setAttributeValue(key,value) {
-        ContainerElement.setAttribute(super.mappedElement, key,value);
+    setAttributeValue(key, value) {
+        ContainerElementUtils.setAttribute(super.mappedElement, key,value);
     }
 
     getAttributeValue(key) {
-        return ContainerElement.getAttribute(super.mappedElement, key);
+        return ContainerElementUtils.getAttribute(super.mappedElement, key);
     }
 
     containsAttribute(key) {
@@ -95,7 +95,7 @@ export class BaseElement extends MappedHtmlElement {
         super.mappedElement.removeAttribute(key);
     }
 
-    setStyle(key,value) {
+    setStyle(key, value) {
         super.mappedElement.style[key] = value;
     }
 
@@ -122,7 +122,7 @@ export class BaseElement extends MappedHtmlElement {
             return;
         }
         if(typeof input == "string") {
-            super.mappedElement.parentNode.replaceChild(ContainerElement.createTextNode(input), super.mappedElement);
+            super.mappedElement.parentNode.replaceChild(ContainerElementUtils.createTextNode(input), super.mappedElement);
             return;
         }
         if(input instanceof Text) {
@@ -171,7 +171,7 @@ export class BaseElement extends MappedHtmlElement {
             return;
         }
         if (typeof input == "string") {
-            super.mappedElement.appendChild(ContainerElement.createTextNode(input));
+            super.mappedElement.appendChild(ContainerElementUtils.createTextNode(input));
             return;
         }
         if (input instanceof Text) {
@@ -199,7 +199,7 @@ export class BaseElement extends MappedHtmlElement {
             return;
         }
         if (typeof input == "string") {
-            super.mappedElement.insertBefore(ContainerElement.createTextNode(input), super.mappedElement.firstChild);
+            super.mappedElement.insertBefore(ContainerElementUtils.createTextNode(input), super.mappedElement.firstChild);
             return;
         }
         if (input instanceof Text) {

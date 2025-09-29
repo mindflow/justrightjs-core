@@ -1,4 +1,4 @@
-import { ContainerElement, ContainerWindow } from "containerbridge_v1";
+import { ContainerElementUtils, ContainerWindow } from "containerbridge_v1";
 import { Method } from "coreutil_v1";
 import { Component } from "../component/component.js";
 import { BaseElement } from "../element/baseElement.js";
@@ -18,7 +18,7 @@ export class CanvasRoot {
      * @param {Component} component 
      */
     static replaceComponent(id, component) {
-        const bodyElement = ContainerElement.getElementById(id);
+        const bodyElement = ContainerElementUtils.getElementById(id);
         bodyElement.parentNode.replaceChild(component.rootElement.mappedElement, bodyElement);
     }
 
@@ -28,7 +28,7 @@ export class CanvasRoot {
      * @param {Component} component 
      */
     static setComponent(id, component) {
-        const bodyElement = ContainerElement.getElementById(id);
+        const bodyElement = ContainerElementUtils.getElementById(id);
         bodyElement.innerHTML = '';
         bodyElement.appendChild(component.rootElement.mappedElement, bodyElement);
     }
@@ -39,7 +39,7 @@ export class CanvasRoot {
      * @param {Component} component 
      */
     static addChildComponent(id, component) {
-        const bodyElement = ContainerElement.getElementById(id);
+        const bodyElement = ContainerElementUtils.getElementById(id);
         bodyElement.appendChild(component.rootElement.mappedElement);
     }
 
@@ -49,7 +49,7 @@ export class CanvasRoot {
      * @param {Component} component 
      */
     static addChildElement(id, element) {
-        const bodyElement = ContainerElement.getElementById(id);
+        const bodyElement = ContainerElementUtils.getElementById(id);
         bodyElement.appendChild(element.mappedElement);
     }
 
@@ -58,35 +58,35 @@ export class CanvasRoot {
      * @param {String} id 
      */
     static removeElement(id) {
-        ContainerElement.removeElement(id);
+        ContainerElementUtils.removeElement(id);
     }
 
     /** 
      * @param {BaseElement} element
      */
     static addHeaderElement(element) {
-        ContainerElement.appendRootMetaChild(element.mappedElement);
+        ContainerElementUtils.appendRootMetaChild(element.mappedElement);
     }
 
     /** 
      * @param {BaseElement} element
      */
     static addBodyElement(element) {
-        ContainerElement.appendRootUiChild(element.mappedElement);
+        ContainerElementUtils.appendRootUiChild(element.mappedElement);
     }
 
     /** 
      * @param {BaseElement} element
      */
     static prependHeaderElement(element) {
-        ContainerElement.prependElement("head", element.mappedElement);
+        ContainerElementUtils.prependElement("head", element.mappedElement);
     }
 
     /** 
      * @param {BaseElement} element
      */
     static prependBodyElement(element) {
-        ContainerElement.prependElement("body", element.mappedElement);
+        ContainerElementUtils.prependElement("body", element.mappedElement);
     }
 
     /** 
@@ -119,12 +119,12 @@ export class CanvasRoot {
             if (!CanvasRoot.mouseDownElement) {
                 CanvasRoot.mouseDownElement = event.target;
             }
-            if (ContainerElement.contains(focusRoot.element, CanvasRoot.mouseDownElement.element)) {
+            if (ContainerElementUtils.contains(focusRoot.element, CanvasRoot.mouseDownElement.element)) {
                 return;
             }
             // If the element is not connected, then the element is not visible
             // and we should not trigger focus escape events
-            if (!ContainerElement.isConnected(CanvasRoot.mouseDownElement.element)) {
+            if (!ContainerElementUtils.isConnected(CanvasRoot.mouseDownElement.element)) {
                 return;
             }
             if (CanvasRoot.shouldSwallowNextFocusEscape) {

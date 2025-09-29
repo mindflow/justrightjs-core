@@ -1,4 +1,4 @@
-import { ContainerElement } from "containerbridge_v1";
+import { ContainerElementUtils } from "containerbridge_v1";
 import { Logger } from "coreutil_v1";
 import { XmlElement } from "xmlparser_v1";
 import { MappedHtmlElement } from "../element/mappedHtmlElement";
@@ -19,9 +19,9 @@ export class ElementUtils {
             return ElementUtils.createFromXmlElement(value, parent);
         }
         if (typeof value === "string") {
-            return ContainerElement.createElement(value);
+            return ContainerElementUtils.createElement(value);
         }
-        if (ContainerElement.isUIElement(value)) {
+        if (ContainerElementUtils.isUIElement(value)) {
             return value;
         }
         LOG.error("Unrecognized value for Element");
@@ -39,15 +39,15 @@ export class ElementUtils {
     static createFromXmlElement(xmlElement, parentElement) {
         let element = null;
         if (xmlElement.namespace) {
-            element = ContainerElement.createElementNS(xmlElement.namespaceUri, xmlElement.fullName);
+            element = ContainerElementUtils.createElementNS(xmlElement.namespaceUri, xmlElement.fullName);
         } else {
-            element = ContainerElement.createElement(xmlElement.name);
+            element = ContainerElementUtils.createElement(xmlElement.name);
         }
         if (parentElement && parentElement.mappedElement !== null) {
-            ContainerElement.appendChild(parentElement.mappedElement, element);
+            ContainerElementUtils.appendChild(parentElement.mappedElement, element);
         }
         xmlElement.attributes.forEach((attributeKey, attribute) => {
-            ContainerElement.setAttribute(element, attributeKey, attribute.value);
+            ContainerElementUtils.setAttribute(element, attributeKey, attribute.value);
             return true;
         });
         return element;

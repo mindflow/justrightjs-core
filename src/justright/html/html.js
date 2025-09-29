@@ -6,7 +6,7 @@ import {ElementMapper} from "../element/elementMapper.js";
 export class HTML{
 
     static custom(elementName){
-        var xmlElement = new XmlElement(elementName);
+        const xmlElement = new XmlElement(elementName);
         return ElementMapper.map(xmlElement);
     }
 
@@ -20,7 +20,7 @@ export class HTML{
     }
 
     static a(value, href, classValue, styleValue){
-        var element = HTML.custom("a");
+        const element = HTML.custom("a");
         element.addChild(value);
         element.setAttributeValue("href",href);
         HTML.applyStyles(element, classValue, styleValue);
@@ -28,7 +28,7 @@ export class HTML{
     }
 
     static i(value, classValue, styleValue){
-        var element = HTML.custom("i");
+        const element = HTML.custom("i");
         element.addChild(value);
         HTML.applyStyles(element, classValue, styleValue);
         return element;

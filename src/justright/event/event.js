@@ -1,20 +1,26 @@
 import { ConfiguredFunction } from "../config/configuredFunction.js";
 import { SimpleElement } from "../element/simpleElement.js";
 
-export class Event{
+export class Event {
 
-    constructor(event){
+    /**
+     * 
+     * @param {Event} event 
+     */
+    constructor(event) {
+
+        /** @type {Event} */
         this.event = event;
         if (this.event.type.toLowerCase() == "dragstart"){
             this.event.dataTransfer.setData('text/plain', null);
         }
     }
 
-    stopPropagation(){
+    stopPropagation() {
         this.event.stopPropagation();
     }
 
-    preventDefault(){
+    preventDefault() {
         this.event.preventDefault();
     }
 
@@ -22,16 +28,20 @@ export class Event{
         if (this.event.target && this.event.target.files) {
             return this.event.target.files;
         }
-        if (this.event.dataTransfer && this.event.dataTransfer.files) {
-            return this.event.dataTransfer.files;
+        if (this.event.dataTransfer) {
+            /** @type {DataTransfer} */
+            const dataTransfer = this.event.dataTransfer;
+            if (dataTransfer.files) {
+                return dataTransfer.files;
+            }
         }
         return [];
     }
-    
+
     /**
      * The distance between the event and the edge x coordinate of the containing object
      */
-    get offsetX(){
+    get offsetX() {
         return this.event.offsetX;
     }
 
@@ -45,14 +55,14 @@ export class Event{
     /**
      * The mouse x coordinate of the event relative to the client window view
      */
-    get clientX(){
+    get clientX() {
         return this.event.clientX;
     }
 
     /**
      * The mouse y coordinate of the event relative to the client window view
      */
-    get clientY(){
+    get clientY() {
         return this.event.clientY;
     }
 
@@ -60,7 +70,7 @@ export class Event{
      * 
      * @returns {SimpleElement}
      */
-    get target(){
+    get target() {
         if (this.event && this.event.target) {
             return ConfiguredFunction.execute("mapElement", this.event.target);
         }
@@ -70,7 +80,7 @@ export class Event{
      * 
      * @returns {SimpleElement}
      */
-    get relatedTarget(){
+    get relatedTarget() {
         if (this.event && this.event.relatedTarget) {
             return ConfiguredFunction.execute("mapElement", this.event.relatedTarget);
         }
@@ -81,14 +91,14 @@ export class Event{
      * 
      * @returns {string}
      */
-     getRelatedTargetAttribute(attributeName){
+     getRelatedTargetAttribute(attributeName) {
         if (this.event.relatedTarget) {
             return ConfiguredFunction.execute("mapElement", this.event.relatedTarget).getAttributeValue(attributeName);
         }
         return null;
     }
 
-    get targetValue(){
+    get targetValue() {
         if(this.target) { 
             return this.target.value;
         }
