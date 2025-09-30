@@ -6,11 +6,10 @@ import { MindiInjector,
     PrototypeConfig, 
     Config } from "mindi_v1";
 import { ArrayUtils, Logger, Method, StringUtils } from  "coreutil_v1";
-import { ContainerUrl } from "containerbridge_v1";
+import { ContainerEvent, ContainerUrl } from "containerbridge_v1";
 import { ComponentConfigProcessor } from "./component/componentConfigProcessor.js";
 import { TemplateRegistry } from "./template/templateRegistry.js";
 import { StylesRegistry } from "./styles/stylesRegistry.js";
-import { Event } from "./event/event.js";
 import { History } from "./navigation/history.js";
 import { DiModuleLoader } from "./loader/diModuleLoader.js";
 import { Url } from "./util/url.js";
@@ -73,10 +72,7 @@ export class Application extends ModuleRunner {
             .addAllConfigProcessor(this.defaultConfigProcessors)
             .addAllInstanceProcessor(this.defaultInstanceProcessors);
         ActiveModuleRunner.instance().set(this);
-        ContainerUrl.addUserNavigateListener(
-            new Method(this, this.update),
-            Event
-        );
+        ContainerUrl.addUserNavigateListener(new Method(this, this.update));
         const module = await this.runModule(History.currentUrl());
         this.startWorkers();
         return module;
@@ -84,7 +80,7 @@ export class Application extends ModuleRunner {
 
     /**
      * 
-     * @param {Event} event
+     * @param {ContainerEvent} event
      */
     update(event) {
         const url = History.currentUrl();
