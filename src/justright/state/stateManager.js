@@ -57,17 +57,32 @@ export class StateManager {
         return object;
     }
 
+    async delete(key = "__DEFAULT__") {
+        this.objectMap.delete(key);
+        this.listeners.delete(key);
+        this.signalStateChange(null, key);
+    }
+
+    async clear() {
+        for (let key of this.objectMap.keys()) {
+            this.signalStateChange(null, key);
+        }
+        this.signalStateChange(null, "__ANY__");
+        this.objectMap.clear();
+        this.listeners.clear();
+    }
+
     signalStateChange(object, key) {
         if (this.listeners.has(key)) {
             for (let listener of this.listeners.get(key)) {
-                listener.call([object]);
+                listener.call([object, key]);
             }
         }
 
         const anyKey = "__ANY__";
         if (key != anyKey && this.listeners.has(anyKey)) {
             for (let listener of this.listeners.get(anyKey)) {
-                listener.call([object]);
+                listener.call([object, key]);
             }
         }
     }
