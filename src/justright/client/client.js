@@ -1,4 +1,4 @@
-import { ContainerHttpClient, ContainerHttpResponse } from "containerbridge_v1";
+import { ContainerHttpClient, ContainerHttpResponse, ContainerUploadData } from "containerbridge_v1";
 import { Method } from "coreutil_v1";
 
 export class Client {

@@ -135,7 +135,7 @@ export class HttpCallBuilder {
      * @returns {Promise}
      */
     async post(payload) {
-        const response = await Client.post(this.url, payload, this.progressCallbackMethod, this.authorization, this.connectionTimeoutValue);
+        const response = await Client.post(this.url, payload, this.authorization, this.progressCallbackMethod, this.connectionTimeoutValue);
         return this.asTypeMappedPromise(response);
     }
 
@@ -144,7 +144,7 @@ export class HttpCallBuilder {
      * @returns {Promise}
      */
     async put(payload) {
-        const response = await Client.put(this.url, payload, this.progressCallbackMethod, this.authorization, this.connectionTimeoutValue);
+        const response = await Client.put(this.url, payload, this.authorization, this.progressCallbackMethod, this.connectionTimeoutValue);
         return this.asTypeMappedPromise(response);
     }
 
@@ -153,7 +153,7 @@ export class HttpCallBuilder {
      * @returns {Promise}
      */
     async patch(payload) {
-        const response = await Client.patch(this.url, payload, this.progressCallbackMethod, this.authorization, this.connectionTimeoutValue);
+        const response = await Client.patch(this.url, payload, this.authorization, this.progressCallbackMethod, this.connectionTimeoutValue);
         return this.asTypeMappedPromise(response);
     }
 
@@ -162,7 +162,7 @@ export class HttpCallBuilder {
      * @returns {Promise}
      */
     async delete(payload = null) {
-        const response = await Client.delete(this.url, payload, this.progressCallbackMethod, this.authorization, this.connectionTimeoutValue);
+        const response = await Client.delete(this.url, payload, this.authorization, this.progressCallbackMethod, this.connectionTimeoutValue);
         return this.asTypeMappedPromise(response);
     }
 
