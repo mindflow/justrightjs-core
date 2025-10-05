@@ -8,7 +8,7 @@ import { Method } from "coreutil_v1";
 export class StateManager {
 
     constructor() {
-        /** @type {Map<String, any>} */
+        /** @type {Map<String, T>} */
         this.objectMap = new Map();
 
         /** @type {Map<String, Array<Method>} */
