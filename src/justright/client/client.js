@@ -1,15 +1,18 @@
 import { ContainerHttpClient, ContainerHttpResponse } from "containerbridge_v1";
+import { Method } from "coreutil_v1";
 
 export class Client {
 
     /**
      * 
-     * @param {string} url 
+     * @param {String} url 
+     * @param {String} authorization
+     * @param {Number} timeout
      * @returns {Promise<ContainerHttpResponse>}
      */
     static get(url, authorization = null, timeout = 1000){
-        let headers = Client.getHeader(authorization);
-        var params =  {
+        const headers = Client.getHeader(authorization);
+        const params =  {
             headers: headers,
             method: 'GET',
             mode: 'cors', // no-cors, cors, *same-origin
@@ -20,13 +23,19 @@ export class Client {
 
     /**
      * 
-     * @param {string} url 
-     * @param {string} data
+     * @param {String} url 
+     * @param {Object|ContainerUploadData} data
+     * @param {String} authorization
+     * @param {Method} progrecCallbackMethod
+     * @param {Number} timeout
      * @returns {Promise<ContainerHttpResponse>}
      */
-    static post(url, data, authorization = null, timeout = 1000){
-        let headers = Client.getHeader(authorization);
-        var params =  {
+    static post(url, data, authorization = null, progrecCallbackMethod = null, timeout = 1000){
+        if (data instanceof ContainerUploadData) {
+            return ContainerHttpClient.xhr("POST", url, data, authorization, progrecCallbackMethod, timeout);
+        }
+        const headers = Client.getHeader(authorization);
+        const params =  {
             body: JSON.stringify(data), // must match 'Content-Type' header
             headers: headers,
             method: "POST",
@@ -38,13 +47,19 @@ export class Client {
 
     /**
      * 
-     * @param {string} url 
-     * @param {string} data
+     * @param {String} url 
+     * @param {Object|ContainerUploadData} data
+     * @param {String} authorization
+     * @param {Method} progrecCallbackMethod
+     * @param {Number} timeout
      * @returns {Promise<ContainerHttpResponse>}
      */
-    static put(url, data, authorization = null, timeout = 1000){
-        let headers = Client.getHeader(authorization);
-        var params =  {
+    static put(url, data, authorization = null, progrecCallbackMethod = null, timeout = 1000){
+        if (data instanceof ContainerUploadData) {
+            return ContainerHttpClient.xhr("PUT", url, data, authorization, progrecCallbackMethod, timeout);
+        }
+        const headers = Client.getHeader(authorization);
+        const params =  {
             body: JSON.stringify(data), // must match 'Content-Type' header
             method: 'PUT', 
             mode: 'cors', // no-cors, cors, *same-origin
@@ -56,13 +71,16 @@ export class Client {
 
     /**
      * 
-     * @param {string} url 
-     * @param {string} data
+     * @param {String} url 
+     * @param {Object|ContainerUploadData} data
+     * @param {String} authorization
+     * @param {Method} progrecCallbackMethod
+     * @param {Number} timeout
      * @returns {Promise<ContainerHttpResponse>}
      */
-    static patch(url, data, authorization = null, timeout = 1000) {
-        let headers = Client.getHeader(authorization);
-        let params =  {
+    static patch(url, data, authorization = null, progrecCallbackMethod = null, timeout = 1000) {
+        const headers = Client.getHeader(authorization);
+        const params =  {
             body: JSON.stringify(data), // must match 'Content-Type' header
             method: 'PATCH', 
             mode: 'cors', // no-cors, cors, *same-origin
@@ -74,10 +92,14 @@ export class Client {
 
     /**
      * 
-     * @param {string} url
+     * @param {String} url
+     * @param {Object|ContainerUploadData} data
+     * @param {String} authorization
+     * @param {Method} progrecCallbackMethod
+     * @param {Number} timeout
      * @returns {Promise<ContainerHttpResponse>}
      */
-    static delete(url, data, authorization = null, timeout = 1000) {
+    static delete(url, data, authorization = null, progrecCallbackMethod = null, timeout = 1000) {
         const headers = Client.getHeader(authorization);
         if (data) {
             const params =  {
@@ -100,17 +122,16 @@ export class Client {
     }
 
     static getHeader(authorization = null) {
-        let headers = {
-            "user-agent": "Mozilla/4.0 MDN Example",
-            "content-type": "application/json"
-        };
         if (authorization) {
-            headers = {
+            return {
                 "user-agent": "Mozilla/4.0 MDN Example",
                 "content-type": "application/json",
                 "Authorization": authorization
             }
         }
-        return headers;
+        return {
+            "user-agent": "Mozilla/4.0 MDN Example",
+            "content-type": "application/json"
+        };
     }
 }
