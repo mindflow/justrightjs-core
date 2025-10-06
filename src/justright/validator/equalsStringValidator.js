@@ -1,5 +1,5 @@
 import { AbstractValidator } from "./abstractValidator.js";
-import { Method, PropertyAccessor } from "coreutil_v1";
+import { Method } from "coreutil_v1";
 
 export class EqualsStringValidator extends AbstractValidator {
 

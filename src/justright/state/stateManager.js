@@ -39,6 +39,10 @@ export class StateManager {
         this.listeners.get(key).push(listener);
     }
 
+    get objectArray() {
+        return Array.from(this.objectMap.values());
+    }
+
     /**
      * Update the state
      * 
