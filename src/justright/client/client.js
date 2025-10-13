@@ -8,15 +8,18 @@ export class Client {
      * @param {String} url 
      * @param {String} authorization
      * @param {Number} timeout
-     * @returns {Promise<ContainerHttpResponse>}
+     * @returns {Promise<ContainerHttpResponse>|Promise<ContainerDownload>}
      */
-    static get(url, authorization = null, timeout = 1000){
+    static get(url, authorization = null, timeout = 1000, download = false) {
         const headers = Client.getHeader(authorization);
         const params =  {
             headers: headers,
             method: 'GET',
             mode: 'cors', // no-cors, cors, *same-origin
             redirect: 'follow' // manual, *follow, error
+        }
+        if (download) {
+            return ContainerHttpClient.download(url.toString(), params, timeout);
         }
         return ContainerHttpClient.fetch(url.toString(), params, timeout);
     }
@@ -32,7 +35,7 @@ export class Client {
      */
     static post(url, data, authorization = null, progrecCallbackMethod = null, timeout = 1000){
         if (data instanceof ContainerUploadData) {
-            return ContainerHttpClient.xhr("POST", url, data, authorization, progrecCallbackMethod, timeout);
+            return ContainerHttpClient.upload("POST", url, data, authorization, progrecCallbackMethod, timeout);
         }
         const headers = Client.getHeader(authorization);
         const params =  {
@@ -56,7 +59,7 @@ export class Client {
      */
     static put(url, data, authorization = null, progrecCallbackMethod = null, timeout = 1000){
         if (data instanceof ContainerUploadData) {
-            return ContainerHttpClient.xhr("PUT", url, data, authorization, progrecCallbackMethod, timeout);
+            return ContainerHttpClient.upload("PUT", url, data, authorization, progrecCallbackMethod, timeout);
         }
         const headers = Client.getHeader(authorization);
         const params =  {

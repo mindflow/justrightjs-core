@@ -1,10 +1,13 @@
 import { Map, Logger, StringUtils, Method } from "coreutil_v1";
 import { Client } from "../client/client.js";
-import { ContainerHttpResponse, ContainerUploadData } from "containerbridge_v1";
+import { ContainerDownload, ContainerHttpResponse, ContainerUploadData } from "containerbridge_v1";
 
 
 const LOG = new Logger("HttpCallBuilder");
 
+/**
+ * @template T
+ */
 export class HttpCallBuilder {
 
     /**
@@ -37,6 +40,9 @@ export class HttpCallBuilder {
         /** @type {Method} */
         this.progressCallbackMethod = null;
 
+        /** @type {boolean} */
+        this.downloadResponse = false;
+
     }
 
     /**
@@ -56,6 +62,15 @@ export class HttpCallBuilder {
      */
     successMapping(code, mapperFunction = () => { return null; }) {
         this.successMappingMap.set(code, mapperFunction);
+        return this;
+    }
+
+    /**
+     * 
+     * @returns {HttpCallBuilder<ContainerDownload>}
+     */
+    asDownload() {
+        this.downloadResponse = true;
         return this;
     }
 
@@ -123,16 +138,16 @@ export class HttpCallBuilder {
     }
 
     /**
-     * @returns {Promise}
+     * @returns {Promise<T>}
      */
     async get() {
-        const response = Client.get(this.url, this.authorization, this.connectionTimeoutValue);
+        const response = Client.get(this.url, this.authorization, this.connectionTimeoutValue, this.downloadResponse);
         return this.asTypeMappedPromise(response);
     }
 
     /**
      * @param {Object|ContainerUploadData} payload
-     * @returns {Promise}
+     * @returns {Promise<T>}
      */
     async post(payload) {
         const response = await Client.post(this.url, payload, this.authorization, this.progressCallbackMethod, this.connectionTimeoutValue);
@@ -141,7 +156,7 @@ export class HttpCallBuilder {
 
     /**
      * @param {Object|ContainerUploadData} payload
-     * @returns {Promise}
+     * @returns {Promise<T>}
      */
     async put(payload) {
         const response = await Client.put(this.url, payload, this.authorization, this.progressCallbackMethod, this.connectionTimeoutValue);
@@ -150,7 +165,7 @@ export class HttpCallBuilder {
 
     /**
      * @param {Object|ContainerUploadData} payload
-     * @returns {Promise}
+     * @returns {Promise<T>}
      */
     async patch(payload) {
         const response = await Client.patch(this.url, payload, this.authorization, this.progressCallbackMethod, this.connectionTimeoutValue);
@@ -159,7 +174,7 @@ export class HttpCallBuilder {
 
     /**
      * @param {Object|ContainerUploadData} payload
-     * @returns {Promise}
+     * @returns {Promise<T>}
      */
     async delete(payload = null) {
         const response = await Client.delete(this.url, payload, this.authorization, this.progressCallbackMethod, this.connectionTimeoutValue);
@@ -173,6 +188,9 @@ export class HttpCallBuilder {
     async asTypeMappedPromise(fetchPromise) {
         try {
             const fetchResponse = await fetchPromise;
+            if (fetchResponse instanceof ContainerDownload) {
+                return fetchResponse;
+            }
             return await this.handleFetchResponse(fetchResponse);
         } catch(error) {
             // API did not execute
@@ -195,7 +213,7 @@ export class HttpCallBuilder {
             if (successResponseMapper) {
                 return successResponseMapper(null); 
             }
-            if(failResponseMapper) {
+            if (failResponseMapper) {
                 throw failResponseMapper(null);
             }
             throw new Error("Missing mapper for return status: " + fetchResponse.status);
