@@ -42,8 +42,14 @@ export class Id {
     reportString() {
         const report = this.report();
         let reportString = ""
+        let first = true;
         for (const [key, value] of report.entries()) {
-            reportString += "{" + key + "} {" + value + "}\n";
+            if (first) {
+                reportString += key + ": " + value;
+            } else {
+                reportString += "\n" + key + ": " + value;
+            }
+            first = false;
         }
         return reportString;
     }

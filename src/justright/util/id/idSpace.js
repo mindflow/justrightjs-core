@@ -52,10 +52,10 @@ export class IdSpace {
 
     report() {
         const report = new Map();
-        report.set("MAC", MacUtils.toMacAddress(this.mac));
-        report.set("Epoch Seconds", this.epochSeconds);
-        report.set("Epoch Date", new Date(this.epochSeconds * 1000).toISOString());
-        report.set("Counter", this.counter);
+        report.set("IdSpace [MAC]", MacUtils.toMacAddress(this.mac));
+        report.set("IdSpace [Epoch]", this.epochSeconds * 1000);
+        report.set("IdSpace [Date]", new Date(this.epochSeconds * 1000).toISOString());
+        report.set("IdSpace [Counter]", this.counter);
         return report;
     }
 }

@@ -38,10 +38,9 @@ export class UserId {
 
     report() {
         const report = new Map();
-        report.set("UserId", this.toString());
-        report.set("Epoch Centis", this.epochCentis);
-        report.set("Epoch Date", new Date(this.epochCentis * 10).toISOString());
-        report.set("Counter", this.counter);
+        report.set("UserId [Epoch]", this.epochCentis * 10);
+        report.set("UserId [Date]", new Date(this.epochCentis * 10).toISOString());
+        report.set("UserId [Counter]", this.counter);
         return report;
     }
 }
