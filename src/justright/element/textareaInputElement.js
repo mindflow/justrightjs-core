@@ -17,11 +17,11 @@ export class TextareaInputElement extends AbstractInputElement{
     }
 
     get innerHTML(){
-        return this.element.innerHTML;
+        return this.containerElement.innerHTML;
     }
 
     set innerHTML(value){
-        this.element.innerHTML = value;
+        this.containerElement.innerHTML = value;
     }
 
     addChild(input) {
