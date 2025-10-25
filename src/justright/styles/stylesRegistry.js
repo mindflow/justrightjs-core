@@ -70,7 +70,7 @@ export class StylesRegistry {
      * @param {StylesRegistry} registry 
      */
     doCallback(registry){
-        if(tmo.callback !== null && registry.callback !== undefined  && registry.stylesQueueSize === registry.stylesMap.entries.length){
+        if(registry.callback !== null && registry.callback !== undefined  && registry.stylesQueueSize === registry.stylesMap.entries.length){
             var tempCallback = registry.callback;
             registry.callback = null;
             tempCallback.call();
