@@ -2,16 +2,24 @@ import { Map } from "coreutil_v1";
 import { XmlElement } from "xmlparser_v1";
 import { ElementMapper } from "../element/elementMapper.js";
 import { BaseElement } from "../element/baseElement.js";
+import { UniqueIdRegistry } from "./uniqueIdRegistry.js";
 
 /**
  * Collects information when elements are created and finds the root element, creates map of elements 
  */
 export class ElementRegistrator {
 
+    /**
+     * 
+     * @param {UniqueIdRegistry} uniqueIdRegistry 
+     * @param {Number} componentIndex 
+     */
     constructor(uniqueIdRegistry, componentIndex) {
+
+        /** @type {Number} */
         this.componentIndex = componentIndex;
 
-        /** @type {Map} */
+        /** @type {UniqueIdRegistry} */
         this.uniqueIdRegistry = uniqueIdRegistry;
 
         /** @type {BaseElement} */
@@ -30,7 +38,7 @@ export class ElementRegistrator {
      * @param {XmlElement} xmlElement 
      * @param {BaseElement} parentWrapper 
      */
-    elementCreated (xmlElement, parentWrapper) {
+    elementCreated(xmlElement, parentWrapper) {
         const element = ElementMapper.map(xmlElement, parentWrapper);
 
         this.addToElementIdMap(element);

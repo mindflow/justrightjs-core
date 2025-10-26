@@ -38,6 +38,7 @@ export class ComponentConfigProcessor {
     /**
      * 
      * @param {Config} config
+     * @param {Map<string, TypeConfig>} unconfiguredConfigEntries
      * @returns {Promise}
      */
     processConfig(config, unconfiguredConfigEntries) {

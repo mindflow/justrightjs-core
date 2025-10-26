@@ -18,7 +18,7 @@ import { Module } from "./module.js";
 import { ActiveModuleRunner } from "./activeModuleRunner.js";
 import { StateManager } from "./state/stateManager.js";
 import { UniqueIdRegistry } from "./component/uniqueIdRegistry.js";
-import { ComponentFactory } from "./component/componentFactory.js";
+import { TemplateComponentFactory } from "./component/templateComponentFactory.js";
 import { ModuleLoader } from "./loader/moduleLoader.js";
 import { TrailProcessor } from "./navigation/trailProcessor.js";
 
@@ -55,7 +55,7 @@ export class Application extends ModuleRunner {
             SingletonConfig.unnamed(TemplateRegistry),
             SingletonConfig.unnamed(StylesRegistry),
             SingletonConfig.unnamed(UniqueIdRegistry),
-            SingletonConfig.unnamed(ComponentFactory),
+            SingletonConfig.unnamed(TemplateComponentFactory),
             PrototypeConfig.unnamed(StateManager)
         ];
 

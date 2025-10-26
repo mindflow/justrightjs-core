@@ -1,5 +1,6 @@
 import { Logger } from "coreutil_v1";
 import { TemplateRegistry } from "./templateRegistry.js";
+import { TypeConfig } from "mindi_v1";
 
 const LOG = new Logger("TemplatePostConfig");
 
@@ -20,7 +21,7 @@ export class TemplatesLoader {
 
     /**
      * 
-     * @param {Map} configEntries
+     * @param {Map<String,TypeConfig>} configEntries
      * @returns {Promise}
      */
     load(configEntries) {
