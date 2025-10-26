@@ -21,6 +21,7 @@ import { UniqueIdRegistry } from "./component/uniqueIdRegistry.js";
 import { TemplateComponentFactory } from "./component/templateComponentFactory.js";
 import { ModuleLoader } from "./loader/moduleLoader.js";
 import { TrailProcessor } from "./navigation/trailProcessor.js";
+import { InlineComponentFactory } from "./component/inlineComponentFactory.js";
 
 const LOG = new Logger("Application");
 
@@ -56,6 +57,7 @@ export class Application extends ModuleRunner {
             SingletonConfig.unnamed(StylesRegistry),
             SingletonConfig.unnamed(UniqueIdRegistry),
             SingletonConfig.unnamed(TemplateComponentFactory),
+            SingletonConfig.unnamed(InlineComponentFactory),
             PrototypeConfig.unnamed(StateManager)
         ];
 

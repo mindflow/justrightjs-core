@@ -1,4 +1,4 @@
-import { ContainerElementUtils, ContainerWindow } from "containerbridge_v1";
+import { ContainerElement, ContainerElementUtils, ContainerEvent, ContainerWindow } from "containerbridge_v1";
 import { Method } from "coreutil_v1";
 import { Component } from "../component/component.js";
 import { BaseElement } from "../element/baseElement.js";
@@ -7,6 +7,7 @@ export class CanvasRoot {
 
     static shouldSwallowNextFocusEscape = false;
 
+    /** @type {ContainerElement} */
     static mouseDownElement = null;
 
     static focusEscapeEventRequested = false;
@@ -105,7 +106,7 @@ export class CanvasRoot {
 
         /* Hack: Because we don't have a way of knowing in the click event which element was in focus when mousedown occured */
         if (!CanvasRoot.focusEscapeEventRequested) {
-            const updateMouseDownElement = new Method(null, (event) => {
+            const updateMouseDownElement = new Method(null, (/** @type {ContainerEvent} */ event) => {
                 CanvasRoot.mouseDownElement = event.target;
             });
             destroyFunctions.push(
@@ -114,10 +115,8 @@ export class CanvasRoot {
             CanvasRoot.focusEscapeEventRequested = true;
         }
 
-        const callIfNotContains = new Method(null, (event) => {
-            if (!CanvasRoot.mouseDownElement) {
-                CanvasRoot.mouseDownElement = event.target;
-            }
+        const callIfNotContains = new Method(null, (/** @type {ContainerEvent} */ event) => {
+            CanvasRoot.mouseDownElement = event.target;
             if (ContainerElementUtils.contains(focusRoot.containerElement, CanvasRoot.mouseDownElement)) {
                 return;
             }

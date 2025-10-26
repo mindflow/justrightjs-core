@@ -1,25 +1,33 @@
+import { Component } from "../component/component";
+import { UniqueIdRegistry } from "../component/uniqueIdRegistry";
 import { BaseElement } from "../element/baseElement";
 import { HTML } from "./html";
 
-export class HtmlBuilder {
+export class ComponentBuilder {
 
     /**
      * 
+     * @param {UniqueIdRegistry} idRegistry
      * @param {String} tag 
-     * @param {String[]} attributeArray 
-     * @returns {HtmlBuilder}
+     * @param {String[]} attributeArray
+     * @returns {ComponentBuilder}
      */
-    static create(tag, attributeArray) {
-        return new HtmlBuilder(tag, attributeArray);
+    static create(idRegistry, tag, ...attributeArray) {
+        return new ComponentBuilder(idRegistry, tag, ...attributeArray);
     }
 
     /**
      * @param {String} tag 
      * @param {String[]} attributeArray 
+     * @param {UniqueIdRegistry} idRegistry
      */
-    constructor(tag, attributeArray) {
+    constructor(idRegistry, tag, ...attributeArray) {
+
+        /** @type {UniqueIdRegistry} */
+        this.idRegistry = idRegistry;
+
         /** @type {BaseElement} */
-        this.root = HtmlBuilder.tag(tag, attributeArray);
+        this.root = ComponentBuilder.tag(idRegistry, tag, ...attributeArray);
 
         /** @type {BaseElement} */
         this.lastAdded = this.root;
@@ -30,15 +38,22 @@ export class HtmlBuilder {
         /** @type {BaseElement[]} */
         this.trail = [];
 
+        /** @type {Map<String, BaseElement>} */
+        this.elementMap = new Map();
+        if (this.root.getAttributeValue("id")) {
+            this.elementMap.set(this.root.getAttributeValue("id"), this.root);
+        }
+
     }
 
     /**
      * 
+     * @param {UniqueIdRegistry} idRegistry
      * @param {String} tag 
      * @param {String[]} attributeArray 
      * @returns {BaseElement}
      */
-    static tag(tag, attributeArray = []) {
+    static tag(idRegistry, tag, ...attributeArray) {
 
         /** @type {BaseElement} */
         const element = HTML.custom(tag);
@@ -49,7 +64,11 @@ export class HtmlBuilder {
             if (attr.indexOf(":") !== -1) {
                 let indexOfColon = attr.indexOf(":");
                 key = attr.substring(0, indexOfColon);
-                val = attr.substring(indexOfColon + 1);
+                if ("id" === key) {
+                    val = idRegistry.idAttributeWithSuffix(attr.substring(indexOfColon + 1));
+                } else {
+                    val = attr.substring(indexOfColon + 1);
+                }
             }
             element.setAttributeValue(key, val);
 
@@ -61,12 +80,15 @@ export class HtmlBuilder {
      * 
      * @param {String} tagName 
      * @param  {String[]} attributeArray
-     * @returns {HtmlBuilder}
+     * @returns {ComponentBuilder}
      */
-    add(tagName, attributeArray = []) {
-        const element = HtmlBuilder.tag(tagName, attributeArray);
+    add(tagName, ...attributeArray) {
+        const element = ComponentBuilder.tag(this.idRegistry, tagName, ...attributeArray);
         this.context.addChild(element);
         this.lastAdded = element;
+        if (element.getAttributeValue("id")) {
+            this.elementMap.set(element.getAttributeValue("id"), element);
+        }
         return this;
     }
 
@@ -86,6 +108,8 @@ export class HtmlBuilder {
     }
 
     build() {
-        return this.root;
+        return new Component(componentBuilderCounter++, this.root, this.elementMap);
     }
 }
+
+let componentBuilderCounter = 0;

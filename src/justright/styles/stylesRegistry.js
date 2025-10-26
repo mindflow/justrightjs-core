@@ -4,7 +4,7 @@ import { Logger, Method } from "coreutil_v1";
 import { Client } from "../client/client.js";
 import { Url } from "../util/url.js";
 import { UrlUtils } from "../util/urlUtils.js";
-import { Styles } from "./styles.js";
+import { Stylesheet } from "./stylesheet.js";
 
 const LOG = new Logger("StylesRegistry");
 
@@ -89,7 +89,7 @@ export class StylesRegistry {
             throw "Unable to load styles for " + name + " at " + url;
         }
         const text = await response.text();
-        this.set(name, new Styles(text), url);
+        this.set(name, new Stylesheet(text), url);
         this.doCallback(this);
         return null;
     }
@@ -132,7 +132,7 @@ export class StylesRegistry {
             throw "Unable to load styles for " + name + " at " + url;
         }
         const text = await response.text();
-        const styles = new Styles(text);
+        const styles = new Stylesheet(text);
         this.set(name, styles, url);
         return styles;
     }

@@ -1,4 +1,5 @@
 import { StyleClass } from "./styleClass";
+import { Stylesheet } from "../styles/stylesheet";
 
 export class StylesheetBuilder {
 
@@ -49,7 +50,7 @@ export class StylesheetBuilder {
         this.styleClassArray.forEach(styleClass => {
             stylesString += styleClass.toString() + "\n";
         });
-        return stylesString;
+        return new Stylesheet(stylesString);
     }
 
 }

@@ -1,11 +1,9 @@
 import { InjectionPoint } from "mindi_v1";
-import { Component } from "react";
 import { StylesRegistry } from "../styles/stylesRegistry";
 import { ComponentFactory } from "./componentFactory";
 import { UniqueIdRegistry } from "./uniqueIdRegistry";
 import { CanvasStyles } from "../canvas/canvasStyles";
 import { Component } from "../component/component";
-import { ElementRegistrator } from "./elementRegistrator";
 
 export class InlineComponentFactory extends ComponentFactory {
 
@@ -24,19 +22,19 @@ export class InlineComponentFactory extends ComponentFactory {
      * @param {function} classType represents the inline component class
      */
     create(classType){
-        if (!classType.getComponentElement || !classType.getComponentStylesheet) {
-            throw new Error("Inline component class must implement static methods getComponentElement() and getComponentStylesheet()");
+        if (!classType.buildComponent || !classType.getComponentStylesheet) {
+            throw new Error("Inline component class must implement static methods buildComponent() and getComponentStylesheet()");
         }
-        const element = classType.getComponentElement();
 
-        const elementRegistrator = new ElementRegistrator(this.uniqueIdRegistry, inlineComponentCounter++);
-``
+        /** @type {Component} */
+        const component = classType.buildComponent(this.uniqueIdRegistry);
+
+        /** @type {String} */
         const stylesheet = classType.getComponentStylesheet();
+        
         CanvasStyles.setStyle(classType.name, stylesheet);
         
-        return new Component(elementRegistrator.componentIndex, elementRegistrator.rootElement, elementRegistrator.getElementMap());
+        return component;
     }
 
 }
-
-let inlineComponentCounter = 0;
