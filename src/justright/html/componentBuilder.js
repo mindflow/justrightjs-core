@@ -26,8 +26,11 @@ export class ComponentBuilder {
         /** @type {UniqueIdRegistry} */
         this.idRegistry = idRegistry;
 
+        /** @type {Map<String, BaseElement>} */
+        this.elementMap = new Map();
+
         /** @type {BaseElement} */
-        this.root = ComponentBuilder.tag(idRegistry, tag, ...attributeArray);
+        this.root = ComponentBuilder.tag(idRegistry, this.elementMap, tag, ...attributeArray);
 
         /** @type {BaseElement} */
         this.lastAdded = this.root;
@@ -38,22 +41,17 @@ export class ComponentBuilder {
         /** @type {BaseElement[]} */
         this.trail = [];
 
-        /** @type {Map<String, BaseElement>} */
-        this.elementMap = new Map();
-        if (this.root.getAttributeValue("id")) {
-            this.elementMap.set(this.root.getAttributeValue("id"), this.root);
-        }
-
     }
 
     /**
      * 
      * @param {UniqueIdRegistry} idRegistry
+     * @param {Map<String, BaseElement>} elementMap
      * @param {String} tag 
      * @param {String[]} attributeArray 
      * @returns {BaseElement}
      */
-    static tag(idRegistry, tag, ...attributeArray) {
+    static tag(idRegistry, elementMap, tag, ...attributeArray) {
 
         /** @type {BaseElement} */
         const element = HTML.custom(tag);
@@ -64,10 +62,10 @@ export class ComponentBuilder {
             if (attr.indexOf(":") !== -1) {
                 let indexOfColon = attr.indexOf(":");
                 key = attr.substring(0, indexOfColon);
+                val = attr.substring(indexOfColon + 1);
                 if ("id" === key) {
+                    elementMap.set(val, element);
                     val = idRegistry.idAttributeWithSuffix(attr.substring(indexOfColon + 1));
-                } else {
-                    val = attr.substring(indexOfColon + 1);
                 }
             }
             element.setAttributeValue(key, val);
@@ -83,12 +81,9 @@ export class ComponentBuilder {
      * @returns {ComponentBuilder}
      */
     add(tagName, ...attributeArray) {
-        const element = ComponentBuilder.tag(this.idRegistry, tagName, ...attributeArray);
+        const element = ComponentBuilder.tag(this.idRegistry, this.elementMap, tagName, ...attributeArray);
         this.context.addChild(element);
         this.lastAdded = element;
-        if (element.getAttributeValue("id")) {
-            this.elementMap.set(element.getAttributeValue("id"), element);
-        }
         return this;
     }
 
