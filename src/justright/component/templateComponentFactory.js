@@ -39,7 +39,7 @@ export class TemplateComponentFactory extends ComponentFactory{
             throw "No template was found with name " + classType.name;
 
         }
-        let elementRegistrator = new ElementRegistrator(this.uniqueIdRegistry, componentCounter++);
+        let elementRegistrator = new ElementRegistrator(this.uniqueIdRegistry, templateComponentCounter++);
         new DomTree(template.getTemplateSource(), elementRegistrator).load();
 
         this.mountStyles(classType.name);
@@ -55,4 +55,4 @@ export class TemplateComponentFactory extends ComponentFactory{
 
 }
 
-var componentCounter = 0;
+let templateComponentCounter = 0;
