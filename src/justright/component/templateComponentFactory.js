@@ -32,14 +32,14 @@ export class TemplateComponentFactory extends ComponentFactory{
      * @param {function} classType represents the template and the styles name if the style for that name is available
      */
     create(classType){
-        let template = this.templateRegistry.get(classType.name);
+        const template = this.templateRegistry.get(classType.name);
         if(!template) {
             LOG.error(this.templateRegistry);
             console.trace();
-            throw "No template was found with name " + classType.name;
+            throw new Error("No template was found with name " + classType.name);
 
         }
-        let elementRegistrator = new ElementRegistrator(this.uniqueIdRegistry, templateComponentCounter++);
+        const elementRegistrator = new ElementRegistrator(this.uniqueIdRegistry, templateComponentCounter++);
         new DomTree(template.getTemplateSource(), elementRegistrator).load();
 
         this.mountStyles(classType.name);

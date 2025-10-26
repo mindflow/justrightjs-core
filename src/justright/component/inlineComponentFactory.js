@@ -27,27 +27,14 @@ export class InlineComponentFactory extends ComponentFactory {
         if (!classType.getComponentElement || !classType.getComponentStylesheet) {
             throw new Error("Inline component class must implement static methods getComponentElement() and getComponentStylesheet()");
         }
-        let element = classType.getComponentElement();
+        const element = classType.getComponentElement();
 
-        let elementRegistrator = new ElementRegistrator(this.uniqueIdRegistry, inlineComponentCounter++);
-
-        let elementMap = this.uniqueIdRegistry.registerElementAndChildren(element);
-
-        let stylesheet = classType.getComponentStylesheet();
-        this.mountStyles(classType.name, stylesheet);
+        const elementRegistrator = new ElementRegistrator(this.uniqueIdRegistry, inlineComponentCounter++);
+``
+        const stylesheet = classType.getComponentStylesheet();
+        CanvasStyles.setStyle(classType.name, stylesheet);
         
-        return new Component(0, element, elementMap);
-    }
-
-    /**
-     * 
-     * @param {String} name 
-     * @param {String} stylesheet 
-     */
-    mountStyles(name, stylesheet) {
-        if (this.stylesRegistry.contains(stylesheet)) {
-            CanvasStyles.setStyle(name, stylesheet);
-        }
+        return new Component(elementRegistrator.componentIndex, elementRegistrator.rootElement, elementRegistrator.getElementMap());
     }
 
 }
