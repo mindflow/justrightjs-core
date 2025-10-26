@@ -5,7 +5,7 @@ import { TypeConfig } from "mindi_v1";
 const LOG = new Logger("TemplatePostConfig");
 
 /**
- * To be added to mindi as a singleton. Will scan through all configured classes that have a TEMPLATE_URL and COMPONENT_NAME
+ * To be added to mindi as a singleton. Will scan through all configured classes that have a TEMPLATE_URL
  * static getter and will asyncronously load them. Returns a promise which resolves when all templates are loaded
  */
 export class TemplatesLoader {
@@ -16,6 +16,8 @@ export class TemplatesLoader {
      * @param {TemplateRegistry} templateRegistry 
      */
     constructor(templateRegistry) {
+
+        /** @type {TemplateRegistry} */
         this.templateRegistry = templateRegistry;
     }
 
@@ -27,8 +29,8 @@ export class TemplatesLoader {
     load(configEntries) {
         let templateMap = new Map();
         configEntries.forEach((configEntry, key) => {
-            if (configEntry.classReference.TEMPLATE_URL && configEntry.classReference.COMPONENT_NAME) {
-                templateMap.set(configEntry.classReference.COMPONENT_NAME, configEntry.classReference.TEMPLATE_URL);
+            if (configEntry.classReference.TEMPLATE_URL) {
+                templateMap.set(configEntry.classReference.name, configEntry.classReference.TEMPLATE_URL);
             }
         }); 
         return this.templateRegistry.getTemplatesLoadedPromise(templateMap);
