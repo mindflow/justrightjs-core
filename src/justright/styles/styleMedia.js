@@ -34,7 +34,7 @@ export class StyleMedia {
         this.styleSelectorArray.forEach((value) => {
             mediaString += `${value.toString()}`;
         });
-        return `@media ${this.media} {\n${mediaString}\n}`;
+        return `${this.media} {\n${mediaString}\n}`;
     }
 
 }
