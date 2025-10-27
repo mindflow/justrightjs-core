@@ -30,7 +30,7 @@ export class StyleAccessor {
      * @param {String} styleName 
      */
     remove(styleName) {
-        const currentStyleMap = this.srylesAsMap(this.baseElement.getAttributeValue("style"));
+        const currentStyleMap = this.stylesAsMap(this.baseElement.getAttributeValue("style"));
         if (currentStyleMap.contains(styleName)) {
             currentStyleMap.remove(styleName);
         }
@@ -44,7 +44,7 @@ export class StyleAccessor {
      * @param {String} styleValue 
      */
     set(styleName, styleValue) {
-        const currentStyleMap = this.srylesAsMap(this.baseElement.getAttributeValue("style"));
+        const currentStyleMap = this.stylesAsMap(this.baseElement.getAttributeValue("style"));
         currentStyleMap.set(styleName, styleValue);
         this.baseElement.setAttributeValue("style", MapUtils.toString(currentStyleMap, ":", ";"));
         return this;
@@ -55,8 +55,8 @@ export class StyleAccessor {
      * @param {String} styleName 
      * @param {String} styleValue 
      */
-     is(styleName, styleValue) {
-        const currentStyleMap = this.srylesAsMap(this.baseElement.getAttributeValue("style"));
+    is(styleName, styleValue) {
+        const currentStyleMap = this.stylesAsMap(this.baseElement.getAttributeValue("style"));
         return StringUtils.nonNullEquals(currentStyleMap.get(styleName), styleValue);
     }
     
@@ -64,12 +64,12 @@ export class StyleAccessor {
      * 
      * @param {String} styleName 
      */
-     exists(styleName) {
-        const currentStyleMap = this.srylesAsMap(this.baseElement.getAttributeValue("style"));
+    exists(styleName) {
+        const currentStyleMap = this.stylesAsMap(this.baseElement.getAttributeValue("style"));
         return currentStyleMap.contains(styleName);
     }
 
-    srylesAsMap(styles) {
+    stylesAsMap(styles) {
         if (!styles || styles.indexOf(":") === -1) {
             return new Map();
         }

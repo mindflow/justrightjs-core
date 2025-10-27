@@ -1,4 +1,4 @@
-export class StyleClass {
+export class StyleSelector {
     /**
      * 
      * @param {String} className 
