@@ -8,20 +8,16 @@ export class ComponentBuilder {
     /**
      * 
      * @param {UniqueIdRegistry} idRegistry
-     * @param {String} tag 
-     * @param {String[]} attributeArray
      * @returns {ComponentBuilder}
      */
-    static create(idRegistry, tag, ...attributeArray) {
-        return new ComponentBuilder(idRegistry, tag, ...attributeArray);
+    static create(idRegistry) {
+        return new ComponentBuilder(idRegistry);
     }
 
     /**
-     * @param {String} tag 
-     * @param {String[]} attributeArray 
      * @param {UniqueIdRegistry} idRegistry
      */
-    constructor(idRegistry, tag, ...attributeArray) {
+    constructor(idRegistry) {
 
         /** @type {UniqueIdRegistry} */
         this.idRegistry = idRegistry;
@@ -30,13 +26,13 @@ export class ComponentBuilder {
         this.elementMap = new Map();
 
         /** @type {BaseElement} */
-        this.root = ComponentBuilder.tag(idRegistry, this.elementMap, tag, ...attributeArray);
+        this.rootElement = null;
 
         /** @type {BaseElement} */
-        this.lastAdded = this.root;
+        this.lastAddedElement = null;
 
         /** @type {BaseElement} */
-        this.context = this.root;
+        this.contextElement = null;
 
         /** @type {BaseElement[]} */
         this.trail = [];
@@ -76,34 +72,56 @@ export class ComponentBuilder {
 
     /**
      * 
+     * @param {String} tag 
+     * @param  {String[]} attributeArray 
+     * @returns 
+     */
+    root(tag, ...attributeArray) {
+        this.rootElement = ComponentBuilder.tag(this.idRegistry, this.elementMap, tag, ...attributeArray);
+        this.lastAddedElement = this.rootElement;
+        this.contextElement = this.rootElement;
+        return this;
+    }
+
+    /**
+     * 
      * @param {String} tagName 
      * @param  {String[]} attributeArray
      * @returns {ComponentBuilder}
      */
     add(tagName, ...attributeArray) {
+        if (!this.rootElement) {
+            throw new Error("ComponentBuilder: Root element is not defined. Call root() before adding child elements.");
+        }
+        if (this.trail.length === 0) {
+            throw new Error("ComponentBuilder: No open element context to add child elements, call open() before adding.");
+        }
         const element = ComponentBuilder.tag(this.idRegistry, this.elementMap, tagName, ...attributeArray);
-        this.context.addChild(element);
-        this.lastAdded = element;
+        this.contextElement.addChild(element);
+        this.lastAddedElement = element;
         return this;
     }
 
     open() {
-        this.trail.push(this.context);
-        this.context = this.lastAdded;
+        if (!this.rootElement) {
+            throw new Error("ComponentBuilder: Root element is not defined. Call root() before adding child elements.");
+        }
+        this.trail.push(this.contextElement);
+        this.contextElement = this.lastAddedElement;
         return this;
     }
 
     close() {
         if (this.trail.length === 0) {
-            throw new Error("HtmlBuilder: No open element context to close.");
+            throw new Error("ComponentBuilder: No open element context to close.");
         }
-        this.context = this.trail.pop();
-        this.lastAdded = this.context;
+        this.contextElement = this.trail.pop();
+        this.lastAddedElement = this.contextElement;
         return this;
     }
 
     build() {
-        return new Component(componentBuilderCounter++, this.root, this.elementMap);
+        return new Component(componentBuilderCounter++, this.rootElement, this.elementMap);
     }
 }
 

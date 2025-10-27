@@ -4,6 +4,8 @@ import { ComponentFactory } from "./componentFactory";
 import { UniqueIdRegistry } from "./uniqueIdRegistry";
 import { CanvasStyles } from "../canvas/canvasStyles";
 import { Component } from "../component/component";
+import { StylesheetBuilder } from "../html/stylesheetBuilder";
+import { ComponentBuilder } from "../html/componentBuilder";
 
 export class InlineComponentFactory extends ComponentFactory {
 
@@ -22,16 +24,16 @@ export class InlineComponentFactory extends ComponentFactory {
      * @param {function} classType represents the inline component class
      */
     create(classType){
-        if (!classType.buildComponent || !classType.getComponentStylesheet) {
-            throw new Error("Inline component class must implement static methods buildComponent() and getComponentStylesheet()");
+        if (!classType.buildComponent || !classType.buildStylesheet) {
+            throw new Error("Inline component class must implement static methods buildComponent() and buildStylesheet()");
         }
 
         /** @type {Component} */
-        const component = classType.buildComponent(this.uniqueIdRegistry);
+        const component = classType.buildComponent(ComponentBuilder.create(this.uniqueIdRegistry));
 
         /** @type {String} */
-        const stylesheet = classType.getComponentStylesheet();
-        
+        const stylesheet = classType.buildStylesheet(StylesheetBuilder.create());
+
         CanvasStyles.setStyle(classType.name, stylesheet);
         
         return component;
