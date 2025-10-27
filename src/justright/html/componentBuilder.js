@@ -77,6 +77,9 @@ export class ComponentBuilder {
      * @returns 
      */
     root(tag, ...attributeArray) {
+        if (this.rootElement) {
+            throw new Error("ComponentBuilder: Root element is already defined.");
+        }
         this.rootElement = ComponentBuilder.tag(this.idRegistry, this.elementMap, tag, ...attributeArray);
         this.lastAddedElement = this.rootElement;
         this.contextElement = this.rootElement;
