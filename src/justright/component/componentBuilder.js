@@ -105,9 +105,29 @@ export class ComponentBuilder {
         return this;
     }
 
+    /**
+     * 
+     * @param {String} text 
+     * @returns {ComponentBuilder}
+     */
+    addText(text) {
+        if (!this.rootElement) {
+            throw new Error("ComponentBuilder: Root element is not defined. Call root() before adding child elements.");
+        }
+        if (this.trail.length === 0) {
+            throw new Error("ComponentBuilder: No open element context to add child elements, call open() before adding.");
+        }
+        this.contextElement.addChild(text);
+        this.lastAddedElement = null;
+        return this;
+    }
+
     open() {
         if (!this.rootElement) {
             throw new Error("ComponentBuilder: Root element is not defined. Call root() before adding child elements.");
+        }
+        if (this.lastAddedElement === null) {
+            throw new Error("ComponentBuilder: Unable to open last element.");
         }
         this.trail.push(this.contextElement);
         this.contextElement = this.lastAddedElement;
