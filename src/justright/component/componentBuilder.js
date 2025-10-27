@@ -55,8 +55,8 @@ export class ComponentBuilder {
         attributeArray.forEach(attr => {
             let key = attr;
             let val = "";
-            if (attr.indexOf(":") !== -1) {
-                let indexOfColon = attr.indexOf(":");
+            if (attr.indexOf("=") !== -1) {
+                let indexOfColon = attr.indexOf("=");
                 key = attr.substring(0, indexOfColon);
                 val = attr.substring(indexOfColon + 1);
                 if ("id" === key) {
