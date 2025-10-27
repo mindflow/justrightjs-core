@@ -26,6 +26,9 @@ export class StylesheetBuilder {
         /** @type {StyleSelector|StyleMedia} */
         this.context = null;
 
+        /** @type {StyleSelector|StyleMedia} */
+        this.parentContext = null;
+
     }
 
     open() {
@@ -33,6 +36,9 @@ export class StylesheetBuilder {
             throw new Error("No context to open");
         }
         if (this.lastAdded) {
+            if (this.context !== null) {
+                this.parentContext = this.context;
+            }
             this.context = this.lastAdded;
         }
         return this;
@@ -42,7 +48,8 @@ export class StylesheetBuilder {
         if (this.context === null) {
             throw new Error("No context to close");
         }
-        this.context = null;
+        this.context = this.parentContext;
+        this.parentContext = null;
         return this;
     }
 
