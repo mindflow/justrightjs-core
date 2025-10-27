@@ -1,7 +1,7 @@
-import { Component } from "../component/component";
-import { UniqueIdRegistry } from "../component/uniqueIdRegistry";
+import { Component } from "./component";
+import { UniqueIdRegistry } from "./uniqueIdRegistry";
 import { BaseElement } from "../element/baseElement";
-import { HTML } from "./html";
+import { HTML } from "../html/html";
 
 export class ComponentBuilder {
 

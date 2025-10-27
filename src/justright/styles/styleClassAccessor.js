@@ -1,13 +1,14 @@
 import { ArrayUtils, List, StringUtils } from "coreutil_v1";
 import { BaseElement } from "../element/baseElement";
 
-export class CSS {
+export class StyleClassAccessor {
     
     /**
      * @type {BaseElement}
+     * @return {StyleClassAccessor}
      */
     static from(baseElement) {
-        return new CSS(baseElement);
+        return new StyleClassAccessor(baseElement);
     }
 
     /**

@@ -1,5 +1,5 @@
 import { StyleClass } from "./styleClass";
-import { Stylesheet } from "../styles/stylesheet";
+import { Stylesheet } from "./stylesheet";
 
 export class StylesheetBuilder {
 
@@ -12,7 +12,6 @@ export class StylesheetBuilder {
     }
 
     constructor() {
-
 
         /** @type {StyleClass} */
         this.context = null;

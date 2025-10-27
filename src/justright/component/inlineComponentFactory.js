@@ -4,8 +4,8 @@ import { ComponentFactory } from "./componentFactory";
 import { UniqueIdRegistry } from "./uniqueIdRegistry";
 import { CanvasStyles } from "../canvas/canvasStyles";
 import { Component } from "../component/component";
-import { StylesheetBuilder } from "../html/stylesheetBuilder";
-import { ComponentBuilder } from "../html/componentBuilder";
+import { StylesheetBuilder } from "../styles/stylesheetBuilder";
+import { ComponentBuilder } from "../component/componentBuilder";
 
 export class InlineComponentFactory extends ComponentFactory {
 
