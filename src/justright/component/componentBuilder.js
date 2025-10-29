@@ -92,7 +92,7 @@ export class ComponentBuilder {
      * @param  {String[]} attributeArray
      * @returns {ComponentBuilder}
      */
-    add(tagName, ...attributeArray) {
+    node(tagName, ...attributeArray) {
         if (!this.rootElement) {
             throw new Error("ComponentBuilder: Root element is not defined. Call root() before adding child elements.");
         }
@@ -110,7 +110,7 @@ export class ComponentBuilder {
      * @param {String} text 
      * @returns {ComponentBuilder}
      */
-    addText(text) {
+    text(text) {
         if (!this.rootElement) {
             throw new Error("ComponentBuilder: Root element is not defined. Call root() before adding child elements.");
         }
