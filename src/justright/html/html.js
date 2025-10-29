@@ -1,12 +1,23 @@
 /* jshint esversion: 6 */
 
-import {XmlElement} from "xmlparser_v1";
+import {XmlAttribute, XmlElement} from "xmlparser_v1";
 import {ElementMapper} from "../element/elementMapper.js";
 
 export class HTML{
 
-    static custom(elementName){
+    /**
+     * 
+     * @param {String} elementName 
+     * @param {Map<String, String>} attributeMap 
+     * @returns 
+     */
+    static custom(elementName, attributeMap = null){
         const xmlElement = new XmlElement(elementName);
+        if (attributeMap) {
+            attributeMap.forEach((value, key) => {
+                xmlElement.setAttribute(key, new XmlAttribute(key, null, value));
+            });
+        }
         return ElementMapper.map(xmlElement);
     }
 

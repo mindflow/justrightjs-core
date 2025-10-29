@@ -40,18 +40,39 @@ export class ElementMapper {
     }
 
     static mapsToRadio(input){
-        return (input instanceof HTMLInputElement && input.type === "radio") ||
-            (input instanceof XmlElement && input.name === "input" && input.getAttribute("type") && input.getAttribute("type").value === "radio");
+        if (input instanceof HTMLInputElement && input.type === "radio") {
+            return true;
+        }
+        if (input instanceof XmlElement && input.name === "input" && input.getAttribute("type") &&
+                input.getAttribute("type").value === "radio") {
+
+            return true;
+        }
+        return false;
     }
 
     static mapsToCheckbox(input){
-        return (input instanceof HTMLInputElement && input.type === "checkbox") ||
-            (input instanceof XmlElement && input.name === "input" && input.getAttribute("type") && input.getAttribute("type").value === "checkbox");
+        if (input instanceof HTMLInputElement && input.type === "checkbox") {
+            return true;
+        }
+        if (input instanceof XmlElement && input.name === "input" && input.getAttribute("type") &&
+                input.getAttribute("type").value === "checkbox") {
+
+            return true;
+        }
+        return false;
     }
 
     static mapsToSubmit(input){
-        return (input instanceof HTMLInputElement && input.type === "submit") ||
-            (input instanceof XmlElement && input.name === "input" && input.getAttribute("type") && input.getAttribute("type").value === "submit");
+        if (input instanceof HTMLInputElement && input.type === "submit") {
+            return true;
+        }
+        if (input instanceof XmlElement && input.name === "input" && input.getAttribute("type") &&
+                input.getAttribute("type").value === "submit") {
+
+            return true;
+        }
+        return false;
     }
 
     static mapsToForm(input){
@@ -63,9 +84,12 @@ export class ElementMapper {
         if (input instanceof HTMLInputElement) {
             if (input.type === "file") { return true; }
         }
-        if(input instanceof XmlElement && input.name === "input") {
-            if(input.getAttribute("type").value === "file") { return true; }
+        if(input instanceof XmlElement && input.name === "input" && input.getAttribute("type") &&
+                input.getAttribute("type").value === "file") { 
+                    
+            return true;
         }
+
         return false;
     }
 

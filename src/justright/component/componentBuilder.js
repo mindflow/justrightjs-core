@@ -49,24 +49,23 @@ export class ComponentBuilder {
      */
     static tag(idRegistry, elementMap, tag, ...attributeArray) {
 
-        /** @type {BaseElement} */
-        const element = HTML.custom(tag);
-
+        const attributeMap = new Map();
         attributeArray.forEach(attr => {
-            let key = attr;
-            let val = "";
-            if (attr.indexOf("=") !== -1) {
-                let indexOfColon = attr.indexOf("=");
-                key = attr.substring(0, indexOfColon);
-                val = attr.substring(indexOfColon + 1);
-                if ("id" === key) {
-                    elementMap.set(val, element);
-                    val = idRegistry.idAttributeWithSuffix(attr.substring(indexOfColon + 1));
-                }
-            }
-            element.setAttributeValue(key, val);
-
+           const [key, value] = attr.split("=");
+           attributeMap.set(key, value);
         });
+
+        /** @type {BaseElement} */
+        const element = HTML.custom(tag, attributeMap);
+
+        attributeMap.forEach((value, key) => {
+            if ("id" === key) {
+                elementMap.set(value, element);
+                value = idRegistry.idAttributeWithSuffix(value);
+            }
+            element.setAttributeValue(key, value);
+        });
+
         return element;
     }
 
