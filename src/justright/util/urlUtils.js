@@ -20,9 +20,10 @@ export class UrlUtils {
         const port =          UrlUtils.extractPort(hostAndPort);
         const pathsList =     UrlUtils.determinePath(remaining);
         const parametersMap = UrlUtils.determineParameters(remaining);
+        const queryParam =    UrlUtils.determineQueryParam(remaining);
         const bookmark =      UrlUtils.determineBookmark(remaining);
 
-        return new Url(protocol, host, port, pathsList, parametersMap, bookmark);
+        return new Url(protocol, host, port, pathsList, parametersMap, queryParam, bookmark);
     }
 
     static determineProtocol(remaining){
@@ -184,6 +185,30 @@ export class UrlUtils {
             remaining["string"] = null;
         }
         return bookmark;
+    }
+
+    static determineQueryParam(remaining){
+        let value = remaining["string"];
+
+        if (!value) {
+            return null;
+        }
+
+        let queryParam = value;
+        if(value.indexOf("?") !== -1) {
+            queryParam = value.substring(value.indexOf("?")+1);
+            remaining["string"] = null;
+            if (queryParam.indexOf("#") !== -1) {
+                queryParam = queryParam.substring(0, queryParam.indexOf("#"));
+                remaining["string"] = queryParam.substring(queryParam.indexOf("#"));
+            }
+        } else {
+            if (queryParam.indexOf("#") !== -1) {
+                remaining["string"] = queryParam.substring(queryParam.indexOf("#"));
+            }
+            return null;
+        }
+        return queryParam;
     }
 
 

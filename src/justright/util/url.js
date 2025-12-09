@@ -9,9 +9,10 @@ export class Url{
      * @param {String} port 
      * @param {List} pathValueList 
      * @param {Map} parameterValueMap 
+     * @param {String} queryParam
      * @param {String} anchor 
      */
-    constructor(protocol, host, port, pathValueList, parameterValueMap, anchor){
+    constructor(protocol, host, port = null, pathValueList = null, parameterValueMap = null, queryParam = null, anchor = null){
 
         /** @type {String} */
         this.protocolString = protocol;
@@ -27,6 +28,9 @@ export class Url{
 
         /** @type {Map} */
         this.parameterValueMap = parameterValueMap;
+
+        /** @type {String} */
+        this.queryParamString = queryParam;
 
         /** @type {String} */
         this.anchorString = anchor;
@@ -124,6 +128,10 @@ export class Url{
             }
             value = value + encodeURI(parameterKey) + "=" + encodeURI(parameterValue);
         },this);
+
+        if(this.queryParamString !== null){
+            value = value + "?" + this.queryParamString;
+        }
 
         if(this.anchor !== null) {
             value = value + "#" + this.anchor;

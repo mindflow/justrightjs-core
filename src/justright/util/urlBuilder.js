@@ -10,6 +10,7 @@ export class UrlBuilder {
         this.port = null;
         this.pathsList = new List();
         this.parametersMap = new Map();
+        this.queryParam = null;
         this.anchor = null;
     }
 
@@ -116,7 +117,12 @@ export class UrlBuilder {
         return this;
     }
 
+    withQueryParam(queryParam) {
+        this.queryParam = UrlUtils.determineQueryParam({ "string" : queryParam });
+        return this;
+    }
+
     build() {
-        return new Url(this.protocol, this.host, this.port, this.pathsList, this.parametersMap, this.anchor);
+        return new Url(this.protocol, this.host, this.port, this.pathsList, this.parametersMap, this.queryParam, this.anchor);
     }
 }
