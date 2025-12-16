@@ -19,11 +19,10 @@ export class UrlUtils {
         const host =          UrlUtils.extractHost(hostAndPort);
         const port =          UrlUtils.extractPort(hostAndPort);
         const pathsList =     UrlUtils.determinePath(remaining);
-        const parametersMap = UrlUtils.determineParameters(remaining);
         const queryParam =    UrlUtils.determineQueryParam(remaining);
         const bookmark =      UrlUtils.determineBookmark(remaining);
 
-        return new Url(protocol, host, port, pathsList, parametersMap, queryParam, bookmark);
+        return new Url(protocol, host, port, pathsList, queryParam, bookmark);
     }
 
     static determineProtocol(remaining){
@@ -136,39 +135,6 @@ export class UrlUtils {
         }, this);
 
         return pathValueList;
-    }
-
-    static determineParameters(remaining){
-        const value = remaining["string"];
-
-        if (!value) {
-            return new Map();
-        }
-
-        let parameters = value;
-
-        if(parameters.indexOf("?") === -1) {
-            return new Map();
-        }
-        parameters = parameters.substring(parameters.indexOf("?")+1);
-        if(parameters.indexOf("#") !== -1) {
-            remaining["string"] = parameters.substring(parameters.indexOf("#"));
-            parameters = parameters.substring(0,parameters.indexOf("#"));
-        } else {
-            remaining["string"] = null;
-        }
-
-        const parameterPartList = new List(parameters.split("&"));
-        const parameterMap = new Map();
-        parameterPartList.forEach((value) => {
-            let keyValue = value.split("=");
-            if(keyValue.length >= 2){
-                parameterMap.set(decodeURI(keyValue[0]),decodeURI(keyValue[1]));
-            }
-            return true;
-        }, this);
-
-        return parameterMap;
     }
 
     static determineBookmark(remaining){

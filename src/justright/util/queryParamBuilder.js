@@ -43,17 +43,26 @@ export class QueryParamBuilder {
         let firstParam = true;
         this.params.forEach((value, key) => {
             
-            if (!firstParam) {
-                queryParam += "&";
-            } else {
-                firstParam = false;
-            }
-
             if (Array.isArray(value)) {
+                
                 value.forEach((item) => {
+
+                    if (!firstParam) {
+                        queryParam += "&";
+                    } else {
+                        firstParam = false;
+                    }
+
                     queryParam += encodeURIComponent(key) + "=" + encodeURIComponent(item);
                 });
             } else {
+
+                if (!firstParam) {
+                    queryParam += "&";
+                } else {
+                    firstParam = false;
+                }
+
                 queryParam += encodeURIComponent(key) + "=" + encodeURIComponent(value);
             }
         });

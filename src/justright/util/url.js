@@ -8,11 +8,10 @@ export class Url{
      * @param {String} host 
      * @param {String} port 
      * @param {List} pathValueList 
-     * @param {Map} parameterValueMap 
      * @param {String} queryParam
      * @param {String} anchor 
      */
-    constructor(protocol, host, port = null, pathValueList = null, parameterValueMap = null, queryParam = null, anchor = null){
+    constructor(protocol, host, port = null, pathValueList = null, queryParam = null, anchor = null){
 
         /** @type {String} */
         this.protocolString = protocol;
@@ -25,9 +24,6 @@ export class Url{
 
         /** @type {List} */
         this.pathValueList = pathValueList;
-
-        /** @type {Map} */
-        this.parameterValueMap = parameterValueMap;
 
         /** @type {String} */
         this.queryParamString = queryParam;
@@ -96,10 +92,6 @@ export class Url{
         return path;
     }
 
-    getParameter(key) {
-        return this.parameterMap.get(key);
-    }
-
     toString(){
         var value = "";
         if(this.protocol !== null){
@@ -115,18 +107,6 @@ export class Url{
         this.pathValueList.forEach(function(pathPart,parent){
             value = value + "/" + pathPart;
             return true;
-        },this);
-
-        var firstParameter = true;
-
-        this.parameterMap.forEach(function(parameterKey,parameterValue,parent){
-            if(firstParameter){
-                firstParameter=false;
-                value = value + "?";
-            }else{
-                value = value + "&";
-            }
-            value = value + encodeURI(parameterKey) + "=" + encodeURI(parameterValue);
         },this);
 
         if(this.queryParamString !== null){

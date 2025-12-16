@@ -62,8 +62,8 @@ export class UrlBuilder {
      */
     withAllOfUrl(url) {
         this.withPathOfUrl(url);
-        this.parametersMap = url.parameterMap;
-        this.bookmark = url.bookmark;
+        this.queryParam = url.queryParam;
+        this.anchor = url.anchor;
         return this;
     }
 
