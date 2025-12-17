@@ -9,7 +9,6 @@ export class UrlBuilder {
         this.host = null;
         this.port = null;
         this.pathsList = new List();
-        this.parametersMap = new Map();
         this.queryParam = null;
         this.anchor = null;
     }
@@ -123,6 +122,6 @@ export class UrlBuilder {
     }
 
     build() {
-        return new Url(this.protocol, this.host, this.port, this.pathsList, this.parametersMap, this.queryParam, this.anchor);
+        return new Url(this.protocol, this.host, this.port, this.pathsList, this.queryParam, this.anchor);
     }
 }
