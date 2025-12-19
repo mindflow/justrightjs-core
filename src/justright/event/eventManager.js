@@ -19,10 +19,12 @@ export class EventManager {
     /**
      * 
      * @param {string} eventType 
-     * @param {Method} listener 
+     * @param {Function} listenerFunction
+     * @param {Object} contextObject
      * @returns {EventManager}
      */
-    listenTo(eventType, listener) {
+    listenTo(eventType, listenerFunction, contextObject) {
+        const listener = new Method(listenerFunction, contextObject);
         if (!this.listenerMap.contains(eventType)) {
             this.listenerMap.set(eventType, new List());
         }

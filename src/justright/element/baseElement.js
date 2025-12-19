@@ -40,11 +40,13 @@ export class BaseElement extends MappedContainerElement {
     /**
      * 
      * @param {string} eventType 
-     * @param {Method} listener 
-     * @param {boolean} capture 
-     * @returns 
+     * @param {Function} listenerFunction
+     * @param {Object} contextObject
+     * @param {boolean} capture
+     * @returns {BaseElement}
      */
-    listenTo(eventType, listener, capture) {
+    listenTo(eventType, listenerFunction, contextObject, capture = false) {
+        const listener = new Method(listenerFunction, contextObject);
         this.containerElement.addEventListener(eventType, listener, capture);
         return this;
     }

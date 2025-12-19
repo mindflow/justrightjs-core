@@ -74,7 +74,7 @@ export class Application extends ModuleRunner {
             .addAllConfigProcessor(this.defaultConfigProcessors)
             .addAllInstanceProcessor(this.defaultInstanceProcessors);
         ActiveModuleRunner.instance().set(this);
-        ContainerUrl.addUserNavigateListener(new Method(this, this.update));
+        ContainerUrl.addUserNavigateListener(new Method(this.update, this));
         const module = await this.runModule(History.currentUrl());
         this.startWorkers();
         return module;

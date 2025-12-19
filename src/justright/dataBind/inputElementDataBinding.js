@@ -38,8 +38,8 @@ export class InputElementDataBinding {
                 this.validator.validate(field.value);
             }
         };
-        field.listenTo("change", new Method(this, puller));
-        field.listenTo("keyup", new Method(this, puller));
+        field.listenTo("change", puller, this);
+        field.listenTo("keyup", puller, this);
         puller.call();
 
         const pusher = () => {

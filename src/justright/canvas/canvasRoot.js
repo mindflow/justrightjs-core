@@ -96,17 +96,20 @@ export class CanvasRoot {
      * Also remember to keep the destroy function and call it
      * when the listener is no longer needed
      * 
-     * @param {Method} listener
      * @param {BaseElement} focusRoot
+     * @param {Function} listenerFunction
+     * @param {Object} contextObject
      * @returns {Function} destroy function to remove the listener from the container window
      */
-    static listenToFocusEscape(listener, focusRoot) {
+    static listenToFocusEscape(focusRoot, listenerFunction, contextObject) {
         
+        const listener = new Method(listenerFunction, contextObject);
+
         const destroyFunctions = [];
 
         /* Hack: Because we don't have a way of knowing in the click event which element was in focus when mousedown occured */
         if (!CanvasRoot.focusEscapeEventRequested) {
-            const updateMouseDownElement = new Method(null, (/** @type {ContainerEvent} */ event) => {
+            const updateMouseDownElement = new Method((/** @type {ContainerEvent} */ event) => {
                 CanvasRoot.mouseDownElement = event.target;
             });
             destroyFunctions.push(
@@ -115,7 +118,7 @@ export class CanvasRoot {
             CanvasRoot.focusEscapeEventRequested = true;
         }
 
-        const callIfNotContains = new Method(null, (/** @type {ContainerEvent} */ event) => {
+        const callIfNotContains = new Method((/** @type {ContainerEvent} */ event) => {
             CanvasRoot.mouseDownElement = event.target;
             if (ContainerElementUtils.contains(focusRoot.containerElement, CanvasRoot.mouseDownElement)) {
                 return;

@@ -12,8 +12,8 @@ export class OrValidatorSet extends AbstractValidator {
      * @param {AbstractValidator} validator
      */
     withValidator(validator) {
-        validator.withValidListener(new Method(this, this.oneValid));
-        validator.withInvalidListener(new Method(this, this.oneInvalid));
+        validator.withValidListener(new Method(this.oneValid, this));
+        validator.withInvalidListener(new Method(this.oneInvalid, this));
         this.validatorList.add(validator);
         return this;
     }
