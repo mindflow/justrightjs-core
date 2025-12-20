@@ -1,4 +1,4 @@
-import { PropertyAccessor, List, Logger, Method } from "coreutil_v1";
+import { PropertyAccessor, List, Logger } from "coreutil_v1";
 import { AbstractInputElement } from "../element/abstractInputElement";
 
 const LOG = new Logger("InputElementDataBinding");
