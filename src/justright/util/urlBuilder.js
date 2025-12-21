@@ -15,7 +15,7 @@ export class UrlBuilder {
         /** @type {Number} */
         this.port = null;
         
-        /** @type {Array} */
+        /** @type {Array<String>} */
         this.pathArray = new Array();
         
         /** @type {Map<String, Array<String>>} */
@@ -148,8 +148,8 @@ export class UrlBuilder {
     replacePathValue(from, to){
         let i = 0;
         while (i < this.pathArray.length) {
-            if (StringUtils.nonNullEquals(from, this.pathArray[i])) {
-                this.pathArray[i] = to;
+            if (StringUtils.contains(from, this.pathArray[i])) {
+                this.pathArray[i] = this.pathArray[i].replace(from, to);
                 return this;
             }
             i ++;
