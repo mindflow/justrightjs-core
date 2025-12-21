@@ -1,4 +1,4 @@
-import {List, Map, StringUtils} from "coreutil_v1";
+import { StringUtils } from "coreutil_v1";
 
 export class Url{
 
@@ -7,11 +7,11 @@ export class Url{
      * @param {String} protocol 
      * @param {String} host 
      * @param {String} port 
-     * @param {List} pathValueList 
-     * @param {String} queryParam
+     * @param {Array<String>} pathValueArray 
+     * @param {Map<String, Array<String>>} queryParamMap
      * @param {String} anchor 
      */
-    constructor(protocol, host, port = null, pathValueList = null, queryParam = null, anchor = null){
+    constructor(protocol, host, port = null, pathValueArray = null, queryParamMap = null, anchor = null){
 
         /** @type {String} */
         this.protocolString = protocol;
@@ -22,20 +22,20 @@ export class Url{
         /** @type {String} */
         this.portString = port;
 
-        /** @type {List} */
-        this.pathValueList = pathValueList;
+        /** @type {Array<String>} */
+        this.pathValueArray = pathValueArray;
 
-        /** @type {String} */
-        this.queryParamString = queryParam;
+        /** @type {Map<String, Array<String>>} */
+        this.queryParamMap = queryParamMap;
 
         /** @type {String} */
         this.anchorString = anchor;
         
-        if (!this.pathValueList) {
-            this.pathValueList = new List();
+        if (!this.pathValueArray) {
+            this.pathValueArray = new Array();
         }
-        if (!this.parameterValueMap) {
-            this.parameterValueMap = new Map();
+        if (!this.queryParamMap) {
+            this.queryParamMap = new Map();
         }
     }
 
@@ -69,9 +69,9 @@ export class Url{
 
     replacePathValue(from, to){
         let i = 0;
-        while (i < this.pathValueList.size()) {
-            if (StringUtils.nonNullEquals(from, this.pathValueList.get(i))) {
-                this.pathValueList.set(i, to);
+        while (i < this.pathValueArray.length) {
+            if (StringUtils.nonNullEquals(from, this.pathValueArray[i])) {
+                this.pathValueArray[i] = to;
                 return this;
             }
             i ++;
@@ -104,13 +104,25 @@ export class Url{
             value = value + ":" + this.port;
         }
 
-        this.pathValueList.forEach(function(pathPart,parent){
+        this.pathValueArray.forEach((pathPart) => {
             value = value + "/" + pathPart;
-            return true;
-        },this);
+        });
 
-        if(this.queryParamString !== null){
-            value = value + "?" + this.queryParamString;
+        if(this.queryParamMap.size > 0){
+            const queryParamStrings = new Array();
+            this.queryParamMap.forEach((valueArray, key) => {
+                valueArray.forEach((value) => {
+                    if (value !== null) {
+                        queryParamStrings.push(key + "=" + value);
+                    } else {
+                        queryParamStrings.push(key);
+                    }
+                    return true;
+                });
+            });
+            if (queryParamStrings.length > 0) {
+                value = value + "?" + queryParamStrings.join("&");
+            }
         }
 
         if(this.anchor !== null) {

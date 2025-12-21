@@ -44,7 +44,7 @@ export class Navigation {
      */
     loadPath(path) {
         const url = History.currentUrl();
-        const newUrl = UrlBuilder.builder().withRootOfUrl(url).withPath(path).build();
+        const newUrl = UrlBuilder.create().withRootOfUrl(url).withPath(path).build();
         History.pushUrl(newUrl);
         return newUrl;
     }
@@ -56,7 +56,7 @@ export class Navigation {
      */
     loadAnchor(anchor) {
         const url = History.currentUrl();
-        const newUrl = UrlBuilder.builder().withRootOfUrl(url).withAnchor(anchor).build();
+        const newUrl = UrlBuilder.create().withRootOfUrl(url).withAnchor(anchor).build();
         History.pushUrl(newUrl);
         return newUrl;
     }

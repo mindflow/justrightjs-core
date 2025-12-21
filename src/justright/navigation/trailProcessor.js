@@ -21,7 +21,7 @@ export class TrailProcessor {
             return;
         }
 
-        const urlBuilder = UrlBuilder.builder().withAllOfUrl(History.currentUrl());
+        const urlBuilder = UrlBuilder.create().withAllOfUrl(History.currentUrl());
         const stepUrl = urlBuilder.withAnchor(null).build();
         History.replaceUrl(stepUrl, stepUrl.toString(), null);
         
@@ -98,7 +98,7 @@ export class TrailProcessor {
         const newTrail = TrailProcessor.concatinateSequenceAsAnchor(matchingNodeTrail);
 
         if (!StringUtils.nonNullEquals(currentUrl.anchor, newTrail)) {
-            const urlBuilder = UrlBuilder.builder().withAllOfUrl(currentUrl);
+            const urlBuilder = UrlBuilder.create().withAllOfUrl(currentUrl);
             const stepUrl = urlBuilder.withAnchor(newTrail).build();
             History.pushUrl(stepUrl, stepUrl.toString(), null);
         }
@@ -131,7 +131,7 @@ export class TrailProcessor {
         const newTrail = TrailProcessor.concatinateSequenceAsAnchor(matchingNodeTrail);
 
         if (!StringUtils.nonNullEquals(currentUrl.anchor, newTrail)) {
-            const urlBuilder = UrlBuilder.builder().withAllOfUrl(currentUrl);
+            const urlBuilder = UrlBuilder.create().withAllOfUrl(currentUrl);
             const stepUrl = urlBuilder.withAnchor(newTrail).build();
             History.replaceUrl(stepUrl, stepUrl.toString(), null);
         }

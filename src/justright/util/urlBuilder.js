@@ -1,15 +1,27 @@
-import { List, Map } from "coreutil_v1";
+import { StringUtils } from "coreutil_v1";
 import { Url } from "./url.js";
 import { UrlUtils } from "./urlUtils.js";
 
 export class UrlBuilder {
 
     constructor() {
+
+        /** @type {String} */
         this.protocol = null;
+
+        /** @type {String} */
         this.host = null;
+        
+        /** @type {Number} */
         this.port = null;
-        this.pathsList = new List();
-        this.queryParam = null;
+        
+        /** @type {Array} */
+        this.pathArray = new Array();
+        
+        /** @type {Map<String, Array<String>>} */
+        this.queryParameterMap = null;
+
+        /** @type {String} */
         this.anchor = null;
     }
 
@@ -17,7 +29,7 @@ export class UrlBuilder {
      * 
      * @returns {UrlBuilder}
      */
-    static builder() {
+    static create() {
         return new UrlBuilder();
     }
 
@@ -44,24 +56,22 @@ export class UrlBuilder {
     }
 
     /**
-     * 
      * @param {Url} url 
      * @returns {UrlBuilder}
      */
      withPathOfUrl(url) {
         this.withRootOfUrl(url);
-        this.pathsList = url.pathsList;
+        this.pathArray = url.pathValueArray;
         return this;
     }
 
     /**
-     * 
      * @param {Url} url 
      * @returns {UrlBuilder}
      */
     withAllOfUrl(url) {
         this.withPathOfUrl(url);
-        this.queryParam = url.queryParam;
+        this.queryParameterMap = url.queryParamMap;
         this.anchor = url.anchor;
         return this;
     }
@@ -72,56 +82,82 @@ export class UrlBuilder {
      * @returns {UrlBuilder}
      */
     withProtocol(protocol) {
-        this.protocol = UrlUtils.determinePath({ "string" : protocol });
+        this.protocol = protocol;
         return this;
     }
 
     /**
      * 
-     * @param {string} host 
+     * @param {Number} port 
+     * @returns 
+     */
+    withPort(port) {
+        this.port = port;
+        return this;
+    }
+
+    /**
+     * @param {String} host 
      * @returns {UrlBuilder}
      */
     withHost(host) {
-        this.host = UrlUtils.determinePath({ "string" : host });
+        this.host = host;
         return this;
     }
 
     /**
-     * 
-     * @param {string} path 
+     * @param {String} path 
      * @returns {UrlBuilder}
      */
     withPath(path) {
-        this.pathsList = UrlUtils.determinePath({ "string" : path });
+        this.pathArray = UrlUtils.parsePathArray(path);
         return this;
     }
 
     /**
-     * 
-     * @param {string} parameters 
-     * @returns {UrlBuilder}
-     */
-    withParameters(parameters) {
-        this.parametersMap = UrlUtils.determinePath({ "string" : parameters });
-        return this;
-    }
-
-    /**
-     * 
-     * @param {string} anchor 
+     * @param {String} anchor 
      * @returns {UrlBuilder}
      */
     withAnchor(anchor) {
-        this.anchor = UrlUtils.determineBookmark({ "string" : anchor });
+        this.anchor = anchor;
         return this;
     }
 
-    withQueryParam(queryParam) {
-        this.queryParam = UrlUtils.determineQueryParam({ "string" : queryParam });
+    /**
+     * 
+     * @param {String} key 
+     * @param {String} value 
+     * @returns 
+     */
+    withQueryParamString(key, value) {
+        this.queryParameterMap.set(key, [value]);
+        return this;
+    }
+
+    /**
+     * 
+     * @param {String} key 
+     * @param {Array<String>} valueArray 
+     * @returns 
+     */
+    withQueryParamArray(key, valueArray) {
+        this.queryParameterMap.set(key, valueArray);
+        return this;
+    }
+
+    replacePathValue(from, to){
+        let i = 0;
+        while (i < this.pathArray.length) {
+            if (StringUtils.nonNullEquals(from, this.pathArray[i])) {
+                this.pathArray[i] = to;
+                return this;
+            }
+            i ++;
+        }
         return this;
     }
 
     build() {
-        return new Url(this.protocol, this.host, this.port, this.pathsList, this.queryParam, this.anchor);
+        return new Url(this.protocol, this.host, this.port, this.pathArray, this.queryParameterMap, this.anchor);
     }
 }
