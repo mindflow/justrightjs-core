@@ -32,8 +32,8 @@ export class TemplateComponentFactory extends ComponentFactory{
      * @param {function} classType represents the template and the styles name if the style for that name is available
      */
     create(classType){
-        if (!classType.TEMPLATE_URL || !classType.STYLES_URL) {
-            throw new Error("Template component class must implement static members TEMPLATE_URL and STYLES_URL");
+        if (!classType.TEMPLATE_URL) {
+            throw new Error("Template component class must implement static member TEMPLATE_URL");
         }
         const template = this.templateRegistry.get(classType.name);
         if(!template) {
@@ -45,7 +45,9 @@ export class TemplateComponentFactory extends ComponentFactory{
         const elementRegistrator = new ElementRegistrator(this.uniqueIdRegistry, templateComponentCounter++);
         new DomTree(template.getTemplateSource(), elementRegistrator).load();
 
-        this.mountStyles(classType.name);
+        if (classType.STYLES_URL) {
+            this.mountStyles(classType.name);
+        }
 
         return new Component(elementRegistrator.componentIndex, elementRegistrator.rootElement, elementRegistrator.getElementMap());
     }
