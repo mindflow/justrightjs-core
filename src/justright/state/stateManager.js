@@ -13,6 +13,9 @@ export class StateManager {
 
         /** @type {Map<String, Array<Method>} */
         this.listeners = new Map();
+
+        /** @type {boolean} */
+        this.initialized = false;
     }
 
     /**
@@ -57,6 +60,7 @@ export class StateManager {
         }
         object = this.createProxy(object, key, this);
         this.objectMap.set(key, object);
+        this.initialized = true;
         this.signalStateChange(object, key);
         return object;
     }
@@ -64,16 +68,19 @@ export class StateManager {
     async delete(key = "__DEFAULT__") {
         this.objectMap.delete(key);
         this.listeners.delete(key);
+        this.initialized = true;
         this.signalStateChange(null, key);
     }
 
     async clear() {
+        this.initialized = true;
         for (let key of this.objectMap.keys()) {
             this.signalStateChange(null, key);
         }
         this.signalStateChange(null, "__ANY__");
         this.objectMap.clear();
         this.listeners.clear();
+        this.initialized = false;
     }
 
     signalStateChange(object, key) {
