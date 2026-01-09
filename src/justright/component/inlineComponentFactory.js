@@ -24,18 +24,19 @@ export class InlineComponentFactory extends ComponentFactory {
      * @param {function} classType represents the inline component class
      */
     create(classType){
-        if (!classType.buildComponent || !classType.buildStylesheet) {
-            throw new Error("Inline component class must implement static methods buildComponent() and buildStylesheet()");
+        if (!classType.buildComponent) {
+            throw new Error("Inline component class must implement static method buildComponent()");
         }
 
         /** @type {Component} */
         const component = classType.buildComponent(ComponentBuilder.create(this.uniqueIdRegistry));
 
-        /** @type {String} */
-        const stylesheet = classType.buildStylesheet(StylesheetBuilder.create());
+        if (classType.buildStylesheet) {
+            /** @type {String} */
+            const stylesheet = classType.buildStylesheet(StylesheetBuilder.create());
 
-        CanvasStyles.setStyle(classType.name, stylesheet);
-        
+            CanvasStyles.setStyle(classType.name, stylesheet);
+        }
         return component;
     }
 
