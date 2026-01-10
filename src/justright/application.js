@@ -106,6 +106,9 @@ export class Application extends ModuleRunner {
             this.activeModule.url = url;
             this.activeModule.trailMap = moduleLoader.trailMap;
             this.activeModule.load();
+            if (this.activeModule.trailMap) {
+                TrailProcessor.triggerFunctionsAlongAnchor(url, this.activeModule, this.activeModule.trailMap);
+            }
             return this.activeModule;
         } catch(error) {
             LOG.error(error);
