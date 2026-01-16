@@ -87,7 +87,7 @@ export class Application extends ModuleRunner {
     update(event) {
         const url = History.currentUrl();
 
-        if (this.activeModule && StringUtils.startsWith(url.anchor, this.activeModule.trailMap.trail)) {
+        if (this.activeModule && this.activeModule.trailMap && StringUtils.startsWith(url.anchor, this.activeModule.trailMap.trail)) {
             TrailProcessor.triggerFunctionsAlongAnchor(url, this.activeModule, this.activeModule.trailMap);
             return;
         }
@@ -104,7 +104,6 @@ export class Application extends ModuleRunner {
             const moduleLoader = this.getMatchingModuleLoader(url);
             this.activeModule = await moduleLoader.load();
             this.activeModule.url = url;
-            this.activeModule.trailMap = moduleLoader.trailMap;
             this.activeModule.load();
             if (this.activeModule.trailMap) {
                 TrailProcessor.triggerFunctionsAlongAnchor(url, this.activeModule, this.activeModule.trailMap);

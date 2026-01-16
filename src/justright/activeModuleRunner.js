@@ -33,10 +33,10 @@ export class ActiveModuleRunner {
 
     /**
      * Load anchor without renavigating browser
-     * @param {TrailNode} trailNode 
+     * @param {String} trail 
      */
-     async load(trailNode) {
-        const url = Navigation.instance().loadAnchor(trailNode.trail);
+     async load(trail) {
+        const url = Navigation.instance().loadAnchor(trail);
         return await this.moduleRunner.runModule(url);
     }
 }

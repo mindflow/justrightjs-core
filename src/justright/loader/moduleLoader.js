@@ -1,7 +1,6 @@
 import { Logger, StringUtils } from "coreutil_v1"
 import { Url } from "../util/url.js";
 import { LoaderInterceptor } from "./loaderInterceptor.js"
-import { TrailNode } from "../navigation/trailNode.js";
 
 const LOG = new Logger("ModuleLoader");
 
@@ -10,10 +9,10 @@ export class ModuleLoader {
     /**
      * 
      * @param {String} modulePath 
-     * @param {string} trailMap 
+     * @param {String} trailStart 
      * @param {Array<LoaderInterceptor>} loaderInterceptors
      */
-    constructor(modulePath, trailMap, loaderInterceptors = []) {
+    constructor(modulePath, trailStart, loaderInterceptors = []) {
     
         /**
          * @type {string}
@@ -21,9 +20,9 @@ export class ModuleLoader {
         this.modulePath = modulePath;
 
         /**
-         * @type {TrailNode}
+         * @type {String}
          */
-        this.trailMap = trailMap;
+        this.trailStart = trailStart;
 
         /**
          * @type {Array<LoaderInterceptor>}
@@ -40,20 +39,31 @@ export class ModuleLoader {
      * @returns 
      */
     matches(url){
-        if (!this.trailMap) {
+        // No trailStart means default match
+        if (!this.trailStart) {
             return true;
         }
+
+        // No url and non null trailStart, means no match
         if (!url) {
             LOG.error("Url is null");
             return false;
         }
+
+        // No anchor match only if trailStart is "/"
         if (!url.anchor) {
-            if (this.trailMap.root) {
+            if (StringUtils.equals(this.trailStart, "/")) {
                 return true;
             }
             return false;
         }
-        return StringUtils.startsWith(url.anchor + "/", this.trailMap.trail + "/");
+
+        // Exact match for root trailStart
+        if (StringUtils.equals(this.trailStart, "/")) {
+            return StringUtils.equals(url.anchor, this.trailStart);
+        }
+
+        return StringUtils.startsWith(url.anchor, this.trailStart);
     }
 
     /**
